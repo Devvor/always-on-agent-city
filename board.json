@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T17:11:23Z",
+    "checked_at": "2026-10-12T17:11:27Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -69,9 +69,9 @@
     {
       "id": "T7",
       "title": "P4: worker_office_server.py \u2014 stdlib server for board + tick log",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-12T17:12:11Z",
       "target_file": "tasks_out/worker_office_server.py",
       "verify_cmd": "cd /opt/data/missingno-worker && (/opt/hermes/.venv/bin/python tasks_out/worker_office_server.py --port 8799 --board board.json & echo $! > /tmp/wos.pid; sleep 2; R1=$(curl -s http://127.0.0.1:8799/api/board); R2=$(curl -s http://127.0.0.1:8799/ | head -c 200); kill $(cat /tmp/wos.pid); echo \"$R1\" | /opt/hermes/.venv/bin/python -c \"import sys,json; d=json.load(sys.stdin); assert 'tasks' in d and 'window' in d and 'recent_ticks' in d, d; print('API-OK')\" && echo \"$R2\" | grep -qi 'worker_office.html\\|html' && echo VERIFY-OK",
       "spec": "Write a standalone Python 3 server worker_office_server.py (STDLIB ONLY, use http.server) that serves the live worker office data.\n\nBehavior:\n- CLI: worker_office_server.py [--port N] [--board PATH] [--log PATH]; defaults port 8798, board /opt/data/missingno-worker/board.json, log /opt/data/missingno-worker/logs/tick.log.\n- GET /api/board -> JSON: {\"window\": <window object from board.json>, \"tasks\": <tasks list from board.json>, \"recent_ticks\": [last 10 non-empty lines of the tick log]}. Read board.json FRESH on every request (no caching). If the board file is unreadable, return {\"error\": \"board unreadable\"} with HTTP 500.\n- GET / -> serves the file worker_office.html from the same directory as the script (Content-Type text/html); if missing, serve a minimal HTML page containing the text 'worker_office.html not built yet' with HTTP 200.\n- Bind 127.0.0.1 ONLY (loopback). ThreadingHTTPServer. Clean shutdown on SIGINT/SIGTERM. No tracebacks in normal operation. Print one startup line to stdout: 'worker office serving on 127.0.0.1:<port>'."
