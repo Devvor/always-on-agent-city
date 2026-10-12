@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T17:12:12Z",
+    "checked_at": "2026-10-12T17:15:10Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -89,9 +89,9 @@
     {
       "id": "T9",
       "title": "P4: worker_office.html \u2014 the office page",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-12T17:15:12Z",
       "target_file": "tasks_out/worker_office.html",
       "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python -c \"from html.parser import HTMLParser\nclass P(HTMLParser):\n    def __init__(self): super().__init__(); self.tags=[]\n    def handle_starttag(self, t, a): self.tags.append((t, dict(a)))\np=P(); p.feed(open('tasks_out/worker_office.html').read())\ntags=[t for t,_ in p.tags]\nattrs=[a for _,a in p.tags]\nassert 'canvas' in tags, tags\nassert any(a.get('src')=='worker_office.js' for a in attrs if 'src' in a), 'script ref missing'\nassert 'Worker Office' in open('tasks_out/worker_office.html').read()\nprint('HTML-OK')\" && echo VERIFY-OK",
       "spec": "Write a single HTML file worker_office.html (no external assets, no CDN, no images) that hosts the worker office.\n\nRequirements:\n- DOCTYPE html, title 'Worker Office', dark background (#1a1a2e or similar), centered full-viewport layout.\n- One <canvas id=\"office-canvas\"> that scales responsively (width 960 height 600 attributes, CSS max-width 100%).\n- Loads the client with <script src=\"worker_office.js\"></script> and calls init(document.getElementById('office-canvas'), '/api/board') on load (a tiny inline script is fine \u2014 keep it under 5 lines, no backticks in it).\n- A small fixed footer line: 'missingno worker office \u2014 loopback only'.\n- Nothing else: no network calls, no fonts fetched, no inline SVG libraries."
