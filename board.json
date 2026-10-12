@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T17:11:27Z",
+    "checked_at": "2026-10-12T17:12:12Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -79,9 +79,9 @@
     {
       "id": "T8",
       "title": "P4: worker_office.js \u2014 2.5D pixel office canvas client",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-12T17:15:09Z",
       "target_file": "tasks_out/worker_office.js",
       "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && node -e \"const fs=require('fs'); const s=fs.readFileSync('tasks_out/worker_office.js','utf8'); ['init(','fetch(','requestAnimationFrame','getContext'].every(k=>s.includes(k)) || process.exit(1); console.log('MARKERS-OK')\" && echo VERIFY-OK",
       "spec": "Write a single JavaScript file worker_office.js (plain ES2020, no imports, no external libraries) that renders a 2.5D pixel-art office on an HTML canvas.\n\nRequirements:\n- A global function init(canvas, apiBase) that starts everything; use it for the window.onload handler. Poll apiBase + '/api/board' every 5 seconds with fetch() and update the scene.\n- Canvas rendering with getContext('2d') and requestAnimationFrame for a ~30fps game loop.\n- Draw a simple isometric/pixel office floor: a tiled floor grid (drawn as filled polygons or rects), at least 4 desks (rects with darker outline), and one wall along the back.\n- Characters (8-16px pixel figures drawn with fillRect blocks, not images): (1) THE WORKER \u2014 a small character that walks between desks; its state comes from the board data: a pending task = worker walks to that desk and a 'building' bubble; in_progress = animated typing at the desk; done = green flash + walk to next; failed = red bubble. (2) Tasks render as small glowing documents on desks: grey=pending, blue=in_progress, green=done, red=failed.\n- A status bar at the top of the canvas (fillText): window status (OPEN in green / CLOSED in red) and counts of pending/done/failed.\n- Handle fetch errors gracefully: if the API is unreachable show 'OFFLINE' in the status bar, keep animating, never throw.\n- Deterministic pseudo-random walk offsets are fine; no network calls other than the poll. No console spam.\n- The file must be syntactically valid standalone (it will be checked with node --check)."
