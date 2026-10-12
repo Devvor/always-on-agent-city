@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T17:15:10Z",
+    "checked_at": "2026-10-12T17:15:14Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -59,9 +59,9 @@
     {
       "id": "T6",
       "title": "P3: bench_harness --bench mode + default prompt set",
-      "status": "failed",
-      "attempts": 1,
-      "updated_at": "2026-10-12T17:11:26Z",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
       "target_file": "tasks_out/bench_harness.py",
       "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python tasks_out/bench_harness.py --model stealth/missingno --self-test | /opt/hermes/.venv/bin/python -c \"import sys,json; d=json.load(sys.stdin); assert d.get('pass_rate')==1.0, d; print('VERIFY-OK')\" && /opt/hermes/.venv/bin/python -c \"import ast,sys; ast.parse(open('tasks_out/bench_harness.py').read()); print('PARSES')\"",
       "spec": "EDIT the existing file tasks_out/bench_harness.py (read the CURRENT on-disk version first \u2014 it already works; do not regress it) to add a --bench mode: --bench <model_a> <model_b> runs every prompt in the prompts file against BOTH models and prints ONE JSON object {\"models\": [a, b], \"results\": [{\"id\": prompt id, \"a_passed\": bool, \"b_passed\": bool}], \"pass_rates\": {a: float, b: float}}. Keep --self-test behavior identical (it must still pass: exit 0, pass_rate 1.0 JSON). Keep all existing behavior: default prompts file creation, token from /opt/data/shared/nous_auth.json key access_token, User-Agent header, 3 retries on 429/timeout, JSON-only stdout, no tracebacks. Do NOT use literal triple-backtick characters anywhere in the code (express fence regexes as '`{3}'). Output the complete updated file in one fenced block."
@@ -69,11 +69,11 @@
     {
       "id": "T7",
       "title": "P4: worker_office_server.py \u2014 stdlib server for board + tick log",
-      "status": "failed",
-      "attempts": 1,
-      "updated_at": "2026-10-12T17:12:11Z",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
       "target_file": "tasks_out/worker_office_server.py",
-      "verify_cmd": "cd /opt/data/missingno-worker && (/opt/hermes/.venv/bin/python tasks_out/worker_office_server.py --port 8799 --board board.json & echo $! > /tmp/wos.pid; sleep 2; R1=$(curl -s http://127.0.0.1:8799/api/board); R2=$(curl -s http://127.0.0.1:8799/ | head -c 200); kill $(cat /tmp/wos.pid); echo \"$R1\" | /opt/hermes/.venv/bin/python -c \"import sys,json; d=json.load(sys.stdin); assert 'tasks' in d and 'window' in d and 'recent_ticks' in d, d; print('API-OK')\" && echo \"$R2\" | grep -qi 'worker_office.html\\|html' && echo VERIFY-OK",
+      "verify_cmd": "/opt/hermes/.venv/bin/python tasks_out/verify_office_server.py",
       "spec": "Write a standalone Python 3 server worker_office_server.py (STDLIB ONLY, use http.server) that serves the live worker office data.\n\nBehavior:\n- CLI: worker_office_server.py [--port N] [--board PATH] [--log PATH]; defaults port 8798, board /opt/data/missingno-worker/board.json, log /opt/data/missingno-worker/logs/tick.log.\n- GET /api/board -> JSON: {\"window\": <window object from board.json>, \"tasks\": <tasks list from board.json>, \"recent_ticks\": [last 10 non-empty lines of the tick log]}. Read board.json FRESH on every request (no caching). If the board file is unreadable, return {\"error\": \"board unreadable\"} with HTTP 500.\n- GET / -> serves the file worker_office.html from the same directory as the script (Content-Type text/html); if missing, serve a minimal HTML page containing the text 'worker_office.html not built yet' with HTTP 200.\n- Bind 127.0.0.1 ONLY (loopback). ThreadingHTTPServer. Clean shutdown on SIGINT/SIGTERM. No tracebacks in normal operation. Print one startup line to stdout: 'worker office serving on 127.0.0.1:<port>'."
     },
     {
