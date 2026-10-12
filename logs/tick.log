@@ -68,3 +68,6 @@ json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 2026-10-12 14:12:08 T3 attempt 3 verify rc 0 out tail: VERIFY-OK
 
 2026-10-12 14:12:08 T3 DONE on attempt 3
+2026-10-12 16:39:13 T4 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-12 16:39:13 T4 DONE on attempt 1

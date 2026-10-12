@@ -65,6 +65,36 @@
       "target_file": "tasks_out/bench_harness.py",
       "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python tasks_out/bench_harness.py --model stealth/missingno --self-test | /opt/hermes/.venv/bin/python -c \"import sys,json; d=json.load(sys.stdin); assert d.get('pass_rate')==1.0, d; print('VERIFY-OK')\" && /opt/hermes/.venv/bin/python -c \"import ast,sys; ast.parse(open('tasks_out/bench_harness.py').read()); print('PARSES')\"",
       "spec": "EDIT the existing file tasks_out/bench_harness.py (read the CURRENT on-disk version first \u2014 it already works; do not regress it) to add a --bench mode: --bench <model_a> <model_b> runs every prompt in the prompts file against BOTH models and prints ONE JSON object {\"models\": [a, b], \"results\": [{\"id\": prompt id, \"a_passed\": bool, \"b_passed\": bool}], \"pass_rates\": {a: float, b: float}}. Keep --self-test behavior identical (it must still pass: exit 0, pass_rate 1.0 JSON). Keep all existing behavior: default prompts file creation, token from /opt/data/shared/nous_auth.json key access_token, User-Agent header, 3 retries on 429/timeout, JSON-only stdout, no tracebacks. Do NOT use literal triple-backtick characters anywhere in the code (express fence regexes as '`{3}'). Output the complete updated file in one fenced block."
+    },
+    {
+      "id": "T7",
+      "title": "P4: worker_office_server.py \u2014 stdlib server for board + tick log",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office_server.py",
+      "verify_cmd": "cd /opt/data/missingno-worker && (/opt/hermes/.venv/bin/python tasks_out/worker_office_server.py --port 8799 --board board.json & echo $! > /tmp/wos.pid; sleep 2; R1=$(curl -s http://127.0.0.1:8799/api/board); R2=$(curl -s http://127.0.0.1:8799/ | head -c 200); kill $(cat /tmp/wos.pid); echo \"$R1\" | /opt/hermes/.venv/bin/python -c \"import sys,json; d=json.load(sys.stdin); assert 'tasks' in d and 'window' in d and 'recent_ticks' in d, d; print('API-OK')\" && echo \"$R2\" | grep -qi 'worker_office.html\\|html' && echo VERIFY-OK",
+      "spec": "Write a standalone Python 3 server worker_office_server.py (STDLIB ONLY, use http.server) that serves the live worker office data.\n\nBehavior:\n- CLI: worker_office_server.py [--port N] [--board PATH] [--log PATH]; defaults port 8798, board /opt/data/missingno-worker/board.json, log /opt/data/missingno-worker/logs/tick.log.\n- GET /api/board -> JSON: {\"window\": <window object from board.json>, \"tasks\": <tasks list from board.json>, \"recent_ticks\": [last 10 non-empty lines of the tick log]}. Read board.json FRESH on every request (no caching). If the board file is unreadable, return {\"error\": \"board unreadable\"} with HTTP 500.\n- GET / -> serves the file worker_office.html from the same directory as the script (Content-Type text/html); if missing, serve a minimal HTML page containing the text 'worker_office.html not built yet' with HTTP 200.\n- Bind 127.0.0.1 ONLY (loopback). ThreadingHTTPServer. Clean shutdown on SIGINT/SIGTERM. No tracebacks in normal operation. Print one startup line to stdout: 'worker office serving on 127.0.0.1:<port>'."
+    },
+    {
+      "id": "T8",
+      "title": "P4: worker_office.js \u2014 2.5D pixel office canvas client",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && node -e \"const fs=require('fs'); const s=fs.readFileSync('tasks_out/worker_office.js','utf8'); ['init(','fetch(','requestAnimationFrame','getContext'].every(k=>s.includes(k)) || process.exit(1); console.log('MARKERS-OK')\" && echo VERIFY-OK",
+      "spec": "Write a single JavaScript file worker_office.js (plain ES2020, no imports, no external libraries) that renders a 2.5D pixel-art office on an HTML canvas.\n\nRequirements:\n- A global function init(canvas, apiBase) that starts everything; use it for the window.onload handler. Poll apiBase + '/api/board' every 5 seconds with fetch() and update the scene.\n- Canvas rendering with getContext('2d') and requestAnimationFrame for a ~30fps game loop.\n- Draw a simple isometric/pixel office floor: a tiled floor grid (drawn as filled polygons or rects), at least 4 desks (rects with darker outline), and one wall along the back.\n- Characters (8-16px pixel figures drawn with fillRect blocks, not images): (1) THE WORKER \u2014 a small character that walks between desks; its state comes from the board data: a pending task = worker walks to that desk and a 'building' bubble; in_progress = animated typing at the desk; done = green flash + walk to next; failed = red bubble. (2) Tasks render as small glowing documents on desks: grey=pending, blue=in_progress, green=done, red=failed.\n- A status bar at the top of the canvas (fillText): window status (OPEN in green / CLOSED in red) and counts of pending/done/failed.\n- Handle fetch errors gracefully: if the API is unreachable show 'OFFLINE' in the status bar, keep animating, never throw.\n- Deterministic pseudo-random walk offsets are fine; no network calls other than the poll. No console spam.\n- The file must be syntactically valid standalone (it will be checked with node --check)."
+    },
+    {
+      "id": "T9",
+      "title": "P4: worker_office.html \u2014 the office page",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.html",
+      "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python -c \"from html.parser import HTMLParser\nclass P(HTMLParser):\n    def __init__(self): super().__init__(); self.tags=[]\n    def handle_starttag(self, t, a): self.tags.append((t, dict(a)))\np=P(); p.feed(open('tasks_out/worker_office.html').read())\ntags=[t for t,_ in p.tags]\nattrs=[a for _,a in p.tags]\nassert 'canvas' in tags, tags\nassert any(a.get('src')=='worker_office.js' for a in attrs if 'src' in a), 'script ref missing'\nassert 'Worker Office' in open('tasks_out/worker_office.html').read()\nprint('HTML-OK')\" && echo VERIFY-OK",
+      "spec": "Write a single HTML file worker_office.html (no external assets, no CDN, no images) that hosts the worker office.\n\nRequirements:\n- DOCTYPE html, title 'Worker Office', dark background (#1a1a2e or similar), centered full-viewport layout.\n- One <canvas id=\"office-canvas\"> that scales responsively (width 960 height 600 attributes, CSS max-width 100%).\n- Loads the client with <script src=\"worker_office.js\"></script> and calls init(document.getElementById('office-canvas'), '/api/board') on load (a tiny inline script is fine \u2014 keep it under 5 lines, no backticks in it).\n- A small fixed footer line: 'missingno worker office \u2014 loopback only'.\n- Nothing else: no network calls, no fonts fetched, no inline SVG libraries."
     }
   ],
   "projects": [
@@ -82,6 +112,11 @@
       "id": "P3",
       "name": "Missingno verdict scorecard",
       "goal": "Expand the bench harness into a small model-comparison scorecard before the free window closes."
+    },
+    {
+      "id": "P4",
+      "name": "Worker Office \u2014 2.5D live view",
+      "goal": "Build our own pixel/2.5D office visualizing the worker board live: characters for the worker and its tasks, animated states, zero third-party code in the trust chain."
     }
   ]
 }
