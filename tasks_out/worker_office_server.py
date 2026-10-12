@@ -23,6 +23,8 @@ class OfficeHandler(BaseHTTPRequestHandler):
                 self.handle_board()
             elif parsed.path == "/":
                 self.handle_root()
+            elif parsed.path.endswith(".js") or parsed.path.endswith(".html"):
+                self.handle_static(parsed.path)
             else:
                 self.send_response(404)
                 self.send_header("Content-Type", "text/plain; charset=utf-8")
@@ -75,6 +77,22 @@ class OfficeHandler(BaseHTTPRequestHandler):
         except OSError:
             data = b"<!DOCTYPE html><html><body>worker_office.html not built yet</body></html>"
         self.send_bytes(200, data, "text/html; charset=utf-8")
+
+    def handle_static(self, path):
+        """Serve only .js/.html files from the script's own directory (no traversal)."""
+        name = os.path.basename(path)
+        if name.startswith("."):
+            self.send_json(404, {"error": "not found"})
+            return
+        full = os.path.join(os.path.dirname(os.path.abspath(self.html_path)), name)
+        try:
+            with open(full, "rb") as f:
+                data = f.read()
+        except OSError:
+            self.send_json(404, {"error": "not found"})
+            return
+        ctype = "application/javascript; charset=utf-8" if name.endswith(".js") else "text/html; charset=utf-8"
+        self.send_bytes(200, data, ctype)
 
     def send_json(self, status, payload):
         body = (json.dumps(payload, ensure_ascii=False) + "\n").encode("utf-8")

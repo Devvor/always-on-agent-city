@@ -102,3 +102,7 @@ VERIFY-OK
 2026-10-12 17:17:07 T7 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-12 17:17:07 T7 DONE on attempt 1
+2026-10-12 17:19:42 T6 attempt 1 verify rc 0 out tail: VERIFY-OK
+PARSES
+
+2026-10-12 17:19:42 T6 DONE on attempt 1
