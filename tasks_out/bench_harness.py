@@ -252,21 +252,62 @@ def evaluate_prompt(item, model, token):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", required=True)
+    mode_group = parser.add_mutually_exclusive_group(required=True)
+    mode_group.add_argument("--model")
+    mode_group.add_argument("--bench", nargs=2, metavar=("MODEL_A", "MODEL_B"))
     parser.add_argument("--prompts", default=DEFAULT_PROMPTS)
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
 
     token = load_token()
 
+    self_test_prompt = {
+        "id": "add",
+        "prompt": "Implement add(a, b) returning the sum of a and b.\nExample call: add(3, 4)",
+        "checks": [{"expr": "result == 7"}],
+    }
+
+    if args.bench is not None:
+        model_a, model_b = args.bench
+        if args.self_test:
+            prompts = [self_test_prompt]
+        else:
+            prompts = load_prompts(args.prompts)
+
+        bench_results = []
+        a_passed_count = 0
+        b_passed_count = 0
+        for item in prompts:
+            result_a = evaluate_prompt(item, model_a, token)
+            result_b = evaluate_prompt(item, model_b, token)
+            bench_results.append(
+                {
+                    "id": result_a["id"],
+                    "a_passed": bool(result_a["passed"]),
+                    "b_passed": bool(result_b["passed"]),
+                }
+            )
+            if result_a["passed"]:
+                a_passed_count += 1
+            if result_b["passed"]:
+                b_passed_count += 1
+
+        total = len(prompts)
+        pass_rates = {
+            model_a: (a_passed_count / total) if total else 0.0,
+            model_b: (b_passed_count / total) if total else 0.0,
+        }
+        output = {
+            "models": [model_a, model_b],
+            "results": bench_results,
+            "pass_rates": pass_rates,
+        }
+        sys.stdout.write(json.dumps(output) + "\n")
+        sys.stdout.flush()
+        return 0
+
     if args.self_test:
-        prompts = [
-            {
-                "id": "add",
-                "prompt": "Implement add(a, b) returning the sum of a and b.\nExample call: add(3, 4)",
-                "checks": [{"expr": "result == 7"}],
-            }
-        ]
+        prompts = [self_test_prompt]
     else:
         prompts = load_prompts(args.prompts)
 

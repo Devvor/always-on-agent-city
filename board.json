@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T17:16:56Z",
+    "checked_at": "2026-10-12T17:19:27Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -60,9 +60,9 @@
     {
       "id": "T6",
       "title": "P3: bench_harness --bench mode + default prompt set",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-12T17:19:42Z",
       "target_file": "tasks_out/bench_harness.py",
       "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python tasks_out/bench_harness.py --model stealth/missingno --self-test | /opt/hermes/.venv/bin/python -c \"import sys,json; d=json.load(sys.stdin); assert d.get('pass_rate')==1.0, d; print('VERIFY-OK')\" && /opt/hermes/.venv/bin/python -c \"import ast,sys; ast.parse(open('tasks_out/bench_harness.py').read()); print('PARSES')\"",
       "spec": "Update the existing file tasks_out/bench_harness.py (its FULL CURRENT CONTENT is provided below) to add a --bench mode:\nUsage: bench_harness.py --bench <model_a> <model_b> runs every prompt in the prompts file against BOTH models and prints ONE JSON object to stdout: {\"models\": [a, b], \"results\": [{\"id\": prompt id, \"a_passed\": bool, \"b_passed\": bool}], \"pass_rates\": {model_a: float, model_b: float}}.\nKeep ALL existing behavior unchanged: --self-test (exit 0, JSON with pass_rate 1.0), default prompts-file creation, token from /opt/data/shared/nous_auth.json key access_token, User-Agent header, 3 retries on 429/timeout, JSON-only stdout, no tracebacks. Never use literal triple-backtick characters in code (use '`{3}'). Output the complete updated file.",
