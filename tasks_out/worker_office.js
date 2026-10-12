@@ -1,4 +1,3 @@
-```javascript
 function init(canvas, apiBase) {
   if (!canvas) return;
   if (!canvas.width) canvas.width = 960;
@@ -508,4 +507,3 @@ function drawWorker(w, now) {
 if (typeof window !== 'undefined') {
   window.init = init;
 }
-```
