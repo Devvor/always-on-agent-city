@@ -1,0 +1,40 @@
+{
+  "window": {
+    "model": "stealth/missingno",
+    "status": "open",
+    "checked_at": null,
+    "note": "worker tick re-probes every run; price>0 or model-gone => closed"
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "free_model_probe.py — free-window health gate CLI",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/free_model_probe.py",
+      "verify_cmd": "/opt/hermes/.venv/bin/python tasks_out/free_model_probe.py stealth/missingno",
+      "spec": "Write a standalone Python 3 CLI script (STDLIB ONLY, no third-party imports) named free_model_probe.py that checks whether a model on the Nous inference API is currently free.\n\nBehavior:\n- Usage: free_model_probe.py <model_id> [--base-url URL] [--timeout SECONDS]\n- Reads the bearer token from the JSON file /opt/data/shared/nous_auth.json, key \"access_token\".\n- GET {base_url}/v1/models (default base_url https://inference-api.nousresearch.com) with an Authorization: Bearer header AND a User-Agent header (the server returns 403 without a User-Agent).\n- Find the entry whose id equals the model_id. If absent, print one JSON object {\"model\": model_id, \"present\": false, \"free\": false} and exit 2.\n- free means pricing.prompt == 0 AND pricing.completion == 0 (numbers may be int or float or string; coerce with float()).\n- Canary check: POST {base_url}/v1/chat/completions with {\"model\": model_id, \"messages\": [{\"role\": \"user\", \"content\": \"Reply with OK\"}], \"max_tokens\": 5}; canary_ok = HTTP 200.\n- Print ONE JSON object to stdout with keys: model, present, free, price_in_per_token, price_out_per_token, canary_ok, checked_at (ISO 8601 UTC string).\n- Exit code 0 if present AND free AND canary_ok; exit 1 otherwise. On any internal error print {\"error\": \"...\"} and exit 1 — never raise a traceback. HTTP timeouts must be handled."
+    },
+    {
+      "id": "T2",
+      "title": "board_report.py — one-glance worker board status",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/board_report.py",
+      "verify_cmd": "/opt/hermes/.venv/bin/python tasks_out/board_report.py /opt/data/missingno-worker/board.json",
+      "spec": "Write a standalone Python 3 CLI script (STDLIB ONLY) named board_report.py that prints a compact status report of the worker board.\n\nBehavior:\n- Usage: board_report.py [board_path]  (default /opt/data/missingno-worker/board.json)\n- The board JSON has shape {\"window\": {\"status\": str, ...}, \"tasks\": [{\"id\": str, \"title\": str, \"status\": str, \"attempts\": int, \"updated_at\": str-or-null}, ...]}.\n- Print first line exactly: BOARD: <pending> pending, <done> done, <failed> failed | window: <window.status>\n- Then one line per task in file order: <id> | <status> | attempts=<attempts> | <title>\n- pending counts tasks with status pending or in_progress.\n- Exit 0 on success. If the file is missing or invalid JSON, print one error line to stderr and exit 1. Never raise a traceback."
+    },
+    {
+      "id": "T3",
+      "title": "bench_harness.py — mini coding-benchmark runner with --self-test",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/bench_harness.py",
+      "verify_cmd": "/opt/hermes/.venv/bin/python tasks_out/bench_harness.py --model stealth/missingno --self-test",
+      "spec": "Write a standalone Python 3 CLI script (STDLIB ONLY) named bench_harness.py that runs a model on small coding prompts and grades the results.\n\nBehavior:\n- Usage: bench_harness.py --model <model_id> [--prompts FILE] [--self-test]\n- Bearer token from JSON file /opt/data/shared/nous_auth.json key \"access_token\"; API base https://inference-api.nousresearch.com/v1/chat/completions; always send a User-Agent header.\n- Prompts file (default /opt/data/missingno-worker/bench_prompts.json) is a JSON list of {\"id\": str, \"prompt\": str, \"checks\": [{\"expr\": str}]}. Each prompt asks the model for a small pure Python function; \"expr\" is a Python expression evaluated with the function's return value bound to the variable \"result\".\n- For each prompt: call the model (max_tokens 1000), extract the last ```python fenced code block (or the whole response if no fence), exec it in a fresh namespace, then call the function under test with the example arguments given in the prompt text, bind the return value to \"result\", and evaluate each check expr with eval(expr, {\"result\": result}). A prompt passes if all its checks evaluate truthy and nothing raised.\n- If the prompts file does not exist, CREATE it with 3 prompts: add(a, b) returns the sum (check: result == 7 for add(3, 4)); is_palindrome(s) True for 'racecar' (check: result is True); count_vowels(s) counts vowels case-insensitively (check: result == 3 for 'Beautiful'). Each prompt must state the exact function signature and the example call to use.\n- --self-test: ignore the prompts file and use one canned prompt: implement add(a, b) returning the sum, call add(3, 4), check result == 7.\n- Print ONE JSON object to stdout: {\"model\": model_id, \"results\": [{\"id\": ..., \"passed\": true/false}], \"pass_rate\": <float>}. Exit 0 if the harness ran (even with failures), exit 1 only on internal error (bad token, unreadable file, etc.) — never a traceback. Wrap each model call in 3 retries with short sleeps on 429/timeout."
+    }
+  ]
+}
