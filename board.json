@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T16:17:51Z",
+    "checked_at": "2026-10-12T16:38:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -39,9 +39,9 @@
     {
       "id": "T4",
       "title": "P1: yt_transcript_fallback.py \u2014 offline-testable fallback extractor",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-12T16:39:13Z",
       "target_file": "tasks_out/yt_transcript_fallback.py",
       "verify_cmd": "/opt/hermes/.venv/bin/python tasks_out/yt_transcript_fallback.py --selftest | grep -q PASS && /opt/hermes/.venv/bin/python -c \"import ast; ast.parse(open('tasks_out/yt_transcript_fallback.py').read())\" && echo VERIFY-OK",
       "spec": "Write a standalone Python 3 module (STDLIB ONLY) yt_transcript_fallback.py with:\n(1) parse_timedtext(xml_text) -> list of {'start': float, 'dur': float, 'text': str} parsed from YouTube timedtext XML (<text start=\"1.2\" dur=\"0.5\">escaped text</text> entries; use xml.etree, unescape HTML entities).\n(2) parse_player_response(html) -> dict: extract the JSON assigned to 'ytInitialPlayerResponse' in a page's inline script (find the substring, json.loads the balanced-brace object) and return it; return {} if not found.\n(3) caption_track_urls(player_response) -> list of caption track 'baseUrl' strings from player_response['captions']['playerCaptionsTracklistRenderer']['captionTracks']; return [] on any missing key.\n(4) if __name__ == '__main__': accept a --selftest flag that runs the three functions on small embedded samples and prints PASS; accept a --video-id ID flag that (best-effort, network) tries https://www.youtube.com/api/timedtext?v=ID&lang=en and prints the parsed caption count.\nAll functions must be importable; never raise tracebacks on bad input (return [] or {})."
