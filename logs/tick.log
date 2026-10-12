@@ -1,0 +1,11 @@
+2026-10-12 13:58:27 T1 attempt 1 verify rc 0 out tail: {"model": "stealth/missingno", "present": true, "free": true, "price_in_per_token": "0.0000000000", "price_out_per_token": "0.0000000000", "canary_ok": true, "checked_at": "2026-10-12T13:58:27.817303+00:00"}
+
+2026-10-12 13:58:27 T1 DONE on attempt 1
+2026-10-12 13:58:40 T2 attempt 1 verify rc 0 out tail: BOARD: 2 pending, 1 done, 0 failed | window: open
+T1 | done | attempts=1 | free_model_probe.py — free-window health gate CLI
+T2 | in_progress | attempts=1 | board_report.py — one-glance worker board status
+T3 | pending | attempts=0 | bench_harness.py — mini coding-benchmark runner with --self-test
+
+2026-10-12 13:58:40 T2 DONE on attempt 1
+2026-10-12 13:59:15 T3 attempt 1 verify rc 0 out tail: 
+2026-10-12 13:59:15 T3 DONE on attempt 1
