@@ -18,3 +18,88 @@ Node.js v26.7.0
 2026-10-13 08:28:43 L3 attempt 2 verify rc 0 out tail: VERIFY-OK
 
 2026-10-13 08:28:43 L3 DONE on attempt 2
+2026-10-13 10:37:53 T38 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 10:38:46 T38 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/t38_check.mjs:1
+# tasks_out/guild_ledger.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 10:39:27 T38 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/t38_check.mjs:1
+# tasks_out/guild_ledger.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 10:39:27 T38 FAILED /opt/data/cache/scratch/t38_check.mjs:1
+# tasks_out/guild_ledger.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 11:00:36 T39 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/t39_check.mjs:1
+# tasks_out/worker_guild_controls.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 11:04:36 T39 attempt 2 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 11:05:09 T39 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/t39_check.mjs:1
+# tasks_out/worker_guild_controls.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 11:05:09 T39 FAILED /opt/data/cache/scratch/t39_check.mjs:1
+# tasks_out/worker_guild_controls.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 11:29:51 T40 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 11:31:06 T40 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/t40_check.mjs:1
+# tasks_out/guild_guides.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 11:31:48 T40 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/t40_check.mjs:1
+# tasks_out/guild_guides.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 11:31:48 T40 FAILED /opt/data/cache/scratch/t40_check.mjs:1
+# tasks_out/guild_guides.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 15:01:50 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
