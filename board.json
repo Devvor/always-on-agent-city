@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T09:06:51Z",
+    "checked_at": "2026-10-13T10:30:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -336,6 +336,48 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_journal.js /opt/data/cache/scratch/jr_check.mjs && node --check /opt/data/cache/scratch/jr_check.mjs && head -1 tasks_out/worker_journal.js | grep -qv '^worker_' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildJournal = { timers: [], bubble: null }:\n1. Every 12-20s pick ONE idle worker (V.workerStates where workerState === 'IDLE') at random and show a thought-bubble (rounded cloud style, white border on dark fill) above them for 5s with flavor text derived from their REAL data: their name from V.workers[i].name, and a paraphrase of their newest recent_ticks line (from V.workers[i].recent_ticks; if empty use a generic idle line like 'dreams of fresh quests').\n2. The paraphrase must be short (fitText to 140px) \u2014 e.g. a tick 'MISSINGNO: DONE T22 \u2014 ...' becomes 'still proud of that title screen...'. Keep a small pool of template sentence starters ('still thinking about', 'mumbles something like', 'remembers') chosen at random.\n3. Bubbles never overlap the top HUD (keep y > 60) and fade in/out over 0.4s. Only one journal bubble at a time.\n4. Zero exceptions if recent_ticks is missing or workers array is empty.",
       "updated_at": "2026-10-13T09:07:36Z"
+    },
+    {
+      "id": "T35",
+      "title": "P4: charter \u2014 personality (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T10:33:41Z",
+      "target_file": "tasks_out/worker_personality.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_personality.js /opt/data/cache/scratch/t35_check.mjs && node --check /opt/data/cache/scratch/t35_check.mjs && grep -q \"window.GuildPersonality\" /opt/data/cache/scratch/t35_check.mjs && head -1 tasks_out/worker_personality.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 window.GuildPersonality = { voices: null, say: null }:\n1. Define a VOICE table keyed by worker name substring: 'missingno' = glitchy trickster (lines swap adjacent letters occasionally, ends some lines with '01101'); 'step5' = aloof poet (short haiku-ish fragments, lowercase); 'laguna' = eager rookie (exclamation marks, 'first try!' energy); 'longcat' = serene philosopher (calm, ellipses-heavy). Each voice: {style(lines pool of 6+ templates), decorate(text) function}.\n2. Every 14-22s pick one worker and show a speech bubble above them (dark box, name-colored border) with a voice line built from their REAL latest recent_ticks line paraphrased through their voice template. Reuse the journal module's fitText discipline (140px) and never overlap the top HUD (y > 60).\n3. If two workers' bubbles would collide, stagger the newer one 18px lower. Max one bubble per worker at a time, 5s duration.\n4. Nameplate flourish: draw a 3-6px colored glyph next to each worker's nameplate matching their voice (missingno = flickering pixel glyph, step5 = tiny quill, laguna = spark, longcat = spiral).\n5. Zero exceptions when workers/recent_ticks are missing."
+    },
+    {
+      "id": "T36",
+      "title": "P4: charter \u2014 museum (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-13T10:12:55Z",
+      "target_file": "tasks_out/worker_museum.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_museum.js /opt/data/cache/scratch/t36_check.mjs && node --check /opt/data/cache/scratch/t36_check.mjs && grep -q \"window.GuildMuseum\" /opt/data/cache/scratch/t36_check.mjs && head -1 tasks_out/worker_museum.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 window.GuildMuseum = { pedestals: [...built from V.allTasks] }:\n1. Draw a museum corner: a row of up to 8 stone pedestals along the north-west island edge (place on walkable floor tiles; do not overlap buildings), pixel-art fillRect style (stone grey #55524e, gold trim #d4af37).\n2. Each pedestal exhibits one REAL quest from V.allTasks (newest done first): plaque color by status \u2014 gold for done, amber for pending, red for failed; a tiny exhibit glyph on top (scroll for done, '?' for pending, crack for failed) and the quest id in 8px text on the plaque.\n3. Guided labels: when window.GuildVisitor stands within 1.8 tiles of a pedestal, draw a clipped parchment label above it with the quest title (fitText to 160px) and its status word; fade in/out over 0.3s.\n4. If V.allTasks is empty or absent, draw 3 empty sockets labeled 'awaiting history'. Rebuild the pedestal list whenever V.allTasks length changes.\n5. Zero exceptions anywhere; pedestals never block the visitor (this module does not touch collision)."
+    },
+    {
+      "id": "T37",
+      "title": "P4: charter \u2014 purpose (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-13T10:12:55Z",
+      "target_file": "tasks_out/worker_purpose.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_purpose.js /opt/data/cache/scratch/t37_check.mjs && node --check /opt/data/cache/scratch/t37_check.mjs && grep -q \"window.GuildPurpose\" /opt/data/cache/scratch/t37_check.mjs && head -1 tasks_out/worker_purpose.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 quirky patron/endorsement mechanics \u2014 window.GuildPurpose = { rep: 0, rank: 'NOVICE', endorsements: [], card: {visible: true} }:\n1. Endorsing: when the visitor is within 1.5 tiles of a WORKING worker and presses 'e', if not already endorsed this session, add {worker, taskId: their current/latest task id, t} to endorsements, float a small gold 'BACKED!' label over the worker, and cue('done') in try/catch. One endorsement per worker per session.\n2. Rep: when an endorsed worker's task transitions to done between polls (compare V.allTasks), +10 REP with a short ceremony: 1.5s gold banner 'THE GUILD THANKS ITS PATRON' + 12 gold sparkle particles at the visitor + cue('levelup') in try/catch. Each endorsement pays once (track paid ids).\n3. PATRON LICENSE card, bottom-left (above the chat box), toggleable with 'p': parchment-dark card, gold border, title 'PATRON LICENSE', holder 'THE VISITOR', REP number, rank: 0-9 NOVICE, 10-24 FRIEND, 25+ LEGEND, and the list of currently-backed quest ids (fitText discipline, clipped).\n4. Odd ceremony touch: on reaching a new rank, a one-shot floating text over the visitor: NOVICE 'the guild nods at you', FRIEND 'workers wave as you pass', LEGEND 'the cat bows'.\n5. Zero exceptions if GuildVisitor or allTasks are absent."
     }
   ],
   "projects": [
