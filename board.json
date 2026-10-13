@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T06:27:32Z",
+    "checked_at": "2026-10-13T06:30:07Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -272,15 +272,28 @@
     {
       "id": "T23",
       "title": "P4: game pass 7 \u2014 playable visitor (WASD + talk)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:35:27Z",
       "target_file": "tasks_out/worker_office.js",
       "include_files": [
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
       "spec": "Update the 2D guild client (FULL CURRENT CONTENT below; compact, under 2300 lines). Keep EVERYTHING (title screen, camera pan/zoom, departments, states, weather, bubbles, plaques, sound, cat, FX).\n\nNEW \u2014 THE PLAYER IS A VISITOR:\n1. A white-robed visitor sprite (reuse the worker draw code with a white/light palette, small gold sash) spawns at the island's south edge when gameState='play'.\n2. WASD / arrow keys walk the visitor across the FLOOR TILES only (collision: the visitor's tile position must be a floor tile from the current grown layout; camera pan/zoom independent as before). Walk uses the same iso projection; facing directions + 4-frame walk cycle; speed ~2.2 tiles/s. Smooth diagonal clamping, no sliding through buildings (building tiles block).\n3. E or Space near a worker (<1.5 tiles) opens a DIALOGUE BOX (bottom-center, parchment-dark, gold border, fitText discipline): worker name + their REAL state: if working: 'I'm on P4 \u2014 art passes. Last: <last done task title>' (from payload data); if idle: 'All my quests are done. The cat takes shifts.' Close on E/Space/click. While the dialogue is open, movement pauses.\n4. The visitor is drawn in the correct z-order (sorted with workers/props by iso y).\nEverything pure canvas + keyboard listeners on window (prevent default only for handled keys; never block typing elsewhere \u2014 the page has no inputs so it is safe). Output the complete updated file."
+    },
+    {
+      "id": "T23B",
+      "title": "P4: game pass 7b \u2014 visitor module (fresh file, WASD + talk)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_visitor.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_visitor.js /opt/data/cache/scratch/visitor_check.mjs && node --check /opt/data/cache/scratch/visitor_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module `worker_visitor.js` \u2014 a playable visitor for the existing 2D guild client. DO NOT rewrite the client: the client's full source is injected below as REFERENCE ONLY (read it to learn the existing conventions and reuse its exact logic), but your output is ONLY the new file.\n\nThe client is a classic script, so all its state is on window: V (V.grid {originX,originY,tileW,tileH}, V.growthStep, V.canvas, V.workers, V.workerStates, V.gameState, V.camera), iso(gx,gy) projection function, fitText if present. Your module runs alongside it.\n\nBEHAVIOR (self-installing ES module, no imports):\n1. On import: create window.GuildVisitor with state { gx: 0, gy: 2.6, facing: 'down', moving: false, walkFrame: 0, walkTimer: 0, dialogue: null, dialogueCooldown: 0 } (spawn near the south edge). Attach window keydown/keyup listeners (track pressed WASD + arrows; also E/Space handling). Guard everything behind typeof checks so node --check-clean import is inert (module must not touch document at top level \u2014 do DOM/global access inside an init function that runs on first update call, or typeof window guards).\n2. window.GuildVisitor.update(now): if V is undefined or V.gameState !== 'play', return. Movement: read pressed keys; target velocity in tile space (diagonals normalized), speed 2.2 tiles/sec (scale dt from the now timestamps you cache yourself); compute candidate position; collision: floor tiles ONLY \u2014 derive the floor layout the same way the injected client's drawFloor/updateGrid does (core plus growth rings from V.growthStep), a position is walkable if its tile is floor (round gx,gy to tile ints and test the layout predicate you copy from the client source); buildings: if the client places department buildings on tiles, treat the building footprint tiles (find them in the client source's building placement code) as blocked. Update facing (dominant axis of motion) and a 4-frame walkTimer while moving.\n3. E or Space when a worker sprite is within 1.5 tiles (compare against V.workerStates positions in SCREEN space via iso()): open dialogue: pick the nearest worker, text from its REAL data: if the worker has any pending/in_progress task: 'I am on ' + (current task title, truncated ~40 chars) + '. Latest log: ' + (its most recent tick line, fitText ~60 chars); else 'All my quests are done. The cat takes shifts.' Close on E/Space/Escape or 6s timeout; while dialogue open, movement paused.\n4. window.GuildVisitor.draw(ctx): draw the visitor as a white/light-robed 3-box pixel person with a thin gold sash (reuse the injected client's drawWorker proportions and walk frames but your own palette), at iso(gx,gy), with a tiny 'VISITOR' nameplate above; draw the dialogue box when open: bottom-center parchment-dark box (dark fill ~0.9 alpha, gold 2px border, 10px monospace, fitText/clip discipline, worker name in its own color), a triangle tail. Draw NOTHING when V.gameState !== 'play'.\nKeep it under ~320 lines, compact, no external assets, no imports. Output ONE fenced code block: the complete worker_visitor.js."
     }
   ],
   "projects": [
