@@ -8,9 +8,74 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
 
 
+MAIN_BOARD_ATTRS = (
+    "board_path",
+    "board",
+    "main_board",
+    "main_board_path",
+    "board_main_path",
+    "primary_board_path",
+)
+
+EXTRA_BOARD_ATTRS = (
+    "extra_board_path",
+    "extra_board",
+    "extra_path",
+    "step_board",
+    "step_board_path",
+    "step5_board",
+    "step5_board_path",
+    "secondary_board_path",
+    "board_step5_path",
+    "board_extra_path",
+)
+
+MAIN_LOG_ATTRS = (
+    "log_path",
+    "log",
+    "main_log",
+    "main_log_path",
+    "primary_log_path",
+)
+
+EXTRA_LOG_ATTRS = (
+    "extra_log_path",
+    "extra_log",
+    "step_log",
+    "step_log_path",
+    "step5_log",
+    "step5_log_path",
+    "secondary_log_path",
+    "log_step5_path",
+)
+
+
 class OfficeHandler(BaseHTTPRequestHandler):
     board_path = ""
+    main_board_path = ""
+    board_main_path = ""
+    primary_board_path = ""
+
+    extra_board_path = ""
+    extra_path = ""
+    step_board_path = ""
+    step5_board_path = ""
+    secondary_board_path = ""
+    board_step5_path = ""
+    board_extra_path = ""
+    extra_board = ""
+
     log_path = ""
+    main_log_path = ""
+    primary_log_path = ""
+
+    extra_log_path = ""
+    step_log_path = ""
+    step5_log_path = ""
+    secondary_log_path = ""
+    log_step5_path = ""
+    extra_log = ""
+
     html_path = ""
 
     def log_message(self, format, *args):
@@ -45,30 +110,124 @@ class OfficeHandler(BaseHTTPRequestHandler):
             except Exception:
                 pass
 
-    def handle_board(self):
-        try:
-            with open(self.board_path, "r", encoding="utf-8") as f:
-                board = json.load(f)
-        except Exception:
-            self.send_json(500, {"error": "board unreadable"})
-            return
+    def _resolve_attr(self, names):
+        for name in names:
+            value = getattr(self, name, "")
+            if isinstance(value, str):
+                if value.strip():
+                    return value.strip()
+            elif value:
+                return value
+        return ""
 
-        ticks = []
+    @staticmethod
+    def _read_ticks(path):
         try:
-            with open(self.log_path, "r", encoding="utf-8", errors="replace") as f:
+            with open(path, "r", encoding="utf-8", errors="replace") as f:
                 lines = f.read().splitlines()
-            ticks = [line for line in lines if line.strip()][-10:]
+            return [line for line in lines if line.strip()][-10:]
         except Exception:
-            ticks = []
+            return []
 
-        if hasattr(board, "get"):
-            window = board.get("window")
-            tasks = board.get("tasks", [])
+    def _build_worker(self, name, board_path, log_path):
+        ticks = self._read_ticks(log_path)
+        if not board_path:
+            return {"error": "board missing"}
+        try:
+            with open(board_path, "r", encoding="utf-8") as f:
+                board = json.load(f)
+        except FileNotFoundError:
+            return {"error": "board missing"}
+        except Exception:
+            return {"error": "board unreadable"}
+
+        window = None
+        tasks = []
+        if isinstance(board, dict):
+            window = board.get("window") if hasattr(board, "get") else None
+            tasks = board.get("tasks", []) if hasattr(board, "get") else []
+        elif isinstance(board, list):
+            tasks = board
+
+        model = None
+        if isinstance(window, dict):
+            model = window.get("model")
+        elif window is not None and hasattr(window, "get"):
+            try:
+                model = window.get("model")
+            except Exception:
+                model = None
+        elif hasattr(window, "model"):
+            model = getattr(window, "model", None)
+
+        return {
+            "name": name,
+            "model": model,
+            "window": window,
+            "tasks": tasks,
+            "recent_ticks": ticks,
+        }
+
+    def handle_board(self):
+        main_board_path = self._resolve_attr(MAIN_BOARD_ATTRS)
+        extra_board_path = self._resolve_attr(EXTRA_BOARD_ATTRS)
+        if not extra_board_path and main_board_path:
+            extra_board_path = os.path.join(
+                os.path.dirname(os.path.abspath(main_board_path)), "board_step5.json"
+            )
+
+        main_log_path = self._resolve_attr(MAIN_LOG_ATTRS)
+        extra_log_path = self._resolve_attr(EXTRA_LOG_ATTRS)
+        if not extra_log_path:
+            candidates = []
+            if main_log_path:
+                candidates.append(
+                    os.path.join(os.path.dirname(os.path.abspath(main_log_path)), "tick_step5.log")
+                )
+            if extra_board_path:
+                candidates.append(
+                    os.path.join(
+                        os.path.dirname(os.path.abspath(extra_board_path)), "logs", "tick_step5.log"
+                    )
+                )
+            if main_board_path:
+                candidates.append(
+                    os.path.join(
+                        os.path.dirname(os.path.abspath(main_board_path)), "logs", "tick_step5.log"
+                    )
+                )
+            if candidates:
+                chosen = None
+                for candidate in candidates:
+                    if os.path.exists(candidate):
+                        chosen = candidate
+                        break
+                extra_log_path = chosen if chosen is not None else candidates[0]
+
+        workers = [
+            self._build_worker("missingno", main_board_path, main_log_path),
+            self._build_worker("step5", extra_board_path, extra_log_path),
+        ]
+
+        first = workers[0] if workers else {}
+        if isinstance(first, dict):
+            window = first.get("window")
+            tasks = first.get("tasks", [])
+            ticks = first.get("recent_ticks", [])
         else:
             window = None
-            tasks = board if isinstance(board, list) else []
+            tasks = []
+            ticks = []
 
-        self.send_json(200, {"window": window, "tasks": tasks, "recent_ticks": ticks})
+        self.send_json(
+            200,
+            {
+                "workers": workers,
+                "window": window,
+                "tasks": tasks,
+                "recent_ticks": ticks,
+            },
+        )
 
     def handle_root(self):
         try:
@@ -111,11 +270,28 @@ def main():
     parser.add_argument("--port", type=int, default=8798)
     parser.add_argument("--board", default="/opt/data/missingno-worker/board.json")
     parser.add_argument("--log", default="/opt/data/missingno-worker/logs/tick.log")
+    parser.add_argument("--extra-board", dest="extra_board", default=None)
     args = parser.parse_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    OfficeHandler.board_path = args.board
-    OfficeHandler.log_path = args.log
+    main_board = args.board
+    if args.extra_board is None:
+        repo_root = os.path.dirname(os.path.abspath(main_board))
+        extra_board = os.path.join(repo_root, "board_step5.json")
+    else:
+        extra_board = args.extra_board
+
+    main_log = args.log
+    step_log = os.path.join(os.path.dirname(os.path.abspath(main_log)), "tick_step5.log")
+
+    for attr in MAIN_BOARD_ATTRS:
+        setattr(OfficeHandler, attr, main_board)
+    for attr in EXTRA_BOARD_ATTRS:
+        setattr(OfficeHandler, attr, extra_board)
+    for attr in MAIN_LOG_ATTRS:
+        setattr(OfficeHandler, attr, main_log)
+    for attr in EXTRA_LOG_ATTRS:
+        setattr(OfficeHandler, attr, step_log)
     OfficeHandler.html_path = os.path.join(script_dir, "worker_office.html")
 
     server = ThreadingHTTPServer(("127.0.0.1", args.port), OfficeHandler)
@@ -134,7 +310,10 @@ def main():
     signal.signal(signal.SIGTERM, stop_handler)
 
     stop_event.wait()
-    server.shutdown()
+    try:
+        server.shutdown()
+    except Exception:
+        pass
     server.server_close()
     serve_thread.join(timeout=5)
 

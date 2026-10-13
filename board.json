@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T04:33:51Z",
+    "checked_at": "2026-10-13T04:39:37Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -117,9 +117,9 @@
     {
       "id": "T11",
       "title": "P4: office server guild API \u2014 serve both workers",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T04:40:22Z",
       "target_file": "tasks_out/worker_office_server.py",
       "include_files": [
         "tasks_out/worker_office_server.py"
