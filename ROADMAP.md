@@ -14,6 +14,16 @@ Themes, priority order:
 4. SPECTACLE — moments that make you stop and watch (festivals, arrivals,
    level-ups).
 
+USER GREEN-LIGHTS (Oct 13, evening — foreman prioritizes these):
+- THE ISLAND IS THE REPO: build self-documentation aggressively — museum wing,
+  guild ledger/ticker, plaques that auto-generate from real board history.
+- GIVE THE VISITOR A PURPOSE: reputation/endorsement mechanics — the visitor
+  can back quests, gain standing with the guild. Be QUIRKY (patron license
+  cards, odd ceremonies) — thedev explicitly blessed quirky.
+- WORKER PERSONALITIES: moods, archetypes, rivalries leaking into bubbles and
+  idle behavior. missingno = glitchy trickster, step5 = aloof poet,
+  laguna = eager rookie, longcat = serene philosopher. Have fun with it.
+
 HARD BOUNDARIES (never cross):
 - 2.5D pixel client ONLY (3D dead Oct 13; do not re-seed).
 - Fresh ES-module tasks only for the client — NEVER rewrite worker_office.js
@@ -32,6 +42,10 @@ board and flag it in the status. Never seed a task touching anything outside
 tasks_out/.
 
 ## Queue (next to seed — foreman keeps this deep, >=6 pending across boards)
+9. T35 PERSONALITY ENGINE (longcat W1) — worker_personality.js: archetypes with voice (missingno glitchy trickster, step5 aloof poet, laguna eager rookie, longcat serene philosopher); journal bubbles + nameplate flourishes flavored by voice.
+10. T36 MUSEUM WING (longcat W2) — worker_museum.js: pedestal plaques auto-generated from V.allTasks history; gold done / amber pending / red failed; guided labels when visitor stands near.
+11. T37 PATRON LICENSE (longcat W3) — worker_purpose.js: visitor endorses a working worker's quest (E near them); when it ships, +REP with ceremony + cue; PATRON LICENSE card bottom-left, ranks NOVICE->FRIEND->LEGEND.
+12. T38 GUILD LEDGER — worker_ledger.js: ticker-tape strip near the entrance scrolling the guild's real recent tick lines; the island reads like a repo.
 1. T27 QUEST BOARD — in-world wooden quest board near spawn: visitor walks up,
    presses E, reads the REAL pending/done quest list from window.V (fresh module
    worker_questboard.js).
