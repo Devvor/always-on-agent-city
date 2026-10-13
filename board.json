@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T08:24:50Z",
+    "checked_at": "2026-10-13T08:45:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -312,15 +312,16 @@
     {
       "id": "T31",
       "title": "P4: charter 2 \u2014 visitor emotes (fresh module, keys 1-4)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_emotes.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_emotes.js /opt/data/cache/scratch/em_check.mjs && node --check /opt/data/cache/scratch/em_check.mjs && head -1 tasks_out/worker_emotes.js | grep -qv '^worker_' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildEmotes = { current: null, t: 0 }:\n1. Listen for digit keys 1-4 (keydown, one-shot flags). Each triggers an emote at the visitor position: 1 WAVE (arm pixel column swings above head), 2 CHEER (both arms up + small gold sparkle particles), 3 SIT (visitor folds into a sitting pose, lasts 3s), 4 POINT (arm extends in facing direction + small arrow chevron).\n2. Emotes last 1.6s (except sit), block re-trigger while active, and float a small label above the visitor ('waves!', 'cheers!', 'sits down', 'points!') in a clipped mini-bubble in the dialogue style (dark box, gold border).\n3. If window.cue exists call cue('done') on cheer inside try/catch; other emotes stay silent.\n4. Draw the emote FX around the visitor's projected position from iso(GuildVisitor.gx, GuildVisitor.gy); never move the visitor itself. Zero exceptions if GuildVisitor absent."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildEmotes = { current: null, t: 0 }:\n1. Listen for digit keys 1-4 (keydown, one-shot flags). Each triggers an emote at the visitor position: 1 WAVE (arm pixel column swings above head), 2 CHEER (both arms up + small gold sparkle particles), 3 SIT (visitor folds into a sitting pose, lasts 3s), 4 POINT (arm extends in facing direction + small arrow chevron).\n2. Emotes last 1.6s (except sit), block re-trigger while active, and float a small label above the visitor ('waves!', 'cheers!', 'sits down', 'points!') in a clipped mini-bubble in the dialogue style (dark box, gold border).\n3. If window.cue exists call cue('done') on cheer inside try/catch; other emotes stay silent.\n4. Draw the emote FX around the visitor's projected position from iso(GuildVisitor.gx, GuildVisitor.gy); never move the visitor itself. Zero exceptions if GuildVisitor absent.",
+      "updated_at": "2026-10-13T08:46:35Z"
     },
     {
       "id": "T32",
