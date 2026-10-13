@@ -448,6 +448,7 @@ function normalizeBoard(data) {
   if (newSteps > V.growthStep) V.growthStep = newSteps;
   V.mapLevel = V.growthStep + 1;
   updateGrid();
+  if (V.primeBaseline) { V.primeBaseline = false; prevTotalDone = totalDone; } // first poll after load: seed baseline, no confetti
   if (totalDone > prevTotalDone) {
     V.levelUp = { active: true, t: 0, duration: 2 };
     V.shake = { active: true, t: 0, duration: 0.3, amp: 3 };

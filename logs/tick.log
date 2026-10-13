@@ -192,3 +192,6 @@ Node.js v26.8.1
 
 2026-10-13 05:46:27 T14 FAILED MISSING: [ 'forge', 'treasure' ]
 
+2026-10-13 05:48:13 T14 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 05:48:13 T14 DONE on attempt 1
