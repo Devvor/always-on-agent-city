@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T16:36:51Z",
+    "checked_at": "2026-10-13T16:57:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -508,8 +508,8 @@
     {
       "id": "T45",
       "title": "P4: charter \u2014 guild archives lectern (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_archives.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -518,7 +518,8 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_archives.js /opt/data/cache/scratch/t45_check.mjs && node --check /opt/data/cache/scratch/t45_check.mjs && grep -q \"window.GuildArchives\" /opt/data/cache/scratch/t45_check.mjs && head -1 tasks_out/worker_archives.js | grep -qv '^worker_' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module worker_archives.js for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.growthStep, V.canvas, V.allTasks array of task objects with id/title/status/updated_at), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving}, window.GuildMuseum (optional, for proximity), window.cue(name) optional (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildArchives = { gx: -2.8, gy: 2.6, open: false, scroll: 0 }:\n1. Draw a wooden READING LECTERN prop at tile gx -2.8, gy 2.6 (clear of the quest board at (-1.6,4.2), the museum pedestals, and the arcade sign at (0.8,4.5)): angled top board on a post, an open parchment book (two pale #e8e6df pages on a dark cover), pixel fillRect style, brown #6b4a2f post, gold #d4af37 trim, tiny quill lying beside.\n2. When window.GuildVisitor is within 1.6 tiles, draw a floating hint '[E] READ THE ARCHIVES' (10px, gold, clipped). E keydown (one-shot flag like the visitor module) toggles open.\n3. When open, draw a parchment codex panel center-canvas (dark parchment #1c1a16, gold border, about 380x260px, fully clipped): title 'GUILD ARCHIVES', then a scrollable list of the guild's REAL done quests built from V.allTasks where status === 'done', newest first: each row 'id - title - local date' (derive the date from updated_at via new Date, format YYYY-MM-DD; fitText the title to panel width; 11px monospace; rows alternate faint shading). Mouse wheel over the panel (or arrow keys) scrolls; clamp scroll to content. Footer hint '[E] CLOSE'. If no done quests, show 'the archives await their first entry...'.\n4. Rebuild the list whenever V.allTasks length changes. Opening plays cue('done') in try/catch. Zero exceptions when V, allTasks, or GuildVisitor are absent.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-13"
+      "seeded_at": "2026-10-13",
+      "updated_at": "2026-10-13T16:58:58Z"
     },
     {
       "id": "T46",
