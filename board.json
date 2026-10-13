@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T06:30:07Z",
+    "checked_at": "2026-10-13T06:36:25Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -285,9 +285,9 @@
     {
       "id": "T23B",
       "title": "P4: game pass 7b \u2014 visitor module (fresh file, WASD + talk)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:37:50Z",
       "target_file": "tasks_out/worker_visitor.js",
       "include_files": [
         "tasks_out/worker_office.js"
