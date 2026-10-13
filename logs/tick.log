@@ -259,3 +259,6 @@ SyntaxError: Unexpected end of input
 
 Node.js v26.8.1
 
+2026-10-13 06:37:50 T23B attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 06:37:50 T23B DONE on attempt 1

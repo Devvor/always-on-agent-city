@@ -352,6 +352,11 @@ function draw(ctx) {
 
 if (typeof window !== 'undefined') {
   if (!window.GuildVisitor) window.GuildVisitor = createState();
+  window.GuildVisitor.update = update;
+  window.GuildVisitor.draw = draw;
+  window.GuildVisitor.__probe = function () { return { pressed: Array.from(pressed), prev: Array.from(prevPressed) }; };
+  window.GuildVisitor.__rawUpdate = update;
+  window.GuildVisitor.__keys = pressed;
   if (!window.__gvListeners) {
     window.__gvListeners = true;
     window.addEventListener('keydown', onKeydown);

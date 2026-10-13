@@ -158,6 +158,8 @@ function fitText(text, maxW) {
   }
   return ctx.measureText(ell).width <= maxW ? ell : '';
 }
+// expose state to ES-module plugins (modules can only see window.*, not top-level const V)
+window.V = V;
 function canvasPoint(e) {
   const canvas = V.canvas;
   const rect = canvas.getBoundingClientRect();
@@ -2054,6 +2056,9 @@ function renderGameScene(now) {
   drawProps(now);
   drawWorkers(now);
   drawWorkerChatBubbles(now);
+  if (window.GuildVisitor && V.gameState === 'play') {
+    try { window.GuildVisitor.update(now); window.GuildVisitor.draw(ctx); } catch (e) {}
+  }
   drawParticles(now);
   drawLighting(now);
   ctx.restore();
