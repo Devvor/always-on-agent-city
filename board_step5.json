@@ -2,7 +2,7 @@
   "window": {
     "model": "stepfun/step-5-preview:free",
     "status": "open",
-    "checked_at": "2026-10-13T04:39:35Z",
+    "checked_at": "2026-10-13T04:43:35Z",
     "note": "step5 worker; free until ~Oct 16"
   },
   "tasks": [
@@ -19,9 +19,9 @@
     {
       "id": "S2",
       "title": "WORKER_RUNBOOK.md \u2014 ops runbook for the guild",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T04:43:59Z",
       "target_file": "tasks_out/WORKER_RUNBOOK.md",
       "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python -c \"s=open('tasks_out/WORKER_RUNBOOK.md').read(); need=['## ','cron','seed','reset','ALERT']; [n for n in need if n not in s] and (_ for _ in ()).throw(AssertionError(need)); print('VERIFY-OK')\"",
       "spec": "Write WORKER_RUNBOOK.md \u2014 an operations runbook for the worker fleet. Sections (## headers): Daily operation (cron jobs run the tick every 20 minutes; empty board = silent tick; one-line DONE/FAILED messages delivered to the ops thread; ALERT on window close), Seeding new tasks (how to append a task to board.json: id, title, spec with machine-checkable verify_cmd, target_file under tasks_out/; for edits of existing files add include_files so the model sees current content), Resetting a failed task (set status back to pending and attempts to 0), Diagnosis (read logs/tick.log; common failures: empty content = reasoning budget exhausted; verify 'no output' = grader too silent; 429 = free-tier capacity, tick retries), Window death (the gate closes the worker automatically when price > 0 or model vanishes; repoint by changing window.model to another free model or pause the cron), Multi-worker (worker #2 runs via missingno_worker_tick2.py with its own board board_step5.json and log; env vars WBOARD/WLOG/WNAME parametrize the tick). Plain English, ~100-150 lines."
