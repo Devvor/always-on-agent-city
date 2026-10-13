@@ -550,6 +550,7 @@ function normalizeBoard(data) {
     const focus0 = chooseFocus(nw.tasks);
     st.project = focus0 ? focus0.project : null;
     if (newDone > 0) {
+      if (window.cue) try { window.cue('done'); } catch (e) {}
       st.flash.active = true;
       st.flash.t = 0;
       st.flash.duration = 0.9;
@@ -587,12 +588,16 @@ function normalizeBoard(data) {
       triggered: false
     };
   }
-  if (newSteps > V.growthStep) V.growthStep = newSteps;
+  if (newSteps > V.growthStep) {
+    if (window.cue) try { window.cue('grow'); } catch (e) {}
+    V.growthStep = newSteps;
+  }
   V.mapLevel = V.growthStep + 1;
   updateGrid();
   if (V.primeBaseline) { V.primeBaseline = false; prevTotalDone = totalDone; }
   if (totalDone > prevTotalDone) {
     V.levelUp = { active: true, t: 0, duration: 2 };
+    if (window.cue) try { window.cue('levelup'); } catch (e) {}
     V.shake = { active: true, t: 0, duration: 0.3, amp: 3 };
     const cx = V.canvas.width * 0.5;
     const cy = V.canvas.height * 0.45;

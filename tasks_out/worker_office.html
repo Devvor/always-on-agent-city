@@ -23,6 +23,11 @@ footer { position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; fo
 <canvas id="office-canvas" width="960" height="600"></canvas>
 <div id="office3d-container"></div>
 <footer>missingno worker office — loopback only</footer>
+<script type="module">
+import { installSound, cue } from './worker_office_sound.js';
+window.cue = cue; // event hooks in 2D/3D clients call window.cue
+installSound(document.getElementById('modebar'));
+</script>
 <script src="worker_office.js"></script>
 <script>
 (function () {
