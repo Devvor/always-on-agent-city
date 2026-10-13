@@ -14,7 +14,6 @@ function init(canvas, apiBase) {
   V.lastTime = (typeof performance !== 'undefined' ? performance.now() : Date.now());
   requestAnimationFrame(frame);
 }
-
 const V = {
   canvas: null,
   ctx: null,
@@ -51,34 +50,29 @@ const V = {
   starsBright: [],
   floatingRocks: [],
   torchPts: [],
-  nebulaPhase: 0
+  nebulaPhase: 0,
+  xpTexts: [],
+  levelUp: { active: false, t: 0, duration: 2 },
+  shake: { active: false, t: 0, duration: 0.3, amp: 3 }
 };
-
 function rand() {
   V.rnd = (V.rnd * 1664525 + 1013904223) >>> 0;
   return V.rnd / 4294967296;
 }
-
 function seeded(seed) {
   var x = Math.sin(seed * 999.999 + 123.456) * 43758.5453;
   return x - Math.floor(x);
 }
-
 function resetRng() {
   V.rnd = 123456789;
 }
-
 function updateGrid() {
-  // Camera zoom-out: as the island grows, shrink the isometric tile size so
-  // the whole island (floor + ~90px rock underside + bobbing rocks) stays
-  // inside the canvas. At growthStep 0 tiles are full size (70x35).
   const s = V.growthStep;
   const scale = Math.min(1, 384 / ((2 + 2 * s) * 35));
   const c = V.canvas;
   V.grid = { originX: Math.round(c.width * 0.5), originY: Math.round(c.height * 0.42),
              tileW: 70 * scale, tileH: 35 * scale };
 }
-
 function buildScene() {
   const c = V.canvas;
   V.desks = [];
@@ -104,8 +98,10 @@ function buildScene() {
   V.particles = [];
   V.leafAccum = 0;
   V.torchPts = [];
+  V.xpTexts = [];
+  V.levelUp = { active: false, t: 0, duration: 2 };
+  V.shake = { active: false, t: 0, duration: 0.3, amp: 3 };
   resetRng();
-
   V.starsSmall = [];
   for (let i = 0; i < 60; i++) {
     const seed = i + 1;
@@ -143,12 +139,10 @@ function buildScene() {
     });
   }
 }
-
 function iso(gx, gy) {
   const g = V.grid;
   return { x: g.originX + (gx - gy) * g.tileW * 0.5, y: g.originY + (gx + gy) * g.tileH * 0.5 };
 }
-
 async function fetchBoard() {
   if (V.fetching) return;
   V.fetching = true;
@@ -164,7 +158,6 @@ async function fetchBoard() {
     V.fetching = false;
   }
 }
-
 function collectTasks(data) {
   if (Array.isArray(data)) return data.slice();
   if (!data || typeof data !== 'object') return [];
@@ -206,7 +199,6 @@ function collectTasks(data) {
   }
   return [];
 }
-
 function extractRecentTicks(data) {
   const candidateKeys = ['recent_ticks', 'recentTicks', 'recent', 'ticks', 'log', 'logs', 'events', 'history'];
   let arr = null;
@@ -230,7 +222,6 @@ function extractRecentTicks(data) {
   for (let i = 0; i < arr.length; i++) out.push(tickText(arr[i]));
   return out.slice(-6);
 }
-
 function tickText(value) {
   if (value == null) return '';
   if (typeof value === 'string') return value;
@@ -246,7 +237,6 @@ function tickText(value) {
   }
   return String(value);
 }
-
 function detectWindow(data) {
   const candidates = [];
   if (data && typeof data === 'object') {
@@ -280,7 +270,6 @@ function detectWindow(data) {
   }
   return V.windowStatus || 'OPEN';
 }
-
 function mapStatus(value) {
   const s = String(value == null ? '' : value).toLowerCase().replace(/[\s-]+/g, '_');
   if (s === 'pending' || s === 'todo' || s === 'queued' || s === 'backlog' || s === 'new') return 'pending';
@@ -289,7 +278,6 @@ function mapStatus(value) {
   if (s === 'failed' || s === 'failure' || s === 'error' || s === 'errored' || s === 'broken' || s === 'rejected') return 'failed';
   return 'pending';
 }
-
 function parseDeskRaw(task) {
   if (!task || typeof task !== 'object') return null;
   let value = task.desk;
@@ -306,7 +294,6 @@ function parseDeskRaw(task) {
   if (m) return parseInt(m[0], 10);
   return null;
 }
-
 function chooseFocus(tasks) {
   const priority = ['failed', 'pending', 'in_progress', 'done'];
   for (let p = 0; p < priority.length; p++) {
@@ -316,13 +303,11 @@ function chooseFocus(tasks) {
   }
   return null;
 }
-
 function workerColor(index, name) {
   const n = String(name || '').toLowerCase();
   if (index === 1 || n.indexOf('step') !== -1) return '#a78bfa';
   return '#facc15';
 }
-
 function tileRing(gx, gy) {
   function coordLayer(v) {
     if (v >= -2 && v <= 1) return 0;
@@ -331,7 +316,6 @@ function tileRing(gx, gy) {
   }
   return Math.max(coordLayer(gx), coordLayer(gy));
 }
-
 function ensureWorkerStates(count) {
   while (V.workerStates.length < count) {
     const i = V.workerStates.length;
@@ -362,8 +346,8 @@ function ensureWorkerStates(count) {
   }
   if (V.workerStates.length > count) V.workerStates = V.workerStates.slice(0, count);
 }
-
 function normalizeBoard(data) {
+  const prevTotalDone = V.totalDone;
   const root = data && typeof data === 'object' ? data : {};
   const roots = Array.isArray(root.workers) ? root.workers.slice() : [root];
   const metas = [];
@@ -380,7 +364,6 @@ function normalizeBoard(data) {
     const win = detectWindow(windowSrc);
     metas.push({ name: name, model: model, windowStatus: win, rawTasks: rawTasks, recentTicks: safeRecent });
   }
-
   const deskVals = [];
   for (let i = 0; i < metas.length; i++) {
     const rawTasks = metas[i].rawTasks || [];
@@ -390,7 +373,6 @@ function normalizeBoard(data) {
     }
   }
   const oneBased = deskVals.length > 0 && deskVals.indexOf(0) === -1 && Math.min.apply(null, deskVals) >= 1 && Math.max.apply(null, deskVals) <= V.desks.length;
-
   const normalized = metas.map(function (meta, i) {
     const tasks = [];
     const rawTasks = meta.rawTasks || [];
@@ -410,10 +392,8 @@ function normalizeBoard(data) {
     }
     return { name: meta.name, model: meta.model, windowStatus: meta.windowStatus, tasks: tasks, recentTicks: meta.recentTicks.slice() };
   });
-
   const prevWorkers = V.workers.slice();
   ensureWorkerStates(normalized.length);
-
   let totalDone = 0;
   for (let i = 0; i < normalized.length; i++) {
     const nw = normalized[i];
@@ -434,6 +414,12 @@ function normalizeBoard(data) {
       st.flashHandled = false;
       V.xpFlash.active = true;
       V.xpFlash.t = 0;
+      for (let kd = 0; kd < newDone; kd++) {
+        V.xpTexts.push({ x: st.x + 6 + kd * 8, y: st.y - 22, vy: -18, t: 0, duration: 1.1 });
+      }
+      for (let kd = 0; kd < 5; kd++) {
+        V.particles.push({ id: V.particleId++, kind: 'ember', src: -1, x: st.x + 8 + (rand() - 0.5) * 8, y: st.y - 8, vx: (rand() - 0.5) * 24, vy: -24 - rand() * 16, phase: rand() * Math.PI * 2, life: 0.5 + rand() * 0.4, age: 0, size: 2, color: rand() < 0.5 ? '#ff5a1f' : '#ffc27a' });
+      }
     }
     st.tasks = nw.tasks;
     const focus = chooseFocus(nw.tasks);
@@ -447,7 +433,6 @@ function normalizeBoard(data) {
     }
     for (let t = 0; t < nw.tasks.length; t++) if (nw.tasks[t].status === 'done') totalDone++;
   }
-
   const newSteps = Math.min(8, Math.floor(totalDone / 2));
   const newlyUnlocked = newSteps > V.growthStep;
   if (newlyUnlocked) {
@@ -463,8 +448,18 @@ function normalizeBoard(data) {
   if (newSteps > V.growthStep) V.growthStep = newSteps;
   V.mapLevel = V.growthStep + 1;
   updateGrid();
+  if (totalDone > prevTotalDone) {
+    V.levelUp = { active: true, t: 0, duration: 2 };
+    V.shake = { active: true, t: 0, duration: 0.3, amp: 3 };
+    const cx = V.canvas.width * 0.5;
+    const cy = V.canvas.height * 0.45;
+    for (let fi = 0; fi < 20; fi++) {
+      const ang = (fi / 20) * Math.PI * 2 + rand() * 0.2;
+      const speed = 50 + rand() * 90;
+      V.particles.push({ id: V.particleId++, kind: 'firework', src: -2, x: cx, y: cy, vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed, phase: rand() * Math.PI * 2, life: 0.8 + rand() * 0.5, age: 0, size: 2, color: rand() < 0.5 ? '#facc15' : '#ff8c1a' });
+    }
+  }
   V.totalDone = totalDone;
-
   V.workers = normalized;
   V.tasks = normalized.length ? normalized[0].tasks.slice() : [];
   V.windowStatus = normalized.length ? normalized[0].windowStatus : (V.windowStatus || detectWindow(root));
@@ -474,7 +469,6 @@ function normalizeBoard(data) {
     for (let j = 0; j < tks.length; j++) V.allTasks.push(tks[j]);
   }
   V.recentTicks = normalized.length ? normalized[0].recentTicks.slice() : [];
-
   V.chatLines = [];
   for (let i = 0; i < normalized.length; i++) {
     const worker = normalized[i];
@@ -482,10 +476,8 @@ function normalizeBoard(data) {
     const ticks = Array.isArray(worker.recentTicks) ? worker.recentTicks : [];
     for (let j = 0; j < ticks.length; j++) V.chatLines.push({ name: worker.name, color: col, text: String(ticks[j]) });
   }
-
   V.worker = V.workerStates.length ? V.workerStates[0] : null;
 }
-
 function idleAdvance(w) {
   if (w.idleTarget == null) w.idleTarget = 0;
   if (w.targetDesk == null) {
@@ -493,17 +485,13 @@ function idleAdvance(w) {
     w.idleArrivedAt = 0;
   }
 }
-
 function easeOutCubic(t) {
   t = Math.max(0, Math.min(1, t));
   return 1 - Math.pow(1 - t, 3);
 }
-
 function updateParticles(dt) {
   const now = V.nowTime || Date.now();
   const c = V.canvas;
-
-  // ember spawning for torches
   if (Array.isArray(V.torchPts)) {
     for (let ti = 0; ti < V.torchPts.length; ti++) {
       let cnt = 0;
@@ -528,8 +516,6 @@ function updateParticles(dt) {
       }
     }
   }
-
-  // dust motes in god ray
   let moteCount = 0;
   for (let i = 0; i < V.particles.length; i++) if (V.particles[i].kind === 'mote') moteCount++;
   while (moteCount < 24) {
@@ -552,8 +538,6 @@ function updateParticles(dt) {
     });
     moteCount++;
   }
-
-  // fireflies near edges
   let ffCount = 0;
   for (let i = 0; i < V.particles.length; i++) if (V.particles[i].kind === 'firefly') ffCount++;
   while (ffCount < 4) {
@@ -581,8 +565,6 @@ function updateParticles(dt) {
     });
     ffCount++;
   }
-
-  // occasional falling leaf
   V.leafAccum += dt;
   let leafCount = 0;
   for (let i = 0; i < V.particles.length; i++) if (V.particles[i].kind === 'leaf') leafCount++;
@@ -603,8 +585,6 @@ function updateParticles(dt) {
     });
     V.leafAccum = 0;
   }
-
-  // growth dust burst on landing
   if (V.growthAnim && V.growthAnim.active) {
     const progress = Math.max(0, Math.min(1, (now - V.growthAnim.startTime) / V.growthAnim.duration));
     if (progress >= 0.99 && !V.growthAnim.triggered) {
@@ -636,8 +616,27 @@ function updateParticles(dt) {
     }
     if (progress >= 1) V.growthAnim.active = false;
   }
-
-  // update all particles
+  if (V.mapLevel >= 7) {
+    let zCount = 0;
+    const cp = guildCatPos();
+    for (let i = 0; i < V.particles.length; i++) if (V.particles[i].kind === 'z') zCount++;
+    while (zCount < 2) {
+      V.particles.push({
+        id: V.particleId++,
+        kind: 'z',
+        x: cp.x - 6 + (rand() - 0.5) * 6,
+        y: cp.y - 10,
+        vx: (rand() - 0.5) * 4,
+        vy: -12 - rand() * 5,
+        phase: rand() * Math.PI * 2,
+        life: 1.6 + rand() * 0.8,
+        age: 0,
+        size: 2,
+        color: '#e8e6df'
+      });
+      zCount++;
+    }
+  }
   const next = [];
   for (let i = 0; i < V.particles.length; i++) {
     const p = V.particles[i];
@@ -676,12 +675,19 @@ function updateParticles(dt) {
       p.vx *= 0.94;
       p.vy *= 0.94;
       p.vy += 12 * dt;
+    } else if (p.kind === 'firework') {
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vx *= 0.96;
+      p.vy += 24 * dt;
+    } else if (p.kind === 'z') {
+      p.x += (p.vx + Math.sin(p.age * 2 + p.phase) * 2) * dt;
+      p.y += p.vy * dt;
     }
     next.push(p);
   }
   V.particles = next;
 }
-
 function update(dt) {
   V.dt = dt;
   for (let wi = 0; wi < V.workerStates.length; wi++) {
@@ -689,12 +695,10 @@ function update(dt) {
     const workerMeta = V.workers[wi] || {};
     const tasks = Array.isArray(workerMeta.tasks) ? workerMeta.tasks : (Array.isArray(w.tasks) ? w.tasks : []);
     w.tasks = tasks;
-
     if (tasks.length === 0 || chooseFocus(tasks) == null) {
       w.mode = 'idle';
       idleAdvance(w);
     }
-
     if (w.flash.active) {
       w.flash.t += dt;
       if (w.flash.t >= w.flash.duration) {
@@ -714,7 +718,6 @@ function update(dt) {
         idleAdvance(w);
       }
     }
-
     let target = null;
     if (w.targetDesk != null && V.desks[w.targetDesk]) {
       const d = V.desks[w.targetDesk];
@@ -727,7 +730,6 @@ function update(dt) {
         target = { x: d.x + d.w * 0.5 - 6, y: d.y + d.h + 3 };
       }
     }
-
     if (target) {
       const dx = target.x - w.x;
       const dy = target.y - w.y;
@@ -764,7 +766,6 @@ function update(dt) {
       w.atDesk = false;
       w.moving = false;
     }
-
     if (w.moving) {
       w.walkTimer += dt;
       while (w.walkTimer >= 0.15) {
@@ -776,27 +777,38 @@ function update(dt) {
       w.walkTimer = 0;
       w.bob += dt * 2.2;
     }
-
     if (w.mode === 'in_progress' && w.atDesk) {
       w.typingPhase += dt * 7;
     } else {
       w.typingPhase += dt * 0.6;
     }
   }
-
   if (V.mapGlint.active) {
     V.mapGlint.t += dt;
     if (V.mapGlint.t >= V.mapGlint.duration) V.mapGlint.active = false;
   }
-
   if (V.xpFlash.active) {
     V.xpFlash.t += dt;
     if (V.xpFlash.t >= V.xpFlash.duration) V.xpFlash.active = false;
   }
-
+  const nextXp = [];
+  for (let i = 0; i < V.xpTexts.length; i++) {
+    const xp = V.xpTexts[i];
+    xp.t += dt;
+    xp.y += xp.vy * dt;
+    if (xp.t < xp.duration) nextXp.push(xp);
+  }
+  V.xpTexts = nextXp;
+  if (V.levelUp.active) {
+    V.levelUp.t += dt;
+    if (V.levelUp.t >= V.levelUp.duration) V.levelUp.active = false;
+  }
+  if (V.shake.active) {
+    V.shake.t += dt;
+    if (V.shake.t >= V.shake.duration) V.shake.active = false;
+  }
   updateParticles(dt);
 }
-
 function frame(now) {
   requestAnimationFrame(frame);
   V.nowTime = now;
@@ -808,7 +820,6 @@ function frame(now) {
   try { update(dt); } catch (e) {}
   try { render(now); } catch (e) {}
 }
-
 function colorForStatus(status) {
   if (status === 'pending') return '#f59e0b';
   if (status === 'in_progress') return '#3b82f6';
@@ -816,7 +827,6 @@ function colorForStatus(status) {
   if (status === 'failed') return '#ef4444';
   return '#9aa0a6';
 }
-
 function outerCorners() {
   const g = V.grid;
   if (!g) return null;
@@ -829,7 +839,6 @@ function outerCorners() {
     iso(minC, maxC)
   ];
 }
-
 function godRayGeometry() {
   const c = V.canvas;
   const g = V.grid;
@@ -844,9 +853,11 @@ function godRayGeometry() {
     bottomHalf: 58
   };
 }
-
 function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
-
+function guildCatPos() {
+  const base = iso(1, 1);
+  return { x: Math.round(base.x + 8), y: Math.round(base.y - 6) };
+}
 function drawSky(now) {
   const ctx = V.ctx;
   const c = V.canvas;
@@ -855,15 +866,11 @@ function drawSky(now) {
   g.addColorStop(1, '#0d0a1e');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, c.width, c.height);
-
-  // nebula
   const ng = ctx.createRadialGradient(c.width * 0.35, c.height * 0.24, 20, c.width * 0.35, c.height * 0.24, 170);
   ng.addColorStop(0, 'rgba(255,110,220,0.10)');
   ng.addColorStop(1, 'rgba(255,110,220,0.00)');
   ctx.fillStyle = ng;
   ctx.fillRect(0, 0, c.width, c.height);
-
-  // stars
   const drawStars = function (arr, bright) {
     for (let i = 0; i < arr.length; i++) {
       const p = arr[i];
@@ -878,8 +885,6 @@ function drawSky(now) {
   };
   drawStars(V.starsSmall, false);
   drawStars(V.starsBright, true);
-
-  // moon
   const mx = Math.round(c.width * 0.72);
   const my = Math.round(c.height * 0.15);
   const mr = 34;
@@ -911,7 +916,6 @@ function drawSky(now) {
   ctx.fillRect(mx - 18, my - 18, 8, 6);
   ctx.globalAlpha = 1;
 }
-
 function drawIslandUnderside(now) {
   const ctx = V.ctx;
   const c = V.canvas;
@@ -921,7 +925,6 @@ function drawIslandUnderside(now) {
   const sideOffset = [-10, 8, 12, -6];
   const sideDepth = [76, 86, 70, 80];
   const rockColors = ['#3a342f', '#2f2823', '#25201d'];
-
   for (let i = 0; i < 4; i++) {
     const a = pts[i];
     const b = pts[(i + 1) % 4];
@@ -938,8 +941,6 @@ function drawIslandUnderside(now) {
     ctx.closePath();
     ctx.fill();
   }
-
-  // strata bands across the lower skirt
   for (let band = 0; band < 3; band++) {
     const t0 = band / 3;
     const t1 = (band + 1) / 3;
@@ -962,8 +963,6 @@ function drawIslandUnderside(now) {
     }
   }
   ctx.globalAlpha = 1;
-
-  // floating rocks
   for (let i = 0; i < V.floatingRocks.length; i++) {
     const r = V.floatingRocks[i];
     const bob = Math.sin(now * 0.001 + r.phase) * 3;
@@ -974,8 +973,6 @@ function drawIslandUnderside(now) {
     ctx.fillStyle = '#6a6157';
     ctx.fillRect(Math.round(x - r.size * 0.5 + 2), Math.round(y + 1), Math.max(1, Math.round(r.size * 0.4)), 2);
   }
-
-  // vines/roots
   for (let i = 0; i < 5; i++) {
     const edge = i % 4;
     const a = pts[edge];
@@ -989,14 +986,12 @@ function drawIslandUnderside(now) {
     }
   }
 }
-
 function drawFloor(now) {
   const ctx = V.ctx;
   const c = V.canvas;
   const g = V.grid;
   const minC = -2 - V.growthStep;
   const maxC = 1 + V.growthStep;
-
   let growthProgress = 0;
   let growthStep = -1;
   if (V.growthAnim && V.growthAnim.active) {
@@ -1004,7 +999,6 @@ function drawFloor(now) {
     growthStep = V.growthAnim.step;
   }
   const growthEase = easeOutCubic(growthProgress);
-
   for (let gy = minC; gy <= maxC; gy++) {
     for (let gx = minC; gx <= maxC; gx++) {
       const ring = tileRing(gx, gy);
@@ -1013,19 +1007,16 @@ function drawFloor(now) {
       const p1 = iso(gx + 1, gy);
       const p2 = iso(gx + 1, gy + 1);
       const p3 = iso(gx, gy + 1);
-
       let shift = 0;
       let alphaMul = 1;
       if (V.growthAnim && V.growthAnim.active && ring === growthStep) {
         shift = Math.round(40 * (1 - growthEase));
         alphaMul = 0.3 + 0.7 * growthEase;
       }
-
       const lighten = ring * 16;
       const red = Math.min(235, 86 + lighten + ((Math.abs(gx * 17 + gy * 31)) % 18));
       const green = Math.min(220, 52 + Math.round(lighten * 0.7) + ((Math.abs(gx * 13 + gy * 19)) % 12));
       const blue = Math.min(190, 24 + Math.round(lighten * 0.5) + ((Math.abs(gx * 23 + gy * 7)) % 10));
-
       ctx.save();
       ctx.translate(0, shift);
       ctx.globalAlpha = alphaMul;
@@ -1041,7 +1032,6 @@ function drawFloor(now) {
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.globalAlpha = 1;
-
       if (V.mapGlint.active && ring === V.mapGlint.step) {
         const a = Math.max(0, 1 - (V.mapGlint.t / V.mapGlint.duration));
         if (a > 0) {
@@ -1060,8 +1050,6 @@ function drawFloor(now) {
       ctx.restore();
     }
   }
-
-  // grass lip ringing top edge
   const pts = outerCorners();
   if (pts) {
     ctx.strokeStyle = '#6ee7b7';
@@ -1091,7 +1079,6 @@ function drawFloor(now) {
     }
   }
 }
-
 function drawShadows() {
   const ctx = V.ctx;
   ctx.save();
@@ -1119,7 +1106,6 @@ function drawShadows() {
   }
   ctx.restore();
 }
-
 function drawProps(now) {
   const ctx = V.ctx;
   const c = V.canvas;
@@ -1131,7 +1117,6 @@ function drawProps(now) {
   const wallX = Math.round(backLeft.x - 6);
   const wallW = Math.round((backRight.x - backLeft.x) + 12);
   const wallY = Math.round(backLeft.y - wallH);
-
   ctx.fillStyle = '#3a4252';
   ctx.fillRect(wallX, wallY, wallW, wallH);
   ctx.fillStyle = '#4b5566';
@@ -1146,15 +1131,12 @@ function drawProps(now) {
   for (let y = wallY + 10; y < wallY + wallH; y += 9) {
     ctx.fillRect(wallX + 4, y, wallW - 8, 1);
   }
-
   V.torchPts = [
     { x: Math.round(wallX + wallW * 0.25), y: Math.round(wallY + wallH * 0.48) },
     { x: Math.round(wallX + wallW * 0.75), y: Math.round(wallY + wallH * 0.48) }
   ];
   drawTorch(V.torchPts[0].x, V.torchPts[0].y, 0, now);
   drawTorch(V.torchPts[1].x, V.torchPts[1].y, 1, now);
-
-  // desks
   const deskTasks = [];
   for (let i = 0; i < V.desks.length; i++) deskTasks.push([]);
   for (let i = 0; i < V.allTasks.length; i++) {
@@ -1173,7 +1155,6 @@ function drawProps(now) {
     ctx.fillRect(d.x + 3, d.y + 9, d.w - 6, 1);
     ctx.fillStyle = '#332211';
     ctx.fillRect(d.x, d.y + d.h - 3, d.w, 2);
-
     const tasksHere = deskTasks[i];
     for (let j = 0; j < tasksHere.length && j < 3; j++) {
       const t = tasksHere[j];
@@ -1210,8 +1191,120 @@ function drawProps(now) {
     }
     ctx.globalAlpha = 1;
   }
+  if (V.mapLevel >= 1) {
+    const base = iso(0, -1);
+    const px = Math.round(base.x);
+    const py = Math.round(base.y);
+    const sway = Math.round(Math.sin(now * 0.004) * 3);
+    ctx.fillStyle = '#4b3320';
+    ctx.fillRect(px - 2, py - 50, 4, 52);
+    ctx.fillStyle = '#5a1118';
+    ctx.fillRect(px + 2 + sway, py - 48, 30, 22);
+    ctx.fillStyle = '#7a1620';
+    ctx.fillRect(px + 2 + sway, py - 48, 30, 4);
+    ctx.fillStyle = '#d4af37';
+    ctx.fillRect(px + 14 + sway, py - 40, 4, 4);
+    ctx.fillRect(px + 9 + sway, py - 36, 2, 2);
+    ctx.fillRect(px + 21 + sway, py - 36, 2, 2);
+    ctx.fillRect(px + 12 + sway, py - 30, 12, 2);
+  }
+  if (V.mapLevel >= 3) {
+    const base = iso(1, -1);
+    const x = Math.round(base.x);
+    const y = Math.round(base.y);
+    ctx.fillStyle = '#5a3f25';
+    ctx.fillRect(x - 20, y - 46, 40, 46);
+    ctx.fillStyle = '#7a5230';
+    ctx.fillRect(x - 16, y - 42, 32, 38);
+    const bookColors = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#a855f7'];
+    for (let row = 0; row < 3; row++) {
+      const ry = y - 40 + row * 13;
+      for (let b = 0; b < 5; b++) {
+        ctx.fillStyle = bookColors[(row + b) % bookColors.length];
+        ctx.fillRect(x - 14 + b * 6, ry, 4, 9);
+      }
+      ctx.fillStyle = '#3a2a15';
+      ctx.fillRect(x - 18, ry - 2, 36, 2);
+    }
+  }
+  if (V.mapLevel >= 5) {
+    const base = iso(-1, 1);
+    const x = Math.round(base.x);
+    const y = Math.round(base.y);
+    ctx.fillStyle = '#6b6b6b';
+    ctx.fillRect(x - 22, y - 20, 44, 22);
+    ctx.fillStyle = '#555555';
+    ctx.fillRect(x - 22, y - 20, 44, 4);
+    ctx.fillStyle = '#333333';
+    ctx.fillRect(x - 10, y - 30, 20, 8);
+    ctx.fillRect(x - 5, y - 22, 10, 6);
+    const pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(now * 0.008));
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = '#ff7a1a';
+    ctx.fillRect(x - 7, y - 16, 14, 7);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#ffc27a';
+    ctx.fillRect(x - 4, y - 15, 4, 3);
+    ctx.fillRect(x + 2, y - 14, 3, 2);
+    for (let s = 0; s < 3; s++) {
+      const prog = (now * 0.0012 + s * 0.33) % 1;
+      const wx = x + Math.round(Math.sin(now * 0.003 + s) * 4);
+      const wy = y - 24 - Math.round(prog * 18);
+      const alpha = (1 - prog) * 0.7;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#b0b0b0';
+      ctx.fillRect(wx, wy, 2, 2);
+      ctx.fillRect(wx + 2, wy - 2, 2, 2);
+      ctx.globalAlpha = 1;
+    }
+  }
+  if (V.mapLevel >= 7) {
+    const base = iso(1, 0);
+    const x = Math.round(base.x);
+    const y = Math.round(base.y);
+    const coins = [{ x: -11, y: -3 }, { x: -5, y: -1 }, { x: 1, y: -2 }, { x: 7, y: -3 }, { x: -8, y: -8 }, { x: -2, y: -9 }, { x: 4, y: -8 }, { x: 0, y: -14 }];
+    for (let i = 0; i < coins.length; i++) {
+      const cn = coins[i];
+      ctx.fillStyle = '#b8860b';
+      ctx.fillRect(x + cn.x, y + cn.y, 7, 4);
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(x + cn.x + 1, y + cn.y, 4, 2);
+      ctx.fillStyle = '#854d0e';
+      ctx.fillRect(x + cn.x + 1, y + cn.y + 3, 5, 1);
+    }
+    const glintIndex = Math.floor(now / 900) % coins.length;
+    const pulse = now % 1100;
+    if (pulse < 130) {
+      const cn = coins[glintIndex];
+      ctx.globalAlpha = 1 - (pulse / 130);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x + cn.x + 2, y + cn.y + 1, 2, 1);
+      ctx.globalAlpha = 1;
+    }
+    const cp = guildCatPos();
+    ctx.fillStyle = '#9ca3af';
+    if (ctx.ellipse) {
+      ctx.beginPath();
+      ctx.ellipse(cp.x, cp.y, 9, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cp.x - 8, cp.y - 4, 5, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(cp.x - 9, cp.y - 6, 18, 12);
+      ctx.fillRect(cp.x - 13, cp.y - 8, 10, 8);
+    }
+    ctx.fillStyle = '#9ca3af';
+    ctx.fillRect(cp.x - 11, cp.y - 9, 2, 4);
+    ctx.fillRect(cp.x - 7, cp.y - 9, 2, 4);
+    ctx.fillStyle = '#1f2937';
+    ctx.fillRect(cp.x - 10, cp.y - 4, 4, 1);
+    const tailFlick = Math.sin(now * 0.0013) > 0.93 ? -5 : 0;
+    ctx.fillStyle = '#9ca3af';
+    ctx.fillRect(cp.x + 7, cp.y - 2 + tailFlick, 6, 2);
+    ctx.fillRect(cp.x + 12, cp.y - 4 + tailFlick * 2, 4, 2);
+  }
 }
-
 function drawTorch(cx, cy, index, now) {
   const ctx = V.ctx;
   const b = Math.max(0.32, Math.min(1, 0.58 + 0.34 * Math.sin(now * 0.012 + index * 2.1) + (rand() - 0.5) * 0.16));
@@ -1233,7 +1326,6 @@ function drawTorch(cx, cy, index, now) {
   ctx.fillStyle = '#ffe08a';
   ctx.fillRect(cx - 1, cy + 10 - fh, 2, Math.max(2, fh - 3));
 }
-
 function drawWorker(w, meta, now) {
   const ctx = V.ctx;
   const index = (w.index != null ? w.index : 0);
@@ -1242,13 +1334,11 @@ function drawWorker(w, meta, now) {
   const legColor = isStep ? '#4c1d95' : '#26323f';
   const nameColor = isStep ? '#c4b5fd' : '#facc15';
   const nameBorder = isStep ? '#a78bfa' : '#facc15';
-
   const bob = w.moving ? (w.walkFrame % 2 === 0 ? 0 : 1) : Math.round(Math.sin(w.bob) * 1.1);
   const x = Math.round(w.x);
   const y = Math.round(w.y) + bob;
   ctx.fillStyle = 'rgba(0,0,0,0.30)';
   ctx.fillRect(x - 4, Math.round(w.y) + 17, 20, 4);
-
   const frame = w.moving ? (w.walkFrame % 4) : 0;
   const vertical = (w.facing === 'up' || w.facing === 'down');
   let leftY = y + 10, rightY = y + 10, leftH = 8, rightH = 8;
@@ -1278,7 +1368,6 @@ function drawWorker(w, meta, now) {
     ctx.fillRect(x + 2, leftY, 4, leftH);
     ctx.fillRect(x + 10, rightY, 4, rightH);
   }
-
   ctx.fillStyle = robeColor;
   ctx.fillRect(x + 1, y - 2, 14, 12);
   ctx.fillStyle = isStep ? '#ddd6fe' : '#f1c9a5';
@@ -1288,7 +1377,6 @@ function drawWorker(w, meta, now) {
   ctx.fillRect(x + 9, y - 8, 2, 2);
   ctx.fillStyle = isStep ? '#8b5cf6' : '#7c4a24';
   ctx.fillRect(x + 4, y - 12, 8, 2);
-
   if (w.mode === 'in_progress' && w.atDesk) {
     const swing = Math.round(Math.sin(w.typingPhase) * 2);
     ctx.fillStyle = isStep ? '#ddd6fe' : '#f1c9a5';
@@ -1302,7 +1390,6 @@ function drawWorker(w, meta, now) {
     ctx.fillRect(x + 1, y + 4, 3, 2);
     ctx.fillRect(x + 12, y + 4, 3, 2);
   }
-
   let bubbleText = null;
   let bubbleColor = '#ffffff';
   if (w.mode === 'pending') { bubbleText = 'building...'; bubbleColor = '#f59e0b'; }
@@ -1322,7 +1409,6 @@ function drawWorker(w, meta, now) {
     ctx.textBaseline = 'middle';
     ctx.fillText(bubbleText, bx + 5, by + 9);
   }
-
   const name = (meta.name != null ? meta.name : (index === 0 ? 'MISSINGNO' : 'STEP5'));
   const tagW = 76;
   const tagH = 12;
@@ -1339,7 +1425,6 @@ function drawWorker(w, meta, now) {
   ctx.textBaseline = 'middle';
   const metrics = ctx.measureText(name);
   ctx.fillText(name, tagX + (tagW - metrics.width) * 0.5, tagY + tagH * 0.5 + 1);
-
   const barX = tagX + 3;
   const barY = tagY + tagH + 3;
   const barW = tagW - 6;
@@ -1353,12 +1438,17 @@ function drawWorker(w, meta, now) {
   ctx.fillStyle = nameColor;
   ctx.fillRect(barX, barY, Math.round(barW * ratio), barH);
 }
-
 function render(now) {
   const ctx = V.ctx;
   const c = V.canvas;
   ctx.clearRect(0, 0, c.width, c.height);
-
+  ctx.save();
+  if (V.shake.active) {
+    const progress = V.shake.t / V.shake.duration;
+    const decay = Math.max(0, 1 - progress);
+    const amp = V.shake.amp * decay;
+    ctx.translate(Math.sin(now * 0.123) * amp, Math.cos(now * 0.171) * amp);
+  }
   drawSky(now);
   drawIslandUnderside(now);
   drawFloor(now);
@@ -1368,8 +1458,8 @@ function render(now) {
   drawParticles(now);
   drawLighting(now);
   drawUI(c, now);
+  ctx.restore();
 }
-
 function drawWorkers(now) {
   const ctx = V.ctx;
   for (let wi = 0; wi < V.workerStates.length; wi++) {
@@ -1387,7 +1477,6 @@ function drawWorkers(now) {
     drawWorker(w, meta, now);
   }
 }
-
 function drawParticles(now) {
   const ctx = V.ctx;
   for (let i = 0; i < V.particles.length; i++) {
@@ -1415,15 +1504,22 @@ function drawParticles(now) {
       ctx.globalAlpha = lifeRatio * 0.7;
       ctx.fillStyle = p.color;
       ctx.fillRect(Math.round(p.x - (p.size * grow) * 0.5), Math.round(p.y - (p.size * grow) * 0.5), Math.round(p.size * grow), Math.round(p.size * grow));
+    } else if (p.kind === 'firework') {
+      ctx.globalAlpha = lifeRatio;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+    } else if (p.kind === 'z') {
+      ctx.globalAlpha = lifeRatio;
+      ctx.font = 'bold 10px monospace';
+      ctx.fillStyle = p.color;
+      ctx.fillText('z', Math.round(p.x), Math.round(p.y));
     }
   }
   ctx.globalAlpha = 1;
 }
-
 function drawLighting(now) {
   const ctx = V.ctx;
   const c = V.canvas;
-  // god ray
   const gr = godRayGeometry();
   const shimmer = 0.92 + 0.08 * Math.sin(now * 0.0019);
   ctx.save();
@@ -1437,13 +1533,8 @@ function drawLighting(now) {
   ctx.closePath();
   ctx.fill();
   ctx.restore();
-
-  // dust is already moved by particle system; ensure inside beam optional
-
   const prevComposite = ctx.globalCompositeOperation;
   ctx.globalCompositeOperation = 'lighter';
-
-  // torch glow
   for (let i = 0; i < V.torchPts.length; i++) {
     const tp = V.torchPts[i];
     const pulse = 0.58 + 0.34 * Math.sin(now * 0.012 + i * 2.1) + (rand() - 0.5) * 0.14;
@@ -1457,8 +1548,6 @@ function drawLighting(now) {
     ctx.arc(tp.x, tp.y, radius, 0, Math.PI * 2);
     ctx.fill();
   }
-
-  // worker lanterns
   for (let wi = 0; wi < V.workerStates.length; wi++) {
     const w = V.workerStates[wi];
     const lx = Math.round(w.x) + 9;
@@ -1473,26 +1562,49 @@ function drawLighting(now) {
     ctx.fillStyle = '#fff3b0';
     ctx.fillRect(lx - 1, ly - 1, 2, 2);
   }
-
   ctx.globalCompositeOperation = prevComposite;
-
-  // vignette
   const vg = ctx.createRadialGradient(c.width * 0.5, c.height * 0.5, c.width * 0.28, c.width * 0.5, c.height * 0.5, c.width * 0.82);
   vg.addColorStop(0, 'rgba(0,0,0,0)');
   vg.addColorStop(1, 'rgba(0,0,0,0.35)');
   ctx.fillStyle = vg;
   ctx.fillRect(0, 0, c.width, c.height);
-
-  // scanlines
   ctx.fillStyle = 'rgba(0,0,0,0.03)';
   for (let y = 0; y < c.height; y += 3) {
     ctx.fillRect(0, y, c.width, 1);
   }
 }
-
 function drawUI(c, now) {
   const ctx = V.ctx;
-
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < V.xpTexts.length; i++) {
+    const xp = V.xpTexts[i];
+    const a = Math.max(0, 1 - (xp.t / xp.duration));
+    if (a <= 0) continue;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = '#ffe066';
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText('+1 XP', Math.round(xp.x), Math.round(xp.y));
+  }
+  ctx.globalAlpha = 1;
+  if (V.levelUp.active) {
+    const f = V.levelUp;
+    const a = f.t < 1.5 ? 1 : Math.max(0, 1 - (f.t - 1.5) / 0.5);
+    if (a > 0) {
+      ctx.globalAlpha = a;
+      ctx.fillStyle = 'rgba(0,0,0,0.28)';
+      ctx.fillRect(c.width * 0.5 - 100, c.height * 0.5 - 42, 200, 84);
+      ctx.strokeStyle = '#facc15';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(c.width * 0.5 - 100, c.height * 0.5 - 42, 200, 84);
+      ctx.fillStyle = '#facc15';
+      ctx.font = 'bold 34px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('LEVEL UP!', c.width * 0.5, c.height * 0.5);
+      ctx.textAlign = 'left';
+      ctx.globalAlpha = 1;
+    }
+  }
   if (V.xpFlash.active) {
     const f = V.xpFlash;
     const a = Math.max(0, 1 - (f.t / f.duration));
@@ -1506,17 +1618,14 @@ function drawUI(c, now) {
       ctx.globalAlpha = a;
       ctx.fillStyle = '#ffe066';
       ctx.font = 'bold 12px monospace';
-      ctx.textBaseline = 'middle';
       ctx.fillText('+XP', fx - 12, fy);
       ctx.globalAlpha = 1;
     }
   }
-
   const pendingCount = V.allTasks.filter(function (t) { return t.status === 'pending'; }).length;
   const doneCount = V.allTasks.filter(function (t) { return t.status === 'done'; }).length;
   const failedCount = V.allTasks.filter(function (t) { return t.status === 'failed'; }).length;
   const totalCount = V.allTasks.length;
-
   const topH = 34;
   ctx.fillStyle = '#0a0d14';
   ctx.fillRect(0, 0, c.width, topH);
@@ -1544,12 +1653,10 @@ function drawUI(c, now) {
   ctx.fillStyle = '#e5e7eb';
   ctx.font = '12px monospace';
   ctx.fillText('Pending: ' + pendingCount + '   Done: ' + doneCount + '   Failed: ' + failedCount + '   Total: ' + totalCount, c.width - 360, 17);
-
   drawRightPanel(c, now, doneCount, totalCount);
   drawChat(c);
   drawBottomBar(c, doneCount, totalCount);
 }
-
 function drawRightPanel(c, now, doneCount, totalCount) {
   const ctx = V.ctx;
   const panelW = 232;
@@ -1569,7 +1676,6 @@ function drawRightPanel(c, now, doneCount, totalCount) {
   ctx.textAlign = 'center';
   ctx.fillText('QUEST LOG', panelX + panelW * 0.5, panelY + 16);
   ctx.textAlign = 'left';
-
   const rowH = 20;
   const startY = panelY + 36;
   let y = startY;
@@ -1606,7 +1712,6 @@ function drawRightPanel(c, now, doneCount, totalCount) {
       else if (t.status === 'failed') glyph = '\u2717';
       else if (t.status === 'in_progress') glyph = '\u25B6';
       ctx.fillText(glyph, panelX + 10, y + 8);
-
       const title = String(t.title || t.id || '');
       const maxChars = 22;
       const shown = title.length > maxChars ? title.slice(0, maxChars - 1) + '\u2026' : title;
@@ -1629,7 +1734,6 @@ function drawRightPanel(c, now, doneCount, totalCount) {
     y += 5;
   }
 }
-
 function drawChat(c) {
   const ctx = V.ctx;
   const bottomH = 52;
@@ -1661,7 +1765,6 @@ function drawChat(c) {
     ctx.fillText(shown, px, y);
   }
 }
-
 function drawBottomBar(c, doneCount, totalCount) {
   const ctx = V.ctx;
   const bottomH = 52;
@@ -1670,13 +1773,11 @@ function drawBottomBar(c, doneCount, totalCount) {
   ctx.fillRect(0, bottomY, c.width, bottomH);
   ctx.fillStyle = '#d4af37';
   ctx.fillRect(0, bottomY, c.width, 2);
-
   ctx.fillStyle = '#f3d37a';
   ctx.font = 'bold 14px monospace';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
   ctx.fillText('LVL ' + doneCount, 18, bottomY + bottomH * 0.5);
-
   const barX = 92;
   const barY = bottomY + 12;
   const barW = c.width - 190;
@@ -1703,7 +1804,6 @@ function drawBottomBar(c, doneCount, totalCount) {
   ctx.fillText('MAP LEVEL ' + V.mapLevel + '/9', c.width - 16, bottomY + bottomH * 0.5);
   ctx.textAlign = 'left';
 }
-
 if (typeof window !== 'undefined') {
   window.init = init;
 }
