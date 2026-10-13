@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T13:01:51Z",
+    "checked_at": "2026-10-13T13:23:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -396,15 +396,16 @@
     {
       "id": "T39",
       "title": "P4: charter \u2014 controls (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_controls.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_controls.js /opt/data/cache/scratch/t39_check.mjs && node --check /opt/data/cache/scratch/t39_check.mjs && grep -q \"window.GuildControls\" /opt/data/cache/scratch/t39_check.mjs && head -1 tasks_out/worker_controls.js | grep -qv '^worker_' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 first-visit controls card \u2014 window.GuildControls = { dismissed: false, visible: true }:\n1. On first update after V.gameState === 'play', show a parchment card center-bottom (dark parchment #1c1a16, gold #d4af37 border, about 340x150px, clipped): title 'GUILD ORIENTATION', then lines: 'WASD / arrows \u2014 walk', 'E \u2014 talk, pet, endorse, read', 'drag \u2014 pan camera, wheel \u2014 zoom', '1-4 \u2014 emotes', 'P \u2014 patron license', and a blinking '[ press any key ]'.\n2. Any keydown or click dismisses it with a 0.3s fade; never blocks after first dismiss (session-only, no localStorage); if dismissed it stays hidden for the session.\n3. Gold accents on the header; body text 10px monospace, fitText discipline, everything clipped to the card.\n4. Never intercept keys the other modules use \u2014 listen passively, do not preventDefault.\n5. Zero exceptions when V is absent."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 first-visit controls card \u2014 window.GuildControls = { dismissed: false, visible: true }:\n1. On first update after V.gameState === 'play', show a parchment card center-bottom (dark parchment #1c1a16, gold #d4af37 border, about 340x150px, clipped): title 'GUILD ORIENTATION', then lines: 'WASD / arrows \u2014 walk', 'E \u2014 talk, pet, endorse, read', 'drag \u2014 pan camera, wheel \u2014 zoom', '1-4 \u2014 emotes', 'P \u2014 patron license', and a blinking '[ press any key ]'.\n2. Any keydown or click dismisses it with a 0.3s fade; never blocks after first dismiss (session-only, no localStorage); if dismissed it stays hidden for the session.\n3. Gold accents on the header; body text 10px monospace, fitText discipline, everything clipped to the card.\n4. Never intercept keys the other modules use \u2014 listen passively, do not preventDefault.\n5. Zero exceptions when V is absent.",
+      "updated_at": "2026-10-13T13:24:33Z"
     },
     {
       "id": "T40",
