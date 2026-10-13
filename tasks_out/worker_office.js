@@ -14,6 +14,12 @@ function init(canvas, apiBase) {
   V.lastTime = (typeof performance !== 'undefined' ? performance.now() : Date.now());
   requestAnimationFrame(frame);
 }
+const BUILDINGS = [
+  { project: 'P1', gx: -2, gy: 0, h: 28, wall: '#6b4a2d', roof: '#8b5a2b', sign: 'parchment' },
+  { project: 'P2', gx: 0, gy: -2, h: 36, wall: '#40404f', roof: '#5a5a6b', sign: 'flask' },
+  { project: 'P3', gx: 1, gy: 0, h: 30, wall: '#52525b', roof: '#71717a', sign: 'anvil' },
+  { project: 'P4', gx: 0, gy: 1, h: 29, wall: '#7a5a44', roof: '#9a7a5e', sign: 'brush' }
+];
 const V = {
   canvas: null,
   ctx: null,
@@ -295,6 +301,21 @@ function parseDeskRaw(task) {
   if (m) return parseInt(m[0], 10);
   return null;
 }
+function parseProject(title, workerIndex) {
+  const text = String(title == null ? '' : title);
+  const m = text.match(/^\s*(P[1-4])\s*:/i);
+  if (m) return m[1].toUpperCase();
+  return 'W' + (workerIndex == null ? 0 : workerIndex);
+}
+function projectBuildingIndex(project) {
+  for (let i = 0; i < BUILDINGS.length; i++) if (BUILDINGS[i].project === project) return i;
+  return null;
+}
+function workerStateLabel(meta) {
+  const tasks = (meta && Array.isArray(meta.tasks)) ? meta.tasks : [];
+  const allDone = tasks.length === 0 || tasks.every(function (t) { return t.status === 'done'; });
+  return allDone ? 'IDLE' : 'WORKING';
+}
 function chooseFocus(tasks) {
   const priority = ['failed', 'pending', 'in_progress', 'done'];
   for (let p = 0; p < priority.length; p++) {
@@ -341,7 +362,10 @@ function ensureWorkerStates(count) {
       tasks: [],
       flash: { active: false, t: 0, duration: 0.9, count: 0 },
       xpFlash: { active: false, t: 0, duration: 1.1 },
-      name: ''
+      name: '',
+      workerState: 'IDLE',
+      project: null,
+      zTimer: 2 + rand() * 4
     };
     V.workerStates.push(st);
   }
@@ -383,11 +407,13 @@ function normalizeBoard(data) {
       if (desk == null) desk = j % V.desks.length;
       if (oneBased) desk = desk - 1;
       desk = ((desk % V.desks.length) + V.desks.length) % V.desks.length;
+      const taskTitle = (raw.title != null ? raw.title : (raw.name != null ? raw.name : ('Task ' + (j + 1))));
       const task = {
         id: (raw.id != null ? raw.id : (raw.key != null ? raw.key : (raw.name != null ? raw.name : ('task_' + j)))),
-        title: (raw.title != null ? raw.title : (raw.name != null ? raw.name : ('Task ' + (j + 1)))),
+        title: taskTitle,
         status: mapStatus(raw.status != null ? raw.status : (raw.state != null ? raw.state : raw.phase)),
-        desk: desk
+        desk: desk,
+        project: parseProject(taskTitle, i)
       };
       tasks.push(task);
     }
@@ -407,6 +433,9 @@ function normalizeBoard(data) {
     const st = V.workerStates[i];
     st.index = i;
     st.name = nw.name;
+    st.workerState = workerStateLabel(nw);
+    const focus0 = chooseFocus(nw.tasks);
+    st.project = focus0 ? focus0.project : null;
     if (newDone > 0) {
       st.flash.active = true;
       st.flash.t = 0;
@@ -430,7 +459,6 @@ function normalizeBoard(data) {
     } else {
       st.mode = 'idle';
       st.targetDesk = null;
-      idleAdvance(st);
     }
     for (let t = 0; t < nw.tasks.length; t++) if (nw.tasks[t].status === 'done') totalDone++;
   }
@@ -449,7 +477,7 @@ function normalizeBoard(data) {
   if (newSteps > V.growthStep) V.growthStep = newSteps;
   V.mapLevel = V.growthStep + 1;
   updateGrid();
-  if (V.primeBaseline) { V.primeBaseline = false; prevTotalDone = totalDone; } // first poll after load: seed baseline, no confetti
+  if (V.primeBaseline) { V.primeBaseline = false; prevTotalDone = totalDone; }
   if (totalDone > prevTotalDone) {
     V.levelUp = { active: true, t: 0, duration: 2 };
     V.shake = { active: true, t: 0, duration: 0.3, amp: 3 };
@@ -481,11 +509,8 @@ function normalizeBoard(data) {
   V.worker = V.workerStates.length ? V.workerStates[0] : null;
 }
 function idleAdvance(w) {
-  if (w.idleTarget == null) w.idleTarget = 0;
-  if (w.targetDesk == null) {
-    w.targetDesk = w.idleTarget;
-    w.idleArrivedAt = 0;
-  }
+  if (!w) return;
+  w.idleTarget = (w.index == null ? 0 : w.index);
 }
 function easeOutCubic(t) {
   t = Math.max(0, Math.min(1, t));
@@ -697,9 +722,16 @@ function update(dt) {
     const workerMeta = V.workers[wi] || {};
     const tasks = Array.isArray(workerMeta.tasks) ? workerMeta.tasks : (Array.isArray(w.tasks) ? w.tasks : []);
     w.tasks = tasks;
-    if (tasks.length === 0 || chooseFocus(tasks) == null) {
+    const allDone = tasks.length === 0 || tasks.every(function (t) { return t.status === 'done'; });
+    const workingState = !allDone;
+    w.workerState = workingState ? 'WORKING' : 'IDLE';
+    const focus = chooseFocus(tasks);
+    if (allDone) {
       w.mode = 'idle';
-      idleAdvance(w);
+    } else if (focus) {
+      if (w.mode === 'idle' || w.mode !== 'done') w.mode = focus.status;
+    } else {
+      w.mode = 'idle';
     }
     if (w.flash.active) {
       w.flash.t += dt;
@@ -713,23 +745,27 @@ function update(dt) {
       const next = tasks.find(function (t) { return t.status !== 'done' && t.id !== w.lastDoneId; }) || tasks.find(function (t) { return t.status !== 'done'; });
       if (next) {
         w.mode = next.status;
-        w.targetDesk = next.desk;
       } else {
         w.mode = 'idle';
-        w.targetDesk = null;
-        idleAdvance(w);
       }
     }
     let target = null;
-    if (w.targetDesk != null && V.desks[w.targetDesk]) {
-      const d = V.desks[w.targetDesk];
-      target = { x: d.x + d.w * 0.5 - 6, y: d.y + d.h + 3 };
-    }
-    if (!target && w.mode === 'idle') {
-      idleAdvance(w);
-      if (w.targetDesk != null && V.desks[w.targetDesk]) {
+    if (!workingState) {
+      w.mode = 'idle';
+      target = campfireSitPos(w.index);
+    } else {
+      const project = (focus && focus.project) ? focus.project : w.project;
+      const bi = projectBuildingIndex(project);
+      if (bi != null) target = buildingWorkSpot(bi);
+      else if (w.targetDesk != null && V.desks[w.targetDesk]) {
         const d = V.desks[w.targetDesk];
         target = { x: d.x + d.w * 0.5 - 6, y: d.y + d.h + 3 };
+      } else if (focus != null && focus.desk != null && V.desks[focus.desk]) {
+        const d = V.desks[focus.desk];
+        w.targetDesk = focus.desk;
+        target = { x: d.x + d.w * 0.5 - 6, y: d.y + d.h + 3 };
+      } else {
+        target = { x: w.x, y: w.y };
       }
     }
     if (target) {
@@ -754,14 +790,8 @@ function update(dt) {
         w.x = target.x;
         w.y = target.y;
         w.atDesk = true;
-        if (w.mode === 'idle') {
+        if (!workingState) {
           if (!w.idleArrivedAt) w.idleArrivedAt = (typeof performance !== 'undefined' ? performance.now() : Date.now());
-          const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
-          if (now - w.idleArrivedAt > 1400) {
-            w.idleTarget = (w.targetDesk + 1 + Math.floor(rand() * 2)) % V.desks.length;
-            w.targetDesk = null;
-            w.idleArrivedAt = 0;
-          }
         }
       }
     } else {
@@ -779,10 +809,19 @@ function update(dt) {
       w.walkTimer = 0;
       w.bob += dt * 2.2;
     }
-    if (w.mode === 'in_progress' && w.atDesk) {
+    if (workingState && (w.mode === 'in_progress' || w.mode === 'pending') && w.atDesk) {
       w.typingPhase += dt * 7;
     } else {
       w.typingPhase += dt * 0.6;
+    }
+    if (!workingState) {
+      w.zTimer -= dt;
+      if (w.zTimer <= 0) {
+        V.particles.push({ id: V.particleId++, kind: 'z', x: Math.round(w.x) + 4, y: Math.round(w.y) - 12, vx: (rand() - 0.5) * 4, vy: -12 - rand() * 5, phase: rand() * Math.PI * 2, life: 1.6 + rand() * 0.8, age: 0, size: 2, color: '#e8e6df' });
+        w.zTimer = 3 + rand() * 4;
+      }
+    } else {
+      w.zTimer = 2 + rand() * 3;
     }
   }
   if (V.mapGlint.active) {
@@ -859,6 +898,21 @@ function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 function guildCatPos() {
   const base = iso(1, 1);
   return { x: Math.round(base.x + 8), y: Math.round(base.y - 6) };
+}
+function buildingWorkSpot(index) {
+  const b = BUILDINGS[index];
+  const p = iso(b.gx, b.gy);
+  return { x: Math.round(p.x + 2), y: Math.round(p.y + 12) };
+}
+function campfireBase() {
+  const base = iso(0, -1);
+  return { x: Math.round(base.x + 12), y: Math.round(base.y + 22) };
+}
+function campfireSitPos(index) {
+  const base = campfireBase();
+  const offsets = [{ x: -12, y: 4 }, { x: 12, y: 6 }, { x: 0, y: 8 }];
+  const off = offsets[(index == null ? 0 : index) % offsets.length];
+  return { x: base.x + off.x, y: base.y + off.y };
 }
 function drawSky(now) {
   const ctx = V.ctx;
@@ -1081,6 +1135,93 @@ function drawFloor(now) {
     }
   }
 }
+function drawBuildings(now) {
+  const ctx = V.ctx;
+  if (!V.grid) return;
+  const lit = [false, false, false, false];
+  for (let i = 0; i < V.allTasks.length; i++) {
+    const t = V.allTasks[i];
+    if (!t) continue;
+    const bi = projectBuildingIndex(t.project);
+    if (bi == null) continue;
+    if (t.status === 'pending' || t.status === 'in_progress') lit[bi] = true;
+  }
+  for (let i = 0; i < BUILDINGS.length; i++) {
+    const b = BUILDINGS[i];
+    const pt = iso(b.gx, b.gy);
+    const x = Math.round(pt.x);
+    const y = Math.round(pt.y);
+    const pulse = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(now * 0.007 + i));
+    ctx.fillStyle = 'rgba(0,0,0,0.22)';
+    ctx.fillRect(x - 14, y - 2, 28, 4);
+    ctx.fillStyle = b.wall;
+    ctx.fillRect(x - 13, y - b.h, 26, b.h);
+    ctx.fillStyle = 'rgba(0,0,0,0.20)';
+    ctx.fillRect(x - 13, y - b.h, 7, b.h);
+    ctx.fillStyle = b.roof;
+    ctx.beginPath();
+    ctx.moveTo(x, y - b.h - 7);
+    ctx.lineTo(x + 15, y - b.h + 3);
+    ctx.lineTo(x, y - b.h + 13);
+    ctx.lineTo(x - 15, y - b.h + 3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#2b1d0e';
+    ctx.fillRect(x - 3, y - 8, 6, 8);
+    const winX = x - 5;
+    const winY = y - b.h + 8;
+    if (lit[i]) {
+      ctx.globalAlpha = 0.42 * pulse;
+      ctx.fillStyle = '#ffc27a';
+      ctx.fillRect(winX - 4, winY - 4, 18, 16);
+      ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = lit[i] ? '#ffe7b8' : '#262633';
+    ctx.fillRect(winX, winY, 10, 8);
+    ctx.strokeStyle = '#111111';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(winX, winY, 10, 8);
+    if (i === 0) {
+      ctx.fillStyle = '#5a3f25';
+      ctx.fillRect(x + 10, y - b.h - 16, 2, 14);
+      ctx.fillStyle = '#f4e8c1';
+      ctx.fillRect(x + 4, y - b.h - 24, 18, 12);
+      ctx.fillStyle = '#6b4a2d';
+      ctx.fillRect(x + 6, y - b.h - 20, 14, 1);
+      ctx.fillRect(x + 6, y - b.h - 16, 14, 1);
+    } else if (i === 1) {
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x + 8, y - b.h - 18, 2, 14);
+      ctx.fillStyle = '#2d6a4f';
+      ctx.fillRect(x + 3, y - b.h - 26, 14, 14);
+      ctx.fillStyle = '#d1fae5';
+      ctx.fillRect(x + 6, y - b.h - 22, 8, 8);
+      ctx.fillStyle = '#065f46';
+      ctx.fillRect(x + 8, y - b.h - 26, 4, 4);
+    } else if (i === 2) {
+      ctx.fillStyle = '#6b7280';
+      ctx.fillRect(x + 8, y - b.h - 16, 2, 14);
+      ctx.fillStyle = '#9ca3af';
+      ctx.fillRect(x + 3, y - b.h - 24, 16, 10);
+      ctx.fillStyle = '#4b5563';
+      ctx.fillRect(x + 6, y - b.h - 21, 10, 4);
+      ctx.fillRect(x + 5, y - b.h - 17, 3, 3);
+      ctx.fillRect(x + 12, y - b.h - 17, 3, 3);
+    } else {
+      ctx.fillStyle = '#6b7280';
+      ctx.fillRect(x + 8, y - b.h - 16, 2, 14);
+      ctx.fillStyle = '#f3f4f6';
+      ctx.fillRect(x + 3, y - b.h - 24, 18, 12);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x + 6, y - b.h - 21, 10, 2);
+      ctx.fillStyle = '#3b82f6';
+      ctx.fillRect(x + 6, y - b.h - 17, 8, 2);
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(x + 6, y - b.h - 13, 6, 2);
+    }
+    ctx.globalAlpha = 1;
+  }
+}
 function drawShadows() {
   const ctx = V.ctx;
   ctx.save();
@@ -1209,6 +1350,20 @@ function drawProps(now) {
     ctx.fillRect(px + 9 + sway, py - 36, 2, 2);
     ctx.fillRect(px + 21 + sway, py - 36, 2, 2);
     ctx.fillRect(px + 12 + sway, py - 30, 12, 2);
+    const cp = campfireBase();
+    ctx.fillStyle = '#6b7280';
+    ctx.fillRect(cp.x - 12, cp.y - 3, 6, 4);
+    ctx.fillRect(cp.x - 4, cp.y - 1, 7, 4);
+    ctx.fillRect(cp.x + 4, cp.y - 4, 6, 4);
+    ctx.fillRect(cp.x - 8, cp.y + 2, 5, 3);
+    ctx.fillRect(cp.x + 1, cp.y + 1, 6, 3);
+    const frame = Math.floor(now / 170) % 3;
+    const flameH = frame === 0 ? 10 : (frame === 1 ? 13 : 8);
+    const flameW = frame === 0 ? 8 : (frame === 1 ? 10 : 6);
+    ctx.fillStyle = '#ff6b1a';
+    ctx.fillRect(cp.x - Math.round(flameW * 0.5), cp.y - flameH, flameW, flameH);
+    ctx.fillStyle = '#ffc27a';
+    ctx.fillRect(cp.x - Math.round(flameW * 0.25), cp.y - flameH + 2, Math.max(2, Math.round(flameW * 0.5)), Math.max(2, flameH - 3));
   }
   if (V.mapLevel >= 3) {
     const base = iso(1, -1);
@@ -1336,7 +1491,8 @@ function drawWorker(w, meta, now) {
   const legColor = isStep ? '#4c1d95' : '#26323f';
   const nameColor = isStep ? '#c4b5fd' : '#facc15';
   const nameBorder = isStep ? '#a78bfa' : '#facc15';
-  const bob = w.moving ? (w.walkFrame % 2 === 0 ? 0 : 1) : Math.round(Math.sin(w.bob) * 1.1);
+  const sitting = (w.mode === 'idle' && w.atDesk);
+  const bob = w.moving ? (w.walkFrame % 2 === 0 ? 0 : 1) : (sitting ? 0 : Math.round(Math.sin(w.bob) * 1.1));
   const x = Math.round(w.x);
   const y = Math.round(w.y) + bob;
   ctx.fillStyle = 'rgba(0,0,0,0.30)';
@@ -1344,10 +1500,11 @@ function drawWorker(w, meta, now) {
   const frame = w.moving ? (w.walkFrame % 4) : 0;
   const vertical = (w.facing === 'up' || w.facing === 'down');
   let leftY = y + 10, rightY = y + 10, leftH = 8, rightH = 8;
-  if (frame === 1) { leftY = y + 9; rightY = y + 12; leftH = 8; rightH = 5; }
+  if (sitting) { leftY = y + 13; rightY = y + 13; leftH = 4; rightH = 4; }
+  else if (frame === 1) { leftY = y + 9; rightY = y + 12; leftH = 8; rightH = 5; }
   else if (frame === 2) { leftY = y + 11; rightY = y + 11; leftH = 6; rightH = 6; }
   else if (frame === 3) { leftY = y + 12; rightY = y + 9; leftH = 5; rightH = 8; }
-  if (vertical) {
+  if (vertical && !sitting) {
     leftY = y + 10;
     rightY = y + 10;
     leftH = 7;
@@ -1391,6 +1548,14 @@ function drawWorker(w, meta, now) {
     ctx.fillStyle = isStep ? '#ddd6fe' : '#f1c9a5';
     ctx.fillRect(x + 1, y + 4, 3, 2);
     ctx.fillRect(x + 12, y + 4, 3, 2);
+  }
+  if ((w.mode === 'in_progress' || w.mode === 'pending') && w.atDesk) {
+    for (let k = 0; k < 3; k++) {
+      const px = x + 4 + k * 4 + Math.sin(w.typingPhase * 1.7 + k) * 2;
+      const py = y - 19 - (Math.floor(w.typingPhase * 3 + k * 1.1) % 6);
+      ctx.fillStyle = '#ffe066';
+      ctx.fillRect(Math.round(px), Math.round(py), 2, 2);
+    }
   }
   let bubbleText = null;
   let bubbleColor = '#ffffff';
@@ -1454,6 +1619,7 @@ function render(now) {
   drawSky(now);
   drawIslandUnderside(now);
   drawFloor(now);
+  drawBuildings(now);
   drawShadows();
   drawProps(now);
   drawWorkers(now);
@@ -1652,6 +1818,27 @@ function drawUI(c, now) {
   ctx.textAlign = 'center';
   ctx.fillText(statusText, c.width * 0.5, 17);
   ctx.textAlign = 'left';
+  let chipX = 228;
+  for (let i = 0; i < V.workers.length; i++) {
+    const meta = V.workers[i];
+    const name = String(meta.name || (i === 0 ? 'MISSINGNO' : 'STEP5'));
+    const label = workerStateLabel(meta);
+    const isStep = i === 1 || name.toLowerCase().indexOf('step') !== -1;
+    const accent = isStep ? '#a78bfa' : '#facc15';
+    const stateColor = label === 'WORKING' ? '#22c55e' : '#9ca3af';
+    const prefix = '[' + name + ': ';
+    ctx.font = 'bold 11px monospace';
+    ctx.fillStyle = accent;
+    ctx.fillText(prefix, chipX, 17);
+    const pw = ctx.measureText(prefix).width;
+    ctx.fillStyle = stateColor;
+    ctx.fillText(label, chipX + pw, 17);
+    const lw = ctx.measureText(label).width;
+    ctx.fillStyle = accent;
+    ctx.fillText(']', chipX + pw + lw, 17);
+    const total = ctx.measureText(prefix + label + ']').width;
+    chipX += total + 10;
+  }
   ctx.fillStyle = '#e5e7eb';
   ctx.font = '12px monospace';
   ctx.fillText('Pending: ' + pendingCount + '   Done: ' + doneCount + '   Failed: ' + failedCount + '   Total: ' + totalCount, c.width - 360, 17);

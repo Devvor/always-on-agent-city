@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T05:57:51Z",
+    "checked_at": "2026-10-13T05:58:14Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -171,9 +171,9 @@
     {
       "id": "T15",
       "title": "P4: game pass 1 \u2014 departments, working/idle states, fleet header",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:00:01Z",
       "target_file": "tasks_out/worker_office.js",
       "include_files": [
         "tasks_out/worker_office.js"
