@@ -1,0 +1,11 @@
+2026-10-13 04:40:23 S1 attempt 1 verify rc 1 out tail:                                                ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <genexpr>
+    s=open('tasks_out/WORKERS.md').read(); need=['## ','board.json','tick','verify','/bin/sh.00']; [n for n in need if n not in s] and (_ for _ in ()).throw(AssertionError(need)); print('VERIFY-OK')
+AssertionError: ['## ', 'board.json', 'tick', 'verify', '/bin/sh.00']
+
+2026-10-13 04:43:24 S1 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 04:43:24 S1 DONE on attempt 2
+2026-10-13 04:43:59 S2 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 04:43:59 S2 DONE on attempt 1

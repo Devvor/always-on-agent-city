@@ -110,3 +110,14 @@ PARSES
 2026-10-13 04:17:54 T10 attempt 2 verify rc 1 out tail: 
 2026-10-13 04:18:56 T10 attempt 3 verify rc 1 out tail: 
 2026-10-13 04:18:56 T10 FAILED no output
+2026-10-13 04:40:22 T11 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 04:40:22 T11 DONE on attempt 1
+2026-10-13 04:42:04 T12 attempt 1 verify rc 1 out tail: MISSING: [ 'grow' ]
+
+2026-10-13 04:43:27 T12 attempt 2 verify rc 1 out tail: MISSING: [ 'unlocked' ]
+
+2026-10-13 04:44:46 T12 attempt 3 verify rc 1 out tail: MISSING: [ 'step5' ]
+
+2026-10-13 04:44:46 T12 FAILED MISSING: [ 'step5' ]
+

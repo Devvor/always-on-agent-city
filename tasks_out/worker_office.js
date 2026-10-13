@@ -970,7 +970,6 @@ function drawRightPanel(c, now, doneCount, totalCount) {
     }
     y += 5;
   }
-  ctx.fillStyle = headerColor;
 }
 
 function drawChat(c) {
