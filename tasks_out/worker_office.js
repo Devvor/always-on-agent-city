@@ -1988,7 +1988,7 @@ function render(now) {
   ctx.save();
   const cam = V.camera || { x: 0, y: 0, zoom: 1 };
   ctx.translate(c.width / 2, c.height / 2);
-  ctx.scale(cam.zoom || 1);
+  ctx.scale(cam.zoom || 1, cam.zoom || 1);
   ctx.translate(-c.width / 2 + (cam.x || 0), -c.height / 2 + (cam.y || 0));
   drawIslandUnderside(now);
   drawFloor(now);

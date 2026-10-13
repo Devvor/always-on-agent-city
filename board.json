@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T06:12:46Z",
+    "checked_at": "2026-10-13T06:18:47Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -246,8 +246,8 @@
     {
       "id": "T21",
       "title": "P4: polish pass \u2014 3D orbit controls + text-fit + exposure",
-      "status": "pending",
-      "attempts": 0,
+      "status": "in_progress",
+      "attempts": 1,
       "updated_at": null,
       "target_file": "tasks_out/worker_office3d.js",
       "include_files": [
