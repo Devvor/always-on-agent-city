@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T08:45:51Z",
+    "checked_at": "2026-10-13T09:06:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -326,15 +326,16 @@
     {
       "id": "T32",
       "title": "P4: charter 3 \u2014 worker journal bubbles (fresh module, real flavor)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_journal.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_journal.js /opt/data/cache/scratch/jr_check.mjs && node --check /opt/data/cache/scratch/jr_check.mjs && head -1 tasks_out/worker_journal.js | grep -qv '^worker_' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildJournal = { timers: [], bubble: null }:\n1. Every 12-20s pick ONE idle worker (V.workerStates where workerState === 'IDLE') at random and show a thought-bubble (rounded cloud style, white border on dark fill) above them for 5s with flavor text derived from their REAL data: their name from V.workers[i].name, and a paraphrase of their newest recent_ticks line (from V.workers[i].recent_ticks; if empty use a generic idle line like 'dreams of fresh quests').\n2. The paraphrase must be short (fitText to 140px) \u2014 e.g. a tick 'MISSINGNO: DONE T22 \u2014 ...' becomes 'still proud of that title screen...'. Keep a small pool of template sentence starters ('still thinking about', 'mumbles something like', 'remembers') chosen at random.\n3. Bubbles never overlap the top HUD (keep y > 60) and fade in/out over 0.4s. Only one journal bubble at a time.\n4. Zero exceptions if recent_ticks is missing or workers array is empty."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildJournal = { timers: [], bubble: null }:\n1. Every 12-20s pick ONE idle worker (V.workerStates where workerState === 'IDLE') at random and show a thought-bubble (rounded cloud style, white border on dark fill) above them for 5s with flavor text derived from their REAL data: their name from V.workers[i].name, and a paraphrase of their newest recent_ticks line (from V.workers[i].recent_ticks; if empty use a generic idle line like 'dreams of fresh quests').\n2. The paraphrase must be short (fitText to 140px) \u2014 e.g. a tick 'MISSINGNO: DONE T22 \u2014 ...' becomes 'still proud of that title screen...'. Keep a small pool of template sentence starters ('still thinking about', 'mumbles something like', 'remembers') chosen at random.\n3. Bubbles never overlap the top HUD (keep y > 60) and fade in/out over 0.4s. Only one journal bubble at a time.\n4. Zero exceptions if recent_ticks is missing or workers array is empty.",
+      "updated_at": "2026-10-13T09:07:36Z"
     }
   ],
   "projects": [
