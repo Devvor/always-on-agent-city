@@ -255,6 +255,32 @@
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_office3d.js /opt/data/cache/scratch/office3d_check.mjs && node --check /opt/data/cache/scratch/office3d_check.mjs && echo VERIFY-OK",
       "spec": "Update the three.js 3D guild-office client (FULL CURRENT CONTENT below; compact, under 650 lines). Keep EVERYTHING (island, workers, buildings, torches, stars, day/night if present, dispose/init contract).\n\n1. ORBIT CONTROLS (hand-rolled, no addons): mouse-drag rotates the camera around the island center (spherical coords: theta azimuth 0.02 rad/frame auto-drift when idle + drag delta; phi polar clamped 0.9-1.35 rad; radius wheel-zoom clamped 14-30). Smooth damping (lerp current->target each frame). Right-drag or shift-drag pans the target point (clamped to island bounds). Double-click resets to default view. Cursor grab/grabbing.\n2. NAMEPLATE TEXT-FIT: nameplate sprites use CanvasTexture \u2014 measure the text and pad the texture so no glyph clips at the texture edge.\n3. EXPOSURE/TONEMAP polish: renderer.toneMapping = THREE.ACESFilmicToneMapping; toneMappingExposure ~1.15; torch PointLights intensity tuned so the island reads warm at night and clean at day; subtle FogExp2 matching sky color so the island edge melts into space.\nNo external assets beyond the vendored three.module.min.js, node --check clean as ESM. Output the complete updated file."
+    },
+    {
+      "id": "T22",
+      "title": "P4: game pass 6 \u2014 opening title screen",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
+      "spec": "Update the 2D retro-MMORPG guild client (FULL CURRENT CONTENT below; compact, under 2200 lines). Keep EVERYTHING (all systems from previous passes).\n\nNEW \u2014 OPENING TITLE SCREEN (state machine: V.gameState 'title' -> 'play'):\nOn load, instead of jumping straight into the island, show a title state (~4s or until click/keypress): starfield + slow parallax clouds, a big pixel-art logotype 'WORKER GUILD ONLINE' drawn with canvas (chunky 3px letterforms or a bold pixel font effect: draw text twice, offset shadow, gold #d4af37 with dark outline), subtitle 'a free-model worker guild \u2014 $0.00 burned', and two marching worker silhouettes walking across the bottom (reuse the existing walk-cycle drawing, darkened). Blinking '[ CLICK OR PRESS ANY KEY ]' prompt. Any click/keypress or 4s timeout triggers a star-wipe transition (expanding circle mask) into the normal island view, then gameState='play' (all existing systems resume; sounds/title only ever in 'title'). The 5s board polling should still run behind the title. Everything pure canvas. Output the complete updated file."
+    },
+    {
+      "id": "T23",
+      "title": "P4: game pass 7 \u2014 playable visitor (WASD + talk)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
+      "spec": "Update the 2D guild client (FULL CURRENT CONTENT below; compact, under 2300 lines). Keep EVERYTHING (title screen, camera pan/zoom, departments, states, weather, bubbles, plaques, sound, cat, FX).\n\nNEW \u2014 THE PLAYER IS A VISITOR:\n1. A white-robed visitor sprite (reuse the worker draw code with a white/light palette, small gold sash) spawns at the island's south edge when gameState='play'.\n2. WASD / arrow keys walk the visitor across the FLOOR TILES only (collision: the visitor's tile position must be a floor tile from the current grown layout; camera pan/zoom independent as before). Walk uses the same iso projection; facing directions + 4-frame walk cycle; speed ~2.2 tiles/s. Smooth diagonal clamping, no sliding through buildings (building tiles block).\n3. E or Space near a worker (<1.5 tiles) opens a DIALOGUE BOX (bottom-center, parchment-dark, gold border, fitText discipline): worker name + their REAL state: if working: 'I'm on P4 \u2014 art passes. Last: <last done task title>' (from payload data); if idle: 'All my quests are done. The cat takes shifts.' Close on E/Space/click. While the dialogue is open, movement pauses.\n4. The visitor is drawn in the correct z-order (sorted with workers/props by iso y).\nEverything pure canvas + keyboard listeners on window (prevent default only for handled keys; never block typing elsewhere \u2014 the page has no inputs so it is safe). Output the complete updated file."
     }
   ],
   "projects": [
