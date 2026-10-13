@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T05:46:54Z",
+    "checked_at": "2026-10-13T05:57:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -167,6 +167,45 @@
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
       "spec": "Update the existing retro-MMORPG floating-island office client (FULL CURRENT CONTENT below \u2014 it is ~1700 lines; keep the file under 1800 lines by being COMPACT: minimal comments, no blank-line padding). BUDGET DISCIPLINE: output the COMPLETE file in one code block; do not spend effort re-formatting unchanged sections \u2014 reproduce them as-is.\n\nKeep EVERYTHING working: init(canvas, apiBase), 5s polling, both payload shapes, quest log, chat, bottom bar, multi-worker walk cycles, island + sky + lighting + particles, camera zoom-out, OFFLINE handling, rAF, no localStorage, no external assets, pure canvas, node --check must pass.\n\nADD these features (canvas primitives only, ring-gated by mapLevel so the island decorates as it grows):\n1. PROPS: GUILD BANNER on a pole (dark red cloth with gold pixel emblem, cloth sways via sin) near floor core (mapLevel>=1); BOOKSHELF (wood frame, rows of colored book spines) (mapLevel>=3); FORGE: stone block + anvil + pulsing orange coals + tiny smoke wisps (mapLevel>=5); TREASURE PILE of gold coins with occasional glint (mapLevel>=7).\n2. GUILD CAT: small sleeping pixel CAT curled near the treasure pile (mapLevel>=7): body ellipse, ears, closed-eye line, tail flicks every few seconds, 2 rising 'z' particles. Charming, minimal pixels.\n3. XP FX: when a worker's done-count increases between polls, spawn floating '+1 XP' gold text (rises ~20px, fades) above that worker + small ember burst. When total LVL increases: 2s gold 'LEVEL UP!' banner overlay center-canvas, 20-particle ember firework, 0.3s decaying screenshake (translate \u00b13px). All from payload diffs, never localStorage.\nKeep props BEHIND workers in draw order. Output the complete updated file.\n\nREMINDER: your previous attempt delivered everything EXCEPT the forge and treasure pile \u2014 make sure ALL FOUR props are present this time (banner mapLevel>=1, bookshelf mapLevel>=3, FORGE with pulsing coals + smoke wisps mapLevel>=5, TREASURE PILE of gold coins with glint mapLevel>=7)."
+    },
+    {
+      "id": "T15",
+      "title": "P4: game pass 1 \u2014 departments, working/idle states, fleet header",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
+      "spec": "Update the retro-MMORPG floating-island guild client (FULL CURRENT CONTENT below; keep compact, file under 1900 lines). Keep EVERYTHING: init(canvas, apiBase), 5s polling, both payload shapes, island/sky/lighting/particles/props/cat/FX, camera zoom-out, quest log, chat, bottom bar, walk cycles, OFFLINE handling, rAF, no localStorage, no external assets, pure canvas, node --check clean.\n\nNEW GAME SYSTEMS:\n1. DEPARTMENTS: parse each task's project prefix from its title (P1:, P2:, P3:, P4:, else the worker's own workstream). Draw 4 small themed BUILDINGS on the island mid-ring (one per project P1-P4): P1 = scriptorium hut (YT/feeds \u2014 parchment sign), P2 = testing tower (green flask sign), P3 = bench hall (anvil sign), P4 = art atelier (paintbrush sign). Each building is a 2.5D box with a sign + a window. A building's WINDOW LIGHTS UP (warm glow) while any of that project's tasks is pending or in_progress; done-projects' windows are dark. Workers path to and stand AT the building of the project their current/latest task belongs to, then work there (typing animation: small keystroke sparks above their head).\n2. WORKING vs IDLE STATES: a worker with any task pending or in_progress = WORKING (at its building, typing sparks, no wandering); a worker whose tasks are ALL done = IDLE (walks to the campfire \u2014 add a small stone campfire near the guild banner with a 3-frame flame animation \u2014 and sits, occasional 'z' particles). State comes only from the payload.\n3. FLEET HEADER: extend the top bar with per-worker status chips: [MISSINGNO: WORKING] or [MISSINGNO: IDLE] (gold) and [STEP5: ...] (violet), colored by state (green WORKING, dim gray IDLE).\nDraw order: buildings BEHIND workers. Output the complete updated file."
+    },
+    {
+      "id": "T16",
+      "title": "P4: game pass 2 \u2014 day/night cycle + weather",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
+      "spec": "Update the retro-MMORPG floating-island guild client (FULL CURRENT CONTENT below; compact, under 2000 lines). Keep EVERYTHING from the previous passes (all systems listed in your prior spec text: payload contract, island, sky, lighting, particles, props, cat, FX, departments, states, fleet header, camera zoom-out, UI panels, walk cycles).\n\nNEW:\n1. DAY/NIGHT CYCLE synced to the REAL clock (Date): compute a 0-1 day phase from the current local hour (cycle: dawn 5-7h, day 7-17h, dusk 17-19h, night 19-5h). Sky gradient lerps between night indigo and a warm pale day-blue; stars fade out by day (alpha 0 by 10h), the MOON is replaced by a small pixel SUN during day; torch glow intensity doubles at night, near-zero at noon; god ray visible only during day. A small 24h clock dial in the top-right of the sky (pixel sun/moon on a semicircle arc) so the cycle is readable.\n2. WEATHER: deterministic from the date (e.g. hash of YYYY-MM-DD): 70% clear, 20% rain, 10% snow. RAIN: 60 streaking droplets falling over the island area (slight diagonal), splash ripple pixels on the floor tiles, subtle darker sky tint, banner/vines sway faster. SNOW: 40 drifting flakes (slow sway fall), settling white pixels on the outer floor ring edges (thin, don't hide tiles), slightly brighter night sky. Weather label small in the top bar (WEATHER: RAIN).\n3. WIND: banner cloth, vines, and cat tail respond to a wind value = sin(dayPhase) + weather factor.\nAll deterministic from Date + payload, no randomness across frames for weather state (particle positions may use the seeded rnd). Output the complete updated file."
+    },
+    {
+      "id": "T17",
+      "title": "P4: game pass 3 \u2014 worker chat bubbles + milestone plaques",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
+      "spec": "Update the retro-MMORPG floating-island guild client (FULL CURRENT CONTENT below; compact, under 2100 lines). Keep EVERYTHING from all previous passes (payload contract, island, sky, day/night, weather, lighting, particles, props, cat, FX, departments, working/idle states, fleet header, camera zoom-out, UI, walk cycles).\n\nNEW:\n1. CHAT BUBBLES: each worker's MOST RECENT tick line (from their recent_ticks: latest line matching their name or just the latest) shows as a small pixel speech bubble above their sprite for ~6 seconds after the payload updates, then fades. Bubble: dark box, gold/violet border matching the worker, tail triangle, text 9-10px monospace, truncated to ~30 chars. If both workers have fresh lines, both bubble (staggered vertically if they overlap).\n2. MILESTONE PLAQUES: a small stone PLAQUE WALL along one back edge of the island. Plaques appear based on REAL derived milestones, one per: total done >= 5 ('FIRST FIVE'), >= 10 ('DOUBLE DIGITS'), >= 15 ('FIFTEEN SHIPPED'), failed==0 with done>=10 ('FLAWLESS'), mapLevel==9 ('ISLAND MAXED'), and 2+ workers with >=2 done each ('FULL GUILD'). Each earned plaque = small gold-rimmed stone chip with a 2-3 letter glyph; unearned = empty dark socket. Derived ONLY from the live payload, never hardcoded booleans.\nOutput the complete updated file."
     }
   ],
   "projects": [
