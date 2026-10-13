@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T04:12:52Z",
+    "checked_at": "2026-10-13T04:15:55Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -103,9 +103,9 @@
     {
       "id": "T10",
       "title": "P4: retro-MMORPG restyle of the office client",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-13T04:18:56Z",
       "target_file": "tasks_out/worker_office.js",
       "include_files": [
         "tasks_out/worker_office.js"
