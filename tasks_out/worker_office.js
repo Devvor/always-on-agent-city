@@ -7,6 +7,16 @@ function init(canvas, apiBase) {
   V.apiBase = String(apiBase || '').replace(/\/+$/, '');
   V.ctx.imageSmoothingEnabled = false;
   V.nowTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  V.canvas.style.cursor = 'grab';
+  if (!V._inputBound) {
+    V._inputBound = true;
+    canvas.addEventListener('mousedown', onCanvasMouseDown);
+    canvas.addEventListener('mousemove', onCanvasMouseMove);
+    canvas.addEventListener('mouseup', onCanvasMouseUp);
+    canvas.addEventListener('mouseleave', onCanvasMouseLeave);
+    canvas.addEventListener('wheel', onCanvasWheel, { passive: false });
+    canvas.addEventListener('dblclick', onCanvasDblClick);
+  }
   buildScene();
   fetchBoard();
   if (V.pollTimer) clearInterval(V.pollTimer);
@@ -72,7 +82,10 @@ const V = {
   wind: 0,
   rainDrops: [],
   snowFlakes: [],
-  workerChatBubbles: []
+  workerChatBubbles: [],
+  camera: { x: 0, y: 0, zoom: 1 },
+  cameraDrag: { active: false, startX: 0, startY: 0, pan0X: 0, pan0Y: 0 },
+  _inputBound: false
 };
 function rand() {
   V.rnd = (V.rnd * 1664525 + 1013904223) >>> 0;
@@ -110,6 +123,71 @@ function updateGrid() {
              tileW: 70 * scale, tileH: 35 * scale };
 }
 function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+function fitText(text, maxW) {
+  text = (text == null ? '' : String(text));
+  const ctx = V.ctx;
+  if (!ctx) return text;
+  if (!isFinite(maxW) || maxW <= 0) return '';
+  if (ctx.measureText(text).width <= maxW) return text;
+  const ell = '\u2026';
+  for (let i = text.length; i > 0; i--) {
+    const cand = text.slice(0, i) + ell;
+    if (ctx.measureText(cand).width <= maxW) return cand;
+  }
+  return ctx.measureText(ell).width <= maxW ? ell : '';
+}
+function canvasPoint(e) {
+  const canvas = V.canvas;
+  const rect = canvas.getBoundingClientRect();
+  return { x: (e.clientX - rect.left) * (canvas.width / rect.width), y: (e.clientY - rect.top) * (canvas.height / rect.height) };
+}
+function onCanvasMouseDown(e) {
+  if (e.button !== 0) return;
+  const p = canvasPoint(e);
+  V.cameraDrag = { active: true, startX: p.x, startY: p.y, pan0X: V.camera.x, pan0Y: V.camera.y };
+  if (V.canvas) V.canvas.style.cursor = 'grabbing';
+  e.preventDefault();
+}
+function onCanvasMouseMove(e) {
+  const p = canvasPoint(e);
+  if (V.cameraDrag && V.cameraDrag.active) {
+    const dx = p.x - V.cameraDrag.startX;
+    const dy = p.y - V.cameraDrag.startY;
+    const z = V.camera.zoom || 1;
+    V.camera.x = clamp(V.cameraDrag.pan0X + dx / z, -260, 260);
+    V.camera.y = clamp(V.cameraDrag.pan0Y + dy / z, -260, 260);
+    if (V.canvas) V.canvas.style.cursor = 'grabbing';
+  } else if (V.canvas) {
+    V.canvas.style.cursor = 'grab';
+  }
+}
+function onCanvasMouseUp() {
+  if (V.cameraDrag) V.cameraDrag.active = false;
+  if (V.canvas) V.canvas.style.cursor = 'grab';
+}
+function onCanvasMouseLeave() {
+  if (V.cameraDrag) V.cameraDrag.active = false;
+  if (V.canvas) V.canvas.style.cursor = 'default';
+}
+function onCanvasWheel(e) {
+  e.preventDefault();
+  const p = canvasPoint(e);
+  const z = V.camera.zoom || 1;
+  let nz = (e.deltaY > 0) ? z * 0.88 : z * 1.12;
+  nz = clamp(nz, 0.55, 1.6);
+  if (Math.abs(nz - z) < 0.000001) return;
+  const cx = V.canvas.width / 2;
+  const cy = V.canvas.height / 2;
+  V.camera.x = clamp(V.camera.x + (p.x - cx) * (1 / nz - 1 / z), -260, 260);
+  V.camera.y = clamp(V.camera.y + (p.y - cy) * (1 / nz - 1 / z), -260, 260);
+  V.camera.zoom = nz;
+}
+function onCanvasDblClick(e) {
+  V.camera.x = 0;
+  V.camera.y = 0;
+  V.camera.zoom = 1;
+  if (V.canvas) V.canvas.style.cursor = 'grab';
+}
 function computeDiurnal() {
   const d = new Date();
   const hour = d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600;
@@ -204,6 +282,8 @@ function buildScene() {
   V.wind = 0;
   V.rainDrops = [];
   V.snowFlakes = [];
+  V.camera = { x: 0, y: 0, zoom: 1 };
+  V.cameraDrag = { active: false, startX: 0, startY: 0, pan0X: 0, pan0Y: 0 };
   resetRng();
   V.starsSmall = [];
   for (let i = 0; i < 60; i++) {
@@ -1711,6 +1791,10 @@ function drawProps(now) {
     { earned: V.mapLevel === 9, glyph: 'MAX' },
     { earned: guildsWithTwo >= 2, glyph: 'FG' }
   ];
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(wallX, wallY, wallW, wallH);
+  ctx.clip();
   const plaqueY = Math.round(wallY + 14);
   const gap = 26;
   const totalW = (plaqueDefs.length - 1) * gap + 22;
@@ -1733,12 +1817,13 @@ function drawProps(now) {
       ctx.lineWidth = 1;
       ctx.strokeRect(px + 1, plaqueY + 1, 20, 14);
       ctx.fillStyle = '#1b1205';
-      ctx.font = 'bold 8px monospace';
+      ctx.font = 'bold 9px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(pdf.glyph, px + 11, plaqueY + 9);
+      ctx.fillText(fitText(pdf.glyph, 18), px + 11, plaqueY + 9);
     }
   }
+  ctx.restore();
   ctx.textAlign = 'left';
 }
 function drawTorch(cx, cy, index, now) {
@@ -1847,6 +1932,7 @@ function drawWorker(w, meta, now) {
     const bw = Math.max(60, bubbleText.length * 7 + 10);
     const bx = x - 10;
     const by = y - 30;
+    const shownBubble = fitText(bubbleText, bw - 10);
     ctx.fillStyle = 'rgba(255,255,255,0.94)';
     ctx.fillRect(bx, by, bw, 18);
     ctx.strokeStyle = bubbleColor;
@@ -1855,7 +1941,7 @@ function drawWorker(w, meta, now) {
     ctx.fillStyle = '#111827';
     ctx.font = '11px monospace';
     ctx.textBaseline = 'middle';
-    ctx.fillText(bubbleText, bx + 5, by + 9);
+    ctx.fillText(shownBubble, bx + 5, by + 9);
   }
   const name = (meta.name != null ? meta.name : (index === 0 ? 'MISSINGNO' : 'STEP5'));
   const tagW = 76;
@@ -1871,8 +1957,9 @@ function drawWorker(w, meta, now) {
   ctx.fillStyle = nameColor;
   ctx.font = 'bold 9px monospace';
   ctx.textBaseline = 'middle';
-  const metrics = ctx.measureText(name);
-  ctx.fillText(name, tagX + (tagW - metrics.width) * 0.5, tagY + tagH * 0.5 + 1);
+  const shownName = fitText(name, tagW - 6);
+  const metrics = ctx.measureText(shownName);
+  ctx.fillText(shownName, tagX + (tagW - metrics.width) * 0.5, tagY + tagH * 0.5 + 1);
   const barX = tagX + 3;
   const barY = tagY + tagH + 3;
   const barW = tagW - 6;
@@ -1898,6 +1985,11 @@ function render(now) {
     ctx.translate(Math.sin(now * 0.123) * amp, Math.cos(now * 0.171) * amp);
   }
   drawSky(now);
+  ctx.save();
+  const cam = V.camera || { x: 0, y: 0, zoom: 1 };
+  ctx.translate(c.width / 2, c.height / 2);
+  ctx.scale(cam.zoom || 1);
+  ctx.translate(-c.width / 2 + (cam.x || 0), -c.height / 2 + (cam.y || 0));
   drawIslandUnderside(now);
   drawFloor(now);
   drawWeather(c, now);
@@ -1908,7 +2000,9 @@ function render(now) {
   drawWorkerChatBubbles(now);
   drawParticles(now);
   drawLighting(now);
+  ctx.restore();
   drawUI(c, now);
+  drawMinimap(c, now);
   ctx.restore();
 }
 function drawWorkers(now) {
@@ -1942,7 +2036,9 @@ function drawWorkerChatBubbles(now) {
     if (!w) continue;
     const color = b.color || workerColor(wi, (V.workers[wi] && V.workers[wi].name));
     ctx.font = '10px monospace';
-    const text = String(b.text).length > 30 ? String(b.text).slice(0, 29) + '\u2026' : String(b.text);
+    let text = String(b.text);
+    const maxBw = 160;
+    text = fitText(text, maxBw - 12);
     const textW = ctx.measureText(text).width;
     const bw = Math.max(44, Math.round(textW + 12));
     const bh = 16;
@@ -2186,10 +2282,14 @@ function drawUI(c, now) {
   ctx.fillRect(0, 0, c.width, topH);
   ctx.fillStyle = '#d4af37';
   ctx.fillRect(0, topH - 2, c.width, 2);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, c.width, topH);
+  ctx.clip();
   ctx.font = 'bold 13px monospace';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#f3d37a';
-  ctx.fillText('WORKER GUILD ONLINE', 12, 17);
+  ctx.fillText(fitText('WORKER GUILD ONLINE', 180), 12, 17);
   let statusText = V.windowStatus;
   let statusColor = '#bdc3c7';
   if (V.offline) {
@@ -2203,7 +2303,7 @@ function drawUI(c, now) {
   ctx.fillStyle = statusColor;
   ctx.font = 'bold 14px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText(statusText, c.width * 0.5, 17);
+  ctx.fillText(fitText(statusText, 120), c.width * 0.5, 17);
   ctx.textAlign = 'left';
   let chipX = 228;
   for (let i = 0; i < V.workers.length; i++) {
@@ -2213,7 +2313,12 @@ function drawUI(c, now) {
     const isStep = i === 1 || name.toLowerCase().indexOf('step') !== -1;
     const accent = isStep ? '#a78bfa' : '#facc15';
     const stateColor = label === 'WORKING' ? '#22c55e' : '#9ca3af';
-    const prefix = '[' + name + ': ';
+    const avail = c.width - chipX - 360;
+    if (avail < 50) break;
+    const fixedBits = '[' + ': ' + label + ']';
+    const nameMax = Math.max(20, avail - ctx.measureText(fixedBits).width);
+    const shownName = fitText(name, nameMax);
+    const prefix = '[' + shownName + ': ';
     ctx.font = 'bold 11px monospace';
     ctx.fillStyle = accent;
     ctx.fillText(prefix, chipX, 17);
@@ -2228,10 +2333,11 @@ function drawUI(c, now) {
   }
   ctx.fillStyle = '#e5e7eb';
   ctx.font = '12px monospace';
-  ctx.fillText('Pending: ' + pendingCount + '   Done: ' + doneCount + '   Failed: ' + failedCount + '   Total: ' + totalCount, c.width - 360, 17);
+  ctx.fillText(fitText('Pending: ' + pendingCount + '   Done: ' + doneCount + '   Failed: ' + failedCount + '   Total: ' + totalCount, 350), c.width - 360, 17);
   ctx.fillStyle = '#cbd5e1';
   ctx.font = 'bold 11px monospace';
-  ctx.fillText('WEATHER: ' + V.weather, c.width - 520, 17);
+  ctx.fillText(fitText('WEATHER: ' + V.weather, 150), c.width - 520, 17);
+  ctx.restore();
   drawRightPanel(c, now, doneCount, totalCount);
   drawChat(c);
   drawBottomBar(c, doneCount, totalCount);
@@ -2258,6 +2364,10 @@ function drawRightPanel(c, now, doneCount, totalCount) {
   const rowH = 20;
   const startY = panelY + 36;
   let y = startY;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(panelX, panelY, panelW, panelH);
+  ctx.clip();
   for (let wi = 0; wi < V.workers.length; wi++) {
     const worker = V.workers[wi];
     if (y + 16 > panelY + panelH - 8) break;
@@ -2267,7 +2377,7 @@ function drawRightPanel(c, now, doneCount, totalCount) {
     ctx.fillStyle = headerColor;
     ctx.font = 'bold 12px monospace';
     ctx.textBaseline = 'middle';
-    ctx.fillText(String(worker.name || (wi === 0 ? 'MISSINGNO' : 'STEP5')), panelX + 10, y + 8);
+    ctx.fillText(fitText(String(worker.name || (wi === 0 ? 'MISSINGNO' : 'STEP5')), panelW - 24), panelX + 10, y + 8);
     y += 18;
     const tasks = Array.isArray(worker.tasks) ? worker.tasks : [];
     for (let i = 0; i < tasks.length; i++) {
@@ -2292,9 +2402,9 @@ function drawRightPanel(c, now, doneCount, totalCount) {
       else if (t.status === 'in_progress') glyph = '\u25B6';
       ctx.fillText(glyph, panelX + 10, y + 8);
       const title = String(t.title || t.id || '');
-      const maxChars = 22;
-      const shown = title.length > maxChars ? title.slice(0, maxChars - 1) + '\u2026' : title;
       const tx = panelX + 30;
+      const maxTitleW = panelX + panelW - 8 - tx;
+      const shown = fitText(title, maxTitleW);
       if (t.status === 'done') ctx.fillStyle = 'rgba(40, 30, 20, 0.55)';
       else ctx.fillStyle = '#2b1d0e';
       ctx.fillText(shown, tx, y + 8);
@@ -2312,6 +2422,7 @@ function drawRightPanel(c, now, doneCount, totalCount) {
     }
     y += 5;
   }
+  ctx.restore();
 }
 function drawChat(c) {
   const ctx = V.ctx;
@@ -2325,24 +2436,30 @@ function drawChat(c) {
   ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
   ctx.lineWidth = 1;
   ctx.strokeRect(chatX, chatY, chatW, chatH);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(chatX, chatY, chatW, chatH);
+  ctx.clip();
   const lines = V.chatLines.slice(-6);
   const lineH = 14;
   const startY = chatY + chatH - (lines.length * lineH) - 6;
   ctx.font = '12px monospace';
   ctx.textBaseline = 'middle';
+  const maxLineW = chatW - 16;
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const y = startY + i * lineH + lineH * 0.5;
     const prefix = '[' + line.name + '] ';
+    const prefShown = fitText(prefix, maxLineW);
     ctx.fillStyle = line.color;
-    ctx.fillText(prefix, chatX + 8, y);
-    const px = chatX + 8 + ctx.measureText(prefix).width;
+    ctx.fillText(prefShown, chatX + 8, y);
+    const pw = ctx.measureText(prefShown).width;
     const raw = String(line.text || '');
-    const maxChars = 42;
-    const shown = raw.length > maxChars ? raw.slice(0, maxChars - 1) + '\u2026' : raw;
+    const shown = fitText(raw, maxLineW - pw);
     ctx.fillStyle = 'rgba(230, 210, 150, 0.78)';
-    ctx.fillText(shown, px, y);
+    ctx.fillText(shown, chatX + 8 + pw, y);
   }
+  ctx.restore();
 }
 function drawBottomBar(c, doneCount, totalCount) {
   const ctx = V.ctx;
@@ -2352,11 +2469,15 @@ function drawBottomBar(c, doneCount, totalCount) {
   ctx.fillRect(0, bottomY, c.width, bottomH);
   ctx.fillStyle = '#d4af37';
   ctx.fillRect(0, bottomY, c.width, 2);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, bottomY, c.width, bottomH);
+  ctx.clip();
   ctx.fillStyle = '#f3d37a';
   ctx.font = 'bold 14px monospace';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
-  ctx.fillText('LVL ' + doneCount, 18, bottomY + bottomH * 0.5);
+  ctx.fillText(fitText('LVL ' + doneCount, 74), 18, bottomY + bottomH * 0.5);
   const barX = 92;
   const barY = bottomY + 12;
   const barW = c.width - 190;
@@ -2376,12 +2497,73 @@ function drawBottomBar(c, doneCount, totalCount) {
   ctx.fillStyle = '#1f1708';
   ctx.font = 'bold 11px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('XP ' + doneCount + ' / ' + totalCount, barX + barW * 0.5, barY + barH * 0.5 + 1);
+  ctx.fillText(fitText('XP ' + doneCount + ' / ' + totalCount, barW - 8), barX + barW * 0.5, barY + barH * 0.5 + 1);
   ctx.textAlign = 'right';
   ctx.fillStyle = '#f3d37a';
   ctx.font = 'bold 10px monospace';
-  ctx.fillText('MAP LEVEL ' + V.mapLevel + '/9', c.width - 16, bottomY + bottomH * 0.5);
+  ctx.fillText(fitText('MAP LEVEL ' + V.mapLevel + '/9', 80), c.width - 16, bottomY + bottomH * 0.5);
   ctx.textAlign = 'left';
+  ctx.restore();
+}
+function drawMinimap(c, now) {
+  const ctx = V.ctx;
+  const size = 90;
+  const x = c.width - size - 10;
+  const y = 40;
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.62)';
+  ctx.fillRect(x, y, size, size);
+  ctx.strokeStyle = 'rgba(212,175,55,0.45)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, size, size);
+  const corners = outerCorners();
+  if (corners) {
+    let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+    for (let i = 0; i < corners.length; i++) {
+      minx = Math.min(minx, corners[i].x);
+      miny = Math.min(miny, corners[i].y);
+      maxx = Math.max(maxx, corners[i].x);
+      maxy = Math.max(maxy, corners[i].y);
+    }
+    const cx = (minx + maxx) * 0.5;
+    const cy = (miny + maxy) * 0.5;
+    const scale = Math.min((size - 10) / (maxx - minx), (size - 10) / (maxy - miny));
+    function toMm(px, py) {
+      return { x: x + size * 0.5 + (px - cx) * scale, y: y + size * 0.5 + (py - cy) * scale };
+    }
+    ctx.strokeStyle = '#6ee7b7';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i < corners.length; i++) {
+      const mm = toMm(corners[i].x, corners[i].y);
+      if (i === 0) ctx.moveTo(mm.x, mm.y); else ctx.lineTo(mm.x, mm.y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+    const cam = V.camera || { x: 0, y: 0, zoom: 1 };
+    const Cw = c.width * 0.5;
+    const Ch = c.height * 0.5;
+    const z = cam.zoom || 1;
+    const panX = cam.x || 0;
+    const panY = cam.y || 0;
+    const left = Cw + (0 - Cw) / z - panX;
+    const right = Cw + (c.width - Cw) / z - panX;
+    const top = Ch + (0 - Ch) / z - panY;
+    const bottom = Ch + (c.height - Ch) / z - panY;
+    const a = toMm(left, top);
+    const b = toMm(right, top);
+    const cc = toMm(right, bottom);
+    const d = toMm(left, bottom);
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.lineTo(cc.x, cc.y);
+    ctx.lineTo(d.x, d.y);
+    ctx.closePath();
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 if (typeof window !== 'undefined') {
   window.init = init;

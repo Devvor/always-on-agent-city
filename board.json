@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T06:11:12Z",
+    "checked_at": "2026-10-13T06:12:46Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -233,9 +233,9 @@
     {
       "id": "T20",
       "title": "P4: polish pass \u2014 text overflow discipline + drag-pan/zoom camera (2D)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:14:18Z",
       "target_file": "tasks_out/worker_office.js",
       "include_files": [
         "tasks_out/worker_office.js"
