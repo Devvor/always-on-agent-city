@@ -49,10 +49,14 @@ board and flag it in the status. Never seed a task touching anything outside
 tasks_out/.
 
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
-1. T45 GUILD ARCHIVES - reading lectern near the museum: visitor presses E to open a parchment codex panel listing the guild's REAL done quests (id + title + local date from V.allTasks), scrollable with wheel, [E] closes; ties museum + ledger into one story. Playability + self-documentation. Fresh module.
-2. T46 SPAR BREAK - quirky living-world idle event: every few minutes, if two IDLE workers are near each other, they face off for ~4s with comic emote FX (asterisk star burst, alternating hop) and a quip bubble each via the personality voices; pure overlay, never moves workers. Living world + quirky (user-blessed). Fresh module.
+1. T47 SNACK STALL - economy made visible: a stall prop near the campfire where IDLE workers with purse > 0 (read window.GuildEconomy purses if present) occasionally walk over, buy a snack (coin FX leaves their purse chip, snack in hand for 60s, tiny happiness hop), while broke workers stand nearby looking wistful (gray '...' bubble). Prices nudge up the more snacks are bought this session. Playability + economy compounding. Fresh module.
+2. T48 SCROLL RUN - playability fetch quest: 3 glowing scrolls drop near random floor tiles every few minutes; the visitor picks one up by walking over it, and delivering it to the quest board earns +5 REP (via window.GuildPurpose if present, else own counter) with a small ceremony. Turns walking into purpose. Fresh module.
 
 ## Seeded (foreman, 2026-10-13)
+- Run 4 (2026-10-13 evening): seeded to missingno - T45 guild archives, T46 spar
+  break (both from Queue; laguna NOT seeded - circuit breaker still active from
+  T38-T40; step5 not seeded, window dies ~Oct 16). Queue replenished with
+  T47 snack stall, T48 scroll run (foreman proposals).
 - Run 3 (2026-10-13 ~15Z): seeded to missingno - T43 wishing well, T44 storm
   chatter (both from Queue; laguna NOT seeded - 3 consecutive failures T38-T40,
   circuit breaker active; step5 not seeded, window dies ~Oct 16).
