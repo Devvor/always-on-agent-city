@@ -71,7 +71,8 @@ const V = {
   weatherFactor: 0,
   wind: 0,
   rainDrops: [],
-  snowFlakes: []
+  snowFlakes: [],
+  workerChatBubbles: []
 };
 function rand() {
   V.rnd = (V.rnd * 1664525 + 1013904223) >>> 0;
@@ -176,6 +177,7 @@ function buildScene() {
   V.allTasks = [];
   V.chatLines = [];
   V.recentTicks = [];
+  V.workerChatBubbles = [];
   V.totalDone = 0;
   V.growthStep = 0;
   V.primeBaseline = true;
@@ -617,7 +619,25 @@ function normalizeBoard(data) {
     const ticks = Array.isArray(worker.recentTicks) ? worker.recentTicks : [];
     for (let j = 0; j < ticks.length; j++) V.chatLines.push({ name: worker.name, color: col, text: String(ticks[j]) });
   }
+  const bubbleStamp = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  V.workerChatBubbles = normalized.map(function (worker, i) {
+    const text = latestTickForWorker(worker);
+    if (!text) return null;
+    return { text: text, color: workerColor(i, worker.name), start: bubbleStamp, duration: 6 };
+  });
   V.worker = V.workerStates.length ? V.workerStates[0] : null;
+}
+function latestTickForWorker(worker) {
+  const ticks = Array.isArray(worker && worker.recentTicks) ? worker.recentTicks : [];
+  const name = String(worker && worker.name != null ? worker.name : '').trim();
+  let chosen = null;
+  for (let i = ticks.length - 1; i >= 0; i--) {
+    const line = tickText(ticks[i]);
+    if (!line) continue;
+    if (name && line.toLowerCase().indexOf(name.toLowerCase()) !== -1) { chosen = line; break; }
+  }
+  if (!chosen && ticks.length) chosen = tickText(ticks[ticks.length - 1]);
+  return chosen ? String(chosen).trim() : '';
 }
 function idleAdvance(w) {
   if (!w) return;
@@ -1672,6 +1692,49 @@ function drawProps(now) {
     ctx.fillRect(cp.x + 7 + tailSway, cp.y - 2, 6, 2);
     ctx.fillRect(cp.x + 12 + tailSway * 2, cp.y - 4, 4, 2);
   }
+  const failedCount = V.allTasks.filter(function (t) { return t.status === 'failed'; }).length;
+  let guildsWithTwo = 0;
+  for (let wi = 0; wi < V.workers.length; wi++) {
+    const tasks = Array.isArray(V.workers[wi].tasks) ? V.workers[wi].tasks : [];
+    if (tasks.filter(function (t) { return t.status === 'done'; }).length >= 2) guildsWithTwo++;
+  }
+  const plaqueDefs = [
+    { earned: V.totalDone >= 5, glyph: 'F5' },
+    { earned: V.totalDone >= 10, glyph: 'DD' },
+    { earned: V.totalDone >= 15, glyph: '15' },
+    { earned: failedCount === 0 && V.totalDone >= 10, glyph: 'FL' },
+    { earned: V.mapLevel === 9, glyph: 'MAX' },
+    { earned: guildsWithTwo >= 2, glyph: 'FG' }
+  ];
+  const plaqueY = Math.round(wallY + 14);
+  const gap = 26;
+  const totalW = (plaqueDefs.length - 1) * gap + 22;
+  let startX = Math.round(wallX + (wallW - totalW) * 0.5);
+  if (startX < wallX + 6) startX = wallX + 6;
+  if (startX + totalW > wallX + wallW - 6) startX = wallX + wallW - totalW - 6;
+  for (let pi = 0; pi < plaqueDefs.length; pi++) {
+    const pdf = plaqueDefs[pi];
+    const px = startX + pi * gap;
+    ctx.fillStyle = '#20242b';
+    ctx.fillRect(px, plaqueY, 22, 16);
+    ctx.fillStyle = '#14171d';
+    ctx.fillRect(px + 2, plaqueY + 2, 18, 12);
+    if (pdf.earned) {
+      ctx.fillStyle = '#8d847c';
+      ctx.fillRect(px + 2, plaqueY + 2, 18, 12);
+      ctx.fillStyle = '#a89f95';
+      ctx.fillRect(px + 3, plaqueY + 3, 16, 4);
+      ctx.strokeStyle = '#d4af37';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(px + 1, plaqueY + 1, 20, 14);
+      ctx.fillStyle = '#1b1205';
+      ctx.font = 'bold 8px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pdf.glyph, px + 11, plaqueY + 9);
+    }
+  }
+  ctx.textAlign = 'left';
 }
 function drawTorch(cx, cy, index, now) {
   const ctx = V.ctx;
@@ -1837,6 +1900,7 @@ function render(now) {
   drawShadows();
   drawProps(now);
   drawWorkers(now);
+  drawWorkerChatBubbles(now);
   drawParticles(now);
   drawLighting(now);
   drawUI(c, now);
@@ -1857,6 +1921,65 @@ function drawWorkers(now) {
       }
     }
     drawWorker(w, meta, now);
+  }
+}
+function drawWorkerChatBubbles(now) {
+  const ctx = V.ctx;
+  const c = V.canvas;
+  const placed = [];
+  for (let wi = 0; wi < V.workerStates.length; wi++) {
+    const b = V.workerChatBubbles && V.workerChatBubbles[wi];
+    if (!b || !b.text) continue;
+    const age = (now - b.start) / 1000;
+    if (!isFinite(age) || age < 0 || age >= b.duration) continue;
+    const alpha = age <= 4 ? 1 : Math.max(0, 1 - (age - 4) / 2);
+    const w = V.workerStates[wi];
+    if (!w) continue;
+    const color = b.color || workerColor(wi, (V.workers[wi] && V.workers[wi].name));
+    ctx.font = '10px monospace';
+    const text = String(b.text).length > 30 ? String(b.text).slice(0, 29) + '\u2026' : String(b.text);
+    const textW = ctx.measureText(text).width;
+    const bw = Math.max(44, Math.round(textW + 12));
+    const bh = 16;
+    let x = Math.round(w.x + 8 - bw / 2);
+    let y = Math.round(w.y - 52);
+    for (let p = 0; p < placed.length; p++) {
+      const pp = placed[p];
+      if (Math.abs(x - pp.x) < (bw + pp.bw) * 0.5 + 4 && Math.abs(y - pp.y) < bh + 8) y -= bh + 6;
+    }
+    x = clamp(x, 4, c.width - bw - 4);
+    placed.push({ x: x, y: y, bw: bw });
+    const tipY = Math.round(w.y - 20);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = 'rgba(10,10,12,0.92)';
+    ctx.beginPath();
+    ctx.moveTo(Math.round(x + bw * 0.5 - 3), y + bh);
+    ctx.lineTo(Math.round(x + bw * 0.5 + 3), y + bh);
+    ctx.lineTo(Math.round(w.x + 8), tipY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(Math.round(x + bw * 0.5 - 3), y + bh);
+    ctx.lineTo(Math.round(w.x + 8), tipY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(Math.round(x + bw * 0.5 + 3), y + bh);
+    ctx.lineTo(Math.round(w.x + 8), tipY);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(10,10,12,0.92)';
+    ctx.fillRect(x, y, bw, bh);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, bw, bh);
+    ctx.fillStyle = '#e8e6df';
+    ctx.font = '10px monospace';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillText(text, x + 6, y + bh * 0.5);
+    ctx.restore();
   }
 }
 function drawParticles(now) {
