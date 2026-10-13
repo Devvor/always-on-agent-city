@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T04:40:33Z",
+    "checked_at": "2026-10-13T04:54:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -130,15 +130,16 @@
     {
       "id": "T12",
       "title": "P4: growing map + multi-worker + walk-cycle client",
-      "status": "failed",
+      "status": "done",
       "attempts": 1,
-      "updated_at": "2026-10-13T04:44:46Z",
+      "updated_at": "2026-10-13T05:00:00Z",
       "target_file": "tasks_out/worker_office.js",
       "include_files": [
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && node -e \"const s=require('fs').readFileSync('tasks_out/worker_office.js','utf8'); ['grow','unlocked','walkFrame','step5','MISSINGNO'].every(k=>s.includes(k)) || (console.log('MISSING:', ['grow','unlocked','walkFrame','step5','MISSINGNO'].filter(k=>!s.includes(k))), process.exit(1)); console.log('MARKERS-OK')\" && echo VERIFY-OK",
-      "spec": "Update the existing retro-MMORPG client (FULL CURRENT CONTENT below). Keep the init(canvas, apiBase) contract and 5s polling, OFFLINE handling, requestAnimationFrame. NEW FEATURES:\n1. MULTI-WORKER: the API payload now has \"workers\": [{name, model, window, tasks, recent_ticks}] (old top-level keys still mirror worker #1 \u2014 support BOTH shapes: if payload.workers exists use it, else wrap the legacy payload into a one-worker array). Render one character per worker: MISSINGNO keeps its current look; the second worker gets a purple/violet robe variant with nameplate 'STEP5'. Each has its own nameplate+XP bar (done/total of its own tasks) and walks its own loop between benches. Chat box merges recent_ticks of all workers with a colored [name] prefix per line (gold for missingno, violet for step5).\n2. GROWING MAP (colony-growth mechanic): the floor STARTS SMALL (a 4x4 core area around the center) and GROWS as the GUILD gains completed tasks: every 2 completed tasks (across all workers) permanently unlocks a ring/belt of new floor tiles (grow the isometric floor bounds outward, max 8 growth steps), each newly unlocked area renders with a brief white-glint animation and slightly different tile shade (newer = lighter wood). Show a small 'MAP LEVEL n/9' counter near the XP bar. Derived only from the payload \u2014 no localStorage.\n3. WALK CYCLE: upgrade the worker sprite to a 4-frame walk cycle (leg alternation + 1px body bob), with left/right/up/down facing (simple per-direction sprite variants drawn with fillRect), frame switches every ~150ms while moving; keep the idle bob. Quest-log panel now shows BOTH workers' quests grouped under their name headers. Keep pure canvas primitives, valid standalone JS (node --check). Output the complete updated file."
+      "spec": "Update the existing retro-MMORPG client (FULL CURRENT CONTENT below). Keep the init(canvas, apiBase) contract and 5s polling, OFFLINE handling, requestAnimationFrame. NEW FEATURES:\n1. MULTI-WORKER: the API payload now has \"workers\": [{name, model, window, tasks, recent_ticks}] (old top-level keys still mirror worker #1 \u2014 support BOTH shapes: if payload.workers exists use it, else wrap the legacy payload into a one-worker array). Render one character per worker: MISSINGNO keeps its current look; the second worker gets a purple/violet robe variant with nameplate 'STEP5'. Each has its own nameplate+XP bar (done/total of its own tasks) and walks its own loop between benches. Chat box merges recent_ticks of all workers with a colored [name] prefix per line (gold for missingno, violet for step5).\n2. GROWING MAP (colony-growth mechanic): the floor STARTS SMALL (a 4x4 core area around the center) and GROWS as the GUILD gains completed tasks: every 2 completed tasks (across all workers) permanently unlocks a ring/belt of new floor tiles (grow the isometric floor bounds outward, max 8 growth steps), each newly unlocked area renders with a brief white-glint animation and slightly different tile shade (newer = lighter wood). Show a small 'MAP LEVEL n/9' counter near the XP bar. Derived only from the payload \u2014 no localStorage.\n3. WALK CYCLE: upgrade the worker sprite to a 4-frame walk cycle (leg alternation + 1px body bob), with left/right/up/down facing (simple per-direction sprite variants drawn with fillRect), frame switches every ~150ms while moving; keep the idle bob. Quest-log panel now shows BOTH workers' quests grouped under their name headers. Keep pure canvas primitives, valid standalone JS (node --check). Output the complete updated file.",
+      "note": "features verified visually; one dangling headerColor line fixed by orchestrator"
     }
   ],
   "projects": [
