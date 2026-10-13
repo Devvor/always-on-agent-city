@@ -229,6 +229,32 @@
       "target_file": "tasks_out/worker_office_sound.js",
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_office_sound.js /opt/data/cache/scratch/sound_check.mjs && node --check /opt/data/cache/scratch/sound_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module `worker_office_sound.js` \u2014 a tiny retro chiptune cue layer for the guild office, PURE Web Audio API, zero dependencies, no audio files, everything synthesized.\n\nEXPORTS: `installSound(bar)` (bar = a DOM element to add the button to; creates a bold monospace 'SOUND: OFF' button styled like the existing modebar buttons \u2014 gold #d4af37 text, #0d1324 background, #3a342f border, gold border when active) and `cue(name)`.\n\nBEHAVIOR: browsers autoplay policy \u2014 the AudioContext must be created/resumed on a USER GESTURE. So: sound starts OFF; clicking the button toggles OFF->ON (create/resume AudioContext) or ON->OFF (suspend + button text update). When OFF, cue() is a silent no-op. No localStorage \u2014 session only, default OFF every load.\n\nCUES (all synthesized: square/triangle oscillators + gain envelopes, chiptune feel, short, LOW volume ~0.15 gain, never harsh):\n- cue('done'): two-note major up (C5->E5, ~90ms each) \u2014 a quest shipped\n- cue('levelup'): fast arpeggio C5-E5-G5-C6 (~400ms total) \u2014 celebration\n- cue('failed'): low double-blip (G3, G3, ~60ms each) \u2014 a quest failed\n- cue('grow'): soft rising sweep (~200ms) \u2014 the island grew\n- cue('alert'): low urgent triple-blip A3 \u2014 window closed / needs attention\n- cue('meow'): two short triangle notes with pitch bend down (E5->C5) \u2014 the guild cat (fired occasionally when the cat tail flicks, caller throttles)\nKeep each cue a small function using a shared helper (osc + freq + dur + when + type + gain envelope). Total file under ~120 lines, compact, node --check clean as ESM (no top-level DOM access outside functions)."
+    },
+    {
+      "id": "T20",
+      "title": "P4: polish pass \u2014 text overflow discipline + drag-pan/zoom camera (2D)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && echo VERIFY-OK",
+      "spec": "Update the 2D guild-office client (FULL CURRENT CONTENT below; compact, keep under 2100 lines). Keep EVERYTHING working (all prior systems). This is a POLISH pass with two hard goals \u2014 text never spills, and the map is explorable.\n\n1. TEXT DISCIPLINE (the #1 user-visible bug: chat box lines overspill their box). Implement a helper `fitText(text, maxW)` using ctx.measureText: while wider than maxW, cut chars and append '\u2026' \u2014 use it EVERYWHERE text draws inside a box: chat lines (fit to chatW-padding), quest-log rows (title fits column width), fleet chips, nameplates, bubble text, bottom-bar labels, milestone glyphs. Additionally every panel (chat, quest log, bottom bar, plaque wall) must draw its content inside ctx.save(); ctx.beginPath(); ctx.rect(box); ctx.clip(); ... ctx.restore(); so even a logic slip cannot paint outside the box. Font sizes: body text >= 9px monospace.\n2. DRAG-PAN + WHEEL-ZOOM CAMERA: mouse drag on the canvas pans the WORLD layers (island, props, workers, particles, lighting, shadows \u2014 NOT the sky gradient, which stays fixed, and NOT the UI panels: quest log, chat, bottom bar, top bar stay docked). Mouse wheel zooms the world around the cursor (clamped 0.55x-1.6x). Store camera in V.camera {x, y, zoom}; apply as ctx.translate(c.width/2, c.height/2); ctx.scale(zoom); ctx.translate(-c.width/2 + panX, -c.height/2 + panY) around the world-draw block only. Clamp pan so the island stays roughly on screen (|pan| <= 260). Change cursor to 'grab'/'grabbing' on hover/drag. Double-click resets camera. Also add a tiny minimap (top-right under the weather label, ~90px): island outline + camera viewport rectangle so panning is legible.\nEverything pure canvas, no external assets, node --check clean. Output the complete updated file."
+    },
+    {
+      "id": "T21",
+      "title": "P4: polish pass \u2014 3D orbit controls + text-fit + exposure",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office3d.js",
+      "include_files": [
+        "tasks_out/worker_office3d.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_office3d.js /opt/data/cache/scratch/office3d_check.mjs && node --check /opt/data/cache/scratch/office3d_check.mjs && echo VERIFY-OK",
+      "spec": "Update the three.js 3D guild-office client (FULL CURRENT CONTENT below; compact, under 650 lines). Keep EVERYTHING (island, workers, buildings, torches, stars, day/night if present, dispose/init contract).\n\n1. ORBIT CONTROLS (hand-rolled, no addons): mouse-drag rotates the camera around the island center (spherical coords: theta azimuth 0.02 rad/frame auto-drift when idle + drag delta; phi polar clamped 0.9-1.35 rad; radius wheel-zoom clamped 14-30). Smooth damping (lerp current->target each frame). Right-drag or shift-drag pans the target point (clamped to island bounds). Double-click resets to default view. Cursor grab/grabbing.\n2. NAMEPLATE TEXT-FIT: nameplate sprites use CanvasTexture \u2014 measure the text and pad the texture so no glyph clips at the texture edge.\n3. EXPOSURE/TONEMAP polish: renderer.toneMapping = THREE.ACESFilmicToneMapping; toneMappingExposure ~1.15; torch PointLights intensity tuned so the island reads warm at night and clean at day; subtle FogExp2 matching sky color so the island edge melts into space.\nNo external assets beyond the vendored three.module.min.js, node --check clean as ESM. Output the complete updated file."
     }
   ],
   "projects": [
