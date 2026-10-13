@@ -64,16 +64,17 @@ function isWalkableTile(gx, gy, Vv) {
 }
 
 function candidateEdgeTiles(Vv) {
+  const base = [
+    { gx: -5, gy: 4 }, { gx: -4, gy: 4 }, { gx: -3, gy: 4 }, { gx: -2, gy: 4 },
+    { gx: -5, gy: 5 }, { gx: -4, gy: 5 }, { gx: -3, gy: 5 }, { gx: -2, gy: 5 }
+  ];
   const out = [];
   try {
-    const s = (Vv && typeof Vv.growthStep === 'number') ? Vv.growthStep : 0;
-    const minC = -2 - s;
-    const maxC = 1 + s;
-    for (let gy = minC; gy <= maxC; gy++) {
-      if (isWalkableTile(minC, gy, Vv)) out.push({ gx: minC, gy: gy });
+    for (let i = 0; i < base.length; i++) {
+      if (isWalkableTile(base[i].gx, base[i].gy, Vv)) out.push(base[i]);
     }
   } catch (e) {}
-  return out;
+  return out.length ? out : base;
 }
 
 function sortQuests(tasks) {

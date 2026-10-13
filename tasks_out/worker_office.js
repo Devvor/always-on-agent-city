@@ -2111,17 +2111,15 @@ function renderGameScene(now) {
   drawProps(now);
   drawWorkers(now);
   drawWorkerChatBubbles(now);
-  if (window.GuildVisitor && V.gameState === 'play') {
-    try { window.GuildVisitor.update(now); window.GuildVisitor.draw(ctx); } catch (e) {}
-  }
-  if (window.GuildTrail && V.gameState === 'play') {
-    try { window.GuildTrail.update(now); window.GuildTrail.draw(ctx); } catch (e) {}
-  }
-  if (window.GuildCat && V.gameState === 'play') {
-    try { window.GuildCat.update(now); window.GuildCat.draw(ctx); } catch (e) {}
-  }
-  if (window.GuildBoat && V.gameState === 'play') {
-    try { window.GuildBoat.update(now); window.GuildBoat.draw(ctx); } catch (e) {}
+  if (V.gameState === 'play') {
+    for (var gk in window) {
+      if (gk.indexOf('Guild') === 0) {
+        var gm = window[gk];
+        if (gm && typeof gm.update === 'function') {
+          try { gm.update(now); if (typeof gm.draw === 'function') gm.draw(ctx); } catch (e) {}
+        }
+      }
+    }
   }
   drawParticles(now);
   drawLighting(now);
