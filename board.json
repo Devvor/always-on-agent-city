@@ -246,9 +246,9 @@
     {
       "id": "T21",
       "title": "P4: polish pass \u2014 3D orbit controls + text-fit + exposure",
-      "status": "in_progress",
+      "status": "done",
       "attempts": 1,
-      "updated_at": null,
+      "updated_at": "2026-10-13T06:19:29Z",
       "target_file": "tasks_out/worker_office3d.js",
       "include_files": [
         "tasks_out/worker_office3d.js"

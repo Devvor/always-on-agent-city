@@ -59,6 +59,12 @@ function workerDone(w) {
   return tasks.every(isTaskDone);
 }
 
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function lerpAngle(a, b, t) {
+  let d = ((b - a + Math.PI) % (Math.PI * 2)) - Math.PI;
+  return a + d * t;
+}
+
 export function init3d(container, apiBase) {
   if (active) dispose3d();
 
@@ -70,7 +76,9 @@ export function init3d(container, apiBase) {
     pollTimer: 0,
     resizeObs: null,
     onResize: null,
-    reducedMotion: false
+    reducedMotion: false,
+    domListeners: [],
+    islandBounds: 6
   };
   active = app;
 
@@ -78,14 +86,26 @@ export function init3d(container, apiBase) {
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x080818);
-  scene.fog = new THREE.Fog(0x080818, 20, 90);
+  scene.fog = new THREE.FogExp2(0x080818, 0.022);
   app.scene = scene;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
   app.renderer = renderer;
+
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+  camera.position.set(13, 14, 13);
+  camera.lookAt(0, 0.5, 0);
+  app.camera = camera;
+
+  function addListener(target, type, fn, options) {
+    target.addEventListener(type, fn, options);
+    app.domListeners.push({ target, type, fn, options: options || false });
+  }
 
   const resize = () => {
     const w = container.clientWidth || window.innerWidth || 960;
@@ -137,16 +157,9 @@ export function init3d(container, apiBase) {
   moon.position.set(18, 32, -24);
   scene.add(moon);
 
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
-  camera.position.set(13, 14, 13);
-  camera.lookAt(0, 0, 0);
-  const camRadius = Math.hypot(camera.position.x, camera.position.z);
-  let camAngle = Math.atan2(camera.position.z, camera.position.x);
-  app.camera = camera;
-
   // lighting
   scene.add(new THREE.AmbientLight(0x334466, 0.5));
-  const moonLight = new THREE.DirectionalLight(0xcfd8ff, 0.85);
+  const moonLight = new THREE.DirectionalLight(0xcfd8ff, 0.9);
   moonLight.position.set(20, 40, 10);
   moonLight.castShadow = true;
   moonLight.shadow.mapSize.set(1024, 1024);
@@ -173,7 +186,6 @@ export function init3d(container, apiBase) {
   const islandGroup = new THREE.Group();
   scene.add(islandGroup);
 
-  // floor tiles (max 20x20)
   const MAXN = 20;
   const tileCount = MAXN * MAXN;
   const tileGeo = new THREE.BoxGeometry(1, 0.15, 1);
@@ -208,7 +220,6 @@ export function init3d(container, apiBase) {
   undersideMesh.position.y = -1.4;
   islandGroup.add(undersideMesh);
 
-  // bobbing rocks
   const rocks = [];
   for (let i = 0; i < 3; i++) {
     const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(0.4, 0), rockMat);
@@ -219,19 +230,17 @@ export function init3d(container, apiBase) {
     rocks.push(rock);
   }
 
-  // torches
   const torchConeGeo = new THREE.ConeGeometry(0.12, 0.4, 8);
   for (let i = 0; i < 4; i++) {
     const cone = new THREE.Mesh(torchConeGeo, torchMat);
     cone.castShadow = true;
     torchGroup.add(cone);
     torchCones.push(cone);
-    const light = new THREE.PointLight(0xff9933, 1.9, 8);
+    const light = new THREE.PointLight(0xff9933, 1.5, 12);
     torchGroup.add(light);
     torchLights.push(light);
   }
 
-  // campfire
   const campfireGroup = new THREE.Group();
   islandGroup.add(campfireGroup);
   const stoneGeo = new THREE.BoxGeometry(0.22, 0.12, 0.22);
@@ -248,7 +257,6 @@ export function init3d(container, apiBase) {
   flame.position.y = 0.32;
   campfireGroup.add(flame);
 
-  // huts
   const hutGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
   const winGeo = new THREE.PlaneGeometry(0.34, 0.24);
   const huts = [];
@@ -267,7 +275,6 @@ export function init3d(container, apiBase) {
     huts.push({ mesh: hut, windowMat: wplane.material, project: i + 1 });
   }
 
-  // embers
   const particlesPerTorch = 20;
   const emberCount = particlesPerTorch * 4;
   const emberPos = new Float32Array(emberCount * 3);
@@ -323,7 +330,6 @@ export function init3d(container, apiBase) {
       torchLights[i].position.y = 0.7;
     });
 
-    // grass ring
     grassMeshes.forEach((m) => islandGroup.remove(m));
     grassMeshes.length = 0;
     const half = n / 2 + 0.55;
@@ -344,6 +350,9 @@ export function init3d(container, apiBase) {
     const span = (n / 2) * 1.45 + 1.4;
     undersideMesh.scale.x = span;
     undersideMesh.scale.z = span;
+
+    app.islandBounds = Math.max(6, n / 2 + 1.2);
+    if (app.orbit) app.orbit.bounds = app.islandBounds;
   }
 
   const avatars = new Map();
@@ -354,15 +363,23 @@ export function init3d(container, apiBase) {
   }
 
   function createNameTexture(name) {
+    const text = String(name).slice(0, 18);
     const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 32;
     const ctx = canvas.getContext('2d');
-    ctx.font = '10px monospace';
+    const font = '12px monospace';
+    ctx.font = font;
+    const m = ctx.measureText(text);
+    const padX = 10;
+    const padY = 6;
+    const height = Math.max(26, Math.ceil((m.actualBoundingBoxAscent || 9) + (m.actualBoundingBoxDescent || 3) + padY * 2));
+    const width = Math.max(24, Math.ceil(m.width + padX * 2));
+    canvas.width = width;
+    canvas.height = height;
+    ctx.font = font;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(String(name).slice(0, 18), 64, 16);
+    ctx.fillText(text, width / 2, height / 2);
     const tex = new THREE.CanvasTexture(canvas);
     tex.needsUpdate = true;
     return tex;
@@ -385,22 +402,13 @@ export function init3d(container, apiBase) {
     head.position.y = 1.3;
     head.castShadow = true;
     group.add(head);
-    const plate = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35),
-      new THREE.MeshBasicMaterial({ map: createNameTexture(name), transparent: true, depthWrite: false }));
-    plate.position.y = 1.85;
-    group.add(plate);
-    // sprite-ish billboard
-    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: (new THREE.CanvasTexture((() => {
-      const c = document.createElement('canvas'); c.width = 128; c.height = 32;
-      const cx = c.getContext('2d'); cx.font = '10px monospace'; cx.textAlign = 'center';
-      cx.textBaseline = 'middle'; cx.fillStyle = '#ffffff'; cx.fillText(String(name).slice(0, 18), 64, 16);
-      return c;
-    })())), transparent: true }));
-    sprite.scale.set(1.5, 0.375, 1);
-    sprite.position.y = 1.85;
+
+    const nameTex = createNameTexture(name);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: nameTex, transparent: true, depthWrite: false }));
+    sprite.scale.set(nameTex.image.width / 72, nameTex.image.height / 72, 1);
+    sprite.position.y = 1.9;
     group.add(sprite);
-    // remove plane to keep simple? keep both small cost; remove duplicate? keep sprite only? 
-    group.remove(plate);
+
     scene.add(group);
     return {
       name,
@@ -477,12 +485,126 @@ export function init3d(container, apiBase) {
     }
   }
 
+  // orbit controls
+  const defaultTheta = Math.atan2(13, 13);
+  const defaultRadius = Math.hypot(13, 13.5, 13);
+  const defaultPhi = Math.acos(13.5 / defaultRadius);
+  const orbit = {
+    target: new THREE.Vector3(0, 0.5, 0),
+    current: new THREE.Vector3(0, 0.5, 0),
+    targetTheta: defaultTheta,
+    currentTheta: defaultTheta,
+    targetPhi: defaultPhi,
+    currentPhi: defaultPhi,
+    targetRadius: defaultRadius,
+    currentRadius: defaultRadius,
+    rotating: false,
+    panning: false,
+    dragging: false,
+    lastX: 0,
+    lastY: 0,
+    lastInteraction: performance.now(),
+    bounds: app.islandBounds
+  };
+  app.orbit = orbit;
+
+  function resetView() {
+    orbit.target.set(0, 0.5, 0);
+    orbit.current.copy(orbit.target);
+    orbit.targetTheta = defaultTheta;
+    orbit.currentTheta = defaultTheta;
+    orbit.targetPhi = defaultPhi;
+    orbit.currentPhi = defaultPhi;
+    orbit.targetRadius = defaultRadius;
+    orbit.currentRadius = defaultRadius;
+    orbit.lastInteraction = performance.now();
+  }
+
+  const onPointerDown = (e) => {
+    orbit.lastX = e.clientX;
+    orbit.lastY = e.clientY;
+    orbit.lastInteraction = performance.now();
+    if (e.button === 2 || e.shiftKey) {
+      orbit.panning = true;
+    } else if (e.button === 0) {
+      orbit.rotating = true;
+    }
+    orbit.dragging = orbit.rotating || orbit.panning;
+    if (orbit.dragging) renderer.domElement.style.cursor = 'grabbing';
+    if (renderer.domElement.setPointerCapture) {
+      try { renderer.domElement.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    }
+  };
+
+  const onPointerMove = (e) => {
+    if (!orbit.rotating && !orbit.panning) return;
+    const dx = e.clientX - orbit.lastX;
+    const dy = e.clientY - orbit.lastY;
+    orbit.lastX = e.clientX;
+    orbit.lastY = e.clientY;
+    orbit.lastInteraction = performance.now();
+
+    if (orbit.rotating) {
+      orbit.targetTheta -= dx * 0.005;
+      orbit.targetPhi += dy * 0.005;
+      orbit.targetPhi = clamp(orbit.targetPhi, 0.9, 1.35);
+    }
+
+    if (orbit.panning) {
+      const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0).normalize();
+      const fwd = new THREE.Vector3();
+      camera.getWorldDirection(fwd);
+      const planarFwd = new THREE.Vector3(fwd.x, 0, fwd.z);
+      if (planarFwd.lengthSq() < 1e-8) planarFwd.set(0, 0, -1);
+      else planarFwd.normalize();
+
+      const scale = Math.max(0.0006, orbit.targetRadius * 0.0011);
+      orbit.target.x += (-right.x * dx + planarFwd.x * -dy) * scale;
+      orbit.target.z += (-right.z * dx + planarFwd.z * -dy) * scale;
+      orbit.target.y = 0.5;
+      orbit.target.x = clamp(orbit.target.x, -orbit.bounds, orbit.bounds);
+      orbit.target.z = clamp(orbit.target.z, -orbit.bounds, orbit.bounds);
+    }
+  };
+
+  const onPointerUp = (e) => {
+    orbit.rotating = false;
+    orbit.panning = false;
+    orbit.dragging = false;
+    renderer.domElement.style.cursor = 'grab';
+    if (renderer.domElement.releasePointerCapture) {
+      try { renderer.domElement.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    }
+    orbit.lastInteraction = performance.now();
+  };
+
+  const onWheel = (e) => {
+    e.preventDefault();
+    orbit.lastInteraction = performance.now();
+    orbit.targetRadius = clamp(orbit.targetRadius + e.deltaY * 0.02, 14, 30);
+  };
+
+  const onContextMenu = (e) => e.preventDefault();
+
+  addListener(renderer.domElement, 'pointerdown', onPointerDown);
+  addListener(window, 'pointermove', onPointerMove);
+  addListener(window, 'pointerup', onPointerUp);
+  addListener(renderer.domElement, 'wheel', onWheel, { passive: false });
+  addListener(renderer.domElement, 'contextmenu', onContextMenu);
+  addListener(renderer.domElement, 'dblclick', resetView);
+
+  renderer.domElement.style.cursor = 'grab';
+
   app.cleanup = () => {
     app.disposed = true;
     cancelAnimationFrame(app.raf);
     clearInterval(app.pollTimer);
     if (app.resizeObs) app.resizeObs.disconnect();
     window.removeEventListener('resize', app.onResize);
+    app.domListeners.forEach((l) => {
+      try { l.target.removeEventListener(l.type, l.fn, l.options); } catch (e) { /* ignore */ }
+    });
+
     app.scene.traverse((obj) => {
       if (obj.geometry) obj.geometry.dispose();
       if (obj.material) {
@@ -507,16 +629,30 @@ export function init3d(container, apiBase) {
     const dt = Math.min(0.08, (now - last) / 1000);
     last = now;
 
-    if (!app.reducedMotion) {
-      camAngle += 0.02 * dt;
-      camera.position.x = camRadius * Math.cos(camAngle);
-      camera.position.z = camRadius * Math.sin(camAngle);
-      camera.position.y = 14;
-      camera.lookAt(0, 0.5, 0);
+    if (!app.reducedMotion && !orbit.rotating && !orbit.panning && now - orbit.lastInteraction > 250) {
+      orbit.targetTheta += 0.02;
     }
 
+    orbit.targetPhi = clamp(orbit.targetPhi, 0.9, 1.35);
+    orbit.targetRadius = clamp(orbit.targetRadius, 14, 30);
+    orbit.target.x = clamp(orbit.target.x, -orbit.bounds, orbit.bounds);
+    orbit.target.z = clamp(orbit.target.z, -orbit.bounds, orbit.bounds);
+    orbit.target.y = 0.5;
+
+    const smooth = app.reducedMotion ? 1 : (1 - Math.exp(-dt * 8));
+    orbit.currentTheta = app.reducedMotion ? orbit.targetTheta : lerpAngle(orbit.currentTheta, orbit.targetTheta, smooth);
+    orbit.currentPhi = app.reducedMotion ? orbit.targetPhi : orbit.currentPhi + (orbit.targetPhi - orbit.currentPhi) * smooth;
+    orbit.currentRadius = app.reducedMotion ? orbit.targetRadius : orbit.currentRadius + (orbit.targetRadius - orbit.currentRadius) * smooth;
+    orbit.current.lerp(orbit.target, smooth);
+
+    const sinPhi = Math.sin(orbit.currentPhi);
+    camera.position.x = orbit.current.x + orbit.currentRadius * sinPhi * Math.cos(orbit.currentTheta);
+    camera.position.y = orbit.current.y + orbit.currentRadius * Math.cos(orbit.currentPhi);
+    camera.position.z = orbit.current.z + orbit.currentRadius * sinPhi * Math.sin(orbit.currentTheta);
+    camera.lookAt(orbit.current);
+
     torchCones.forEach((cone, i) => {
-      const f = 1.8 + 0.55 * Math.sin(now * 0.004 + i * 1.7);
+      const f = 1.35 + 0.4 * Math.sin(now * 0.004 + i * 1.7);
       torchLights[i].intensity = f;
     });
 
@@ -563,5 +699,4 @@ export function init3d(container, apiBase) {
   resize();
 }
 
-// keep apiBase default export-friendly
 export default { init3d, dispose3d };
