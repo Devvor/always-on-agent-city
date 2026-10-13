@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-12T17:21:50Z",
+    "checked_at": "2026-10-13T04:12:52Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -99,6 +99,19 @@
       "target_file": "tasks_out/worker_office.html",
       "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python -c \"from html.parser import HTMLParser\nclass P(HTMLParser):\n    def __init__(self): super().__init__(); self.tags=[]\n    def handle_starttag(self, t, a): self.tags.append((t, dict(a)))\np=P(); p.feed(open('tasks_out/worker_office.html').read())\ntags=[t for t,_ in p.tags]\nattrs=[a for _,a in p.tags]\nassert 'canvas' in tags, tags\nassert any(a.get('src')=='worker_office.js' for a in attrs if 'src' in a), 'script ref missing'\nassert 'Worker Office' in open('tasks_out/worker_office.html').read()\nprint('HTML-OK')\" && echo VERIFY-OK",
       "spec": "Write a single HTML file worker_office.html (no external assets, no CDN, no images) that hosts the worker office.\n\nRequirements:\n- DOCTYPE html, title 'Worker Office', dark background (#1a1a2e or similar), centered full-viewport layout.\n- One <canvas id=\"office-canvas\"> that scales responsively (width 960 height 600 attributes, CSS max-width 100%).\n- Loads the client with <script src=\"worker_office.js\"></script> and calls init(document.getElementById('office-canvas'), '/api/board') on load (a tiny inline script is fine \u2014 keep it under 5 lines, no backticks in it).\n- A small fixed footer line: 'missingno worker office \u2014 loopback only'.\n- Nothing else: no network calls, no fonts fetched, no inline SVG libraries."
+    },
+    {
+      "id": "T10",
+      "title": "P4: retro-MMORPG restyle of the office client",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && node -e \"const s=require('fs').readFileSync('tasks_out/worker_office.js','utf8'); ['questLog','torch','xp','chat','MISSINGNO'].every(k=>s.includes(k)) || process.exit(1); console.log('MARKERS-OK')\" && echo VERIFY-OK",
+      "spec": "Restyle the existing canvas client (FULL CURRENT CONTENT below) into a RETRO MMORPG scene \u2014 think classic isometric MMOs (Ultima Online, RuneScape, Ragnarok Online): chunky pixel art, dark fantasy palette, warm torchlight, gold-trimmed stone UI. KEEP the data contract exactly: function init(canvas, apiBase), poll (apiBase||'') + '/api/board' every 5s, graceful OFFLINE handling, requestAnimationFrame loop, no external assets/network.\n\nRESTYLE REQUIREMENTS:\n1. WORLD: dark stone-navy background; floor tiles become warm WOOD planks or cobblestone with per-tile shade variation (use the existing rand()); back wall becomes a stone wall with 2 wall torches that FLICKER (radial warm-orange glow, brightness varies per frame).\n2. WORKER SPRITE: bigger (16-20px), 2-frame walk animation (leg swap) while moving, subtle idle bob at rest; above the head a yellow RPG nameplate 'MISSINGNO' in a small dark tag with a thin HP-style bar under the name showing XP progress (done/total tasks).\n3. DESKS: wooden workbenches with a slight top-face/side-face two-tone (fake 2.5D); tasks render as glowing runes/scrolls on benches: pending=amber pulse, in_progress=blue pulse, done=green steady glow, failed=red.\n4. RIGHT PANEL - QUEST LOG: parchment-look panel (tan bg, darker border, ~220px wide) listing tasks as quest entries: '!' marker pending, active task highlighted, done entries struck-dim with a green check glyph, failed with red cross glyph; header 'QUEST LOG'.\n5. BOTTOM-LEFT - CHAT BOX: translucent black monospace box showing the recent_ticks array (from the API payload) as system lines, newest at bottom, keep last 6, faint gold text.\n6. BOTTOM BAR - XP BAR: gold-framed bar that fills proportionally to done/total tasks; label 'LVL <n>' where n = number of done tasks; brief bright flash + floating '+XP' text over the worker when a task transitions to done (compare previous poll).\n7. TOP BAR: MMORPG server banner: 'MISSINGNO WORKER ONLINE' left, window status center (OPEN green / CLOSED red), task counts right, all on a dark bar with gold trim.\nAll drawing stays pure canvas fillRect/polygon primitives, pixel-perfect at integer coordinates. Keep the whole file valid standalone JS (node --check must pass). Output the complete updated file."
     }
   ],
   "projects": [
