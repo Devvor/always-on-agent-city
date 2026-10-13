@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T08:03:51Z",
+    "checked_at": "2026-10-13T08:24:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -298,15 +298,16 @@
     {
       "id": "T27",
       "title": "P4: charter 1 \u2014 in-world quest board (fresh module, read real quests)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_questboard.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_questboard.js /opt/data/cache/scratch/qb_check.mjs && node --check /opt/data/cache/scratch/qb_check.mjs && head -1 tasks_out/worker_questboard.js | grep -qv '^worker_' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildQuestBoard = { gx: -1.6, gy: 4.2, open: false, scroll: 0, lastToggle: 0 }:\n1. Draw a wooden quest-board prop at tile gx -1.6, gy 4.2 (posts + board + pinned paper rects, pixel-art fillRect style, brown #6b4a2f / #8a6a45, paper #e8e6df).\n2. Visitor interaction: listen for 'e'/'E' keydown (one-shot flag like the visitor module). When window.GuildVisitor is within 1.6 tiles of the board tile, E toggles open state.\n3. When open, draw a panel (dark #0d1324, gold #d4af37 border, clipped region, measured text via fitText) listing the REAL quests from V.allTasks: id + status, newest 10 first, green for done, amber for pending, red for failed; a footer hint [E] CLOSE. The panel must not spill: clip it and ellipsize every line.\n4. update(now) guards on window.V && V.gameState === 'play'; everything must run with zero exceptions even if GuildVisitor or allTasks are absent (board just draws, panel shows 'no quests')."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) \u2014 copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch), window.V.allTasks (array of task objects with id/status fields).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\nBEHAVIOR \u2014 window.GuildQuestBoard = { gx: -1.6, gy: 4.2, open: false, scroll: 0, lastToggle: 0 }:\n1. Draw a wooden quest-board prop at tile gx -1.6, gy 4.2 (posts + board + pinned paper rects, pixel-art fillRect style, brown #6b4a2f / #8a6a45, paper #e8e6df).\n2. Visitor interaction: listen for 'e'/'E' keydown (one-shot flag like the visitor module). When window.GuildVisitor is within 1.6 tiles of the board tile, E toggles open state.\n3. When open, draw a panel (dark #0d1324, gold #d4af37 border, clipped region, measured text via fitText) listing the REAL quests from V.allTasks: id + status, newest 10 first, green for done, amber for pending, red for failed; a footer hint [E] CLOSE. The panel must not spill: clip it and ellipsize every line.\n4. update(now) guards on window.V && V.gameState === 'play'; everything must run with zero exceptions even if GuildVisitor or allTasks are absent (board just draws, panel shows 'no quests').",
+      "updated_at": "2026-10-13T08:25:29Z"
     },
     {
       "id": "T31",
