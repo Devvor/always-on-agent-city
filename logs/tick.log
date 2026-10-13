@@ -106,3 +106,7 @@ VERIFY-OK
 PARSES
 
 2026-10-12 17:19:42 T6 DONE on attempt 1
+2026-10-13 04:16:49 T10 attempt 1 verify rc 1 out tail: 
+2026-10-13 04:17:54 T10 attempt 2 verify rc 1 out tail: 
+2026-10-13 04:18:56 T10 attempt 3 verify rc 1 out tail: 
+2026-10-13 04:18:56 T10 FAILED no output
