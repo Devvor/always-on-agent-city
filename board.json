@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T14:05:50Z",
+    "checked_at": "2026-10-13T14:26:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -438,15 +438,16 @@
     {
       "id": "T28",
       "title": "P4: charter \u2014 rain shelter (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_shelter.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_shelter.js /opt/data/cache/scratch/t28_check.mjs && node --check /opt/data/cache/scratch/t28_check.mjs && grep -q \"window.GuildShelter\" /opt/data/cache/scratch/t28_check.mjs && head -1 tasks_out/worker_shelter.js | grep -qv '^worker_' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 rainy-day shelter \u2014 window.GuildShelter = { spots: [], active: false }:\n1. Two shelter spots at tiles (-3.0, 3.4) and (3.0, 3.4) (open floor away from the quest board at (-1.6,4.2), the cat at (1.8,3.6), and GuildMuseum pedestals if window.GuildMuseum exists). While V.weather === 'RAIN' (defensive string check), project each spot with iso() and draw a canvas AWNING: two wooden posts + a striped canopy (brown #6b4a2f posts, tan/dark stripes #e8e6df/#4a3423), with tiny splash pixels bouncing off the canopy edge. Draw nothing when not RAIN.\n2. While RAIN: every IDLE worker (V.workerStates entries whose fields read IDLE \u2014 test any string value with /IDLE/i, defensively) gets an UMBRELLA overlay: a small colored canopy semi-circle (one color per worker) + handle line drawn above their sprite at their CURRENT projected position, plus a subtle 1px shiver jitter. NEVER write to V.workerStates or any worker position \u2014 the client owns positions; overlays only.\n3. If two or more umbrella'd idle workers are within 1.2 tiles of each other, draw tiny steam/huddle sparkle pixels between them (campfire-huddle feel).\n4. WORKING workers are never overlaid. When the weather stops being RAIN, all awnings and umbrellas vanish immediately. Never persist anything.\n5. Zero exceptions when V.weather, V.workerStates or window.GuildVisitor are absent."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 rainy-day shelter \u2014 window.GuildShelter = { spots: [], active: false }:\n1. Two shelter spots at tiles (-3.0, 3.4) and (3.0, 3.4) (open floor away from the quest board at (-1.6,4.2), the cat at (1.8,3.6), and GuildMuseum pedestals if window.GuildMuseum exists). While V.weather === 'RAIN' (defensive string check), project each spot with iso() and draw a canvas AWNING: two wooden posts + a striped canopy (brown #6b4a2f posts, tan/dark stripes #e8e6df/#4a3423), with tiny splash pixels bouncing off the canopy edge. Draw nothing when not RAIN.\n2. While RAIN: every IDLE worker (V.workerStates entries whose fields read IDLE \u2014 test any string value with /IDLE/i, defensively) gets an UMBRELLA overlay: a small colored canopy semi-circle (one color per worker) + handle line drawn above their sprite at their CURRENT projected position, plus a subtle 1px shiver jitter. NEVER write to V.workerStates or any worker position \u2014 the client owns positions; overlays only.\n3. If two or more umbrella'd idle workers are within 1.2 tiles of each other, draw tiny steam/huddle sparkle pixels between them (campfire-huddle feel).\n4. WORKING workers are never overlaid. When the weather stops being RAIN, all awnings and umbrellas vanish immediately. Never persist anything.\n5. Zero exceptions when V.weather, V.workerStates or window.GuildVisitor are absent.",
+      "updated_at": "2026-10-13T14:27:29Z"
     },
     {
       "id": "T30",
