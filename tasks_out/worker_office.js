@@ -995,7 +995,7 @@ function update(dt) {
     const tasks = Array.isArray(workerMeta.tasks) ? workerMeta.tasks : (Array.isArray(w.tasks) ? w.tasks : []);
     w.tasks = tasks;
     const allDone = tasks.length === 0 || tasks.every(function (t) { return t.status === 'done'; });
-    const workingState = !allDone;
+    const workingState = tasks.some(function (t) { return t.status === 'pending' || t.status === 'in_progress'; });
     w.workerState = workingState ? 'WORKING' : 'IDLE';
     const focus = chooseFocus(tasks);
     if (allDone) {
@@ -1024,7 +1024,7 @@ function update(dt) {
     let target = null;
     if (!workingState) {
       w.mode = 'idle';
-      target = campfireSitPos(w.index);
+      target = wanderPlan(w, wi, dt);
     } else {
       const project = (focus && focus.project) ? focus.project : w.project;
       const bi = projectBuildingIndex(project);
@@ -1189,6 +1189,49 @@ function campfireSitPos(index) {
   const offsets = [{ x: -12, y: 4 }, { x: 12, y: 6 }, { x: 0, y: 8 }];
   const off = offsets[(index == null ? 0 : index) % offsets.length];
   return { x: base.x + off.x, y: base.y + off.y };
+}
+// RNG idle life: a random on-floor spot, rejecting desks, other workers and off-island rings.
+function randomFloorSpot(wi) {
+  const g = V.grid;
+  const lim = Math.max(2, V.growthStep - 1);
+  for (let tries = 0; tries < 14; tries++) {
+    const gx = Math.floor(-lim + rand() * (2 * lim + 2));
+    const gy = Math.floor(-lim + rand() * (2 * lim + 2));
+    if (typeof tileRing === 'function' && tileRing(gx, gy) > V.growthStep - 1) continue;
+    const p = iso(gx + 0.5, gy + 0.5);
+    if (p.y < g.originY - 40 || p.y > V.canvas.height - 70) continue;
+    let bad = false;
+    for (let di = 0; di < V.desks.length && !bad; di++) {
+      const d = V.desks[di];
+      if (p.x > d.x - 34 && p.x < d.x + d.w + 34 && p.y > d.y - 30 && p.y < d.y + d.h + 30) bad = true;
+    }
+    for (let wj = 0; wj < V.workerStates.length && !bad; wj++) {
+      if (wj === wi) continue;
+      const o = V.workerStates[wj];
+      if (Math.hypot(o.x - p.x, o.y - p.y) < 30) bad = true;
+    }
+    if (bad) continue;
+    return p;
+  }
+  return campfireSitPos(wi);
+}
+// RNG idle life: each idle worker runs a behavior plan (stroll / campfire / cat visit / sky-gaze).
+function wanderPlan(w, wi, dt) {
+  const wa = w.wanderPlan || (w.wanderPlan = { nextAt: 0.4 + rand() * 1.2, mode: 'campfire', spot: campfireSitPos(wi) });
+  wa.nextAt -= dt;
+  if (wa.nextAt <= 0 && !w.moving) {
+    const roll = rand();
+    if (roll < 0.42) { wa.mode = 'stroll'; wa.spot = randomFloorSpot(wi); }
+    else if (roll < 0.62) { wa.mode = 'campfire'; wa.spot = campfireSitPos(wi); }
+    else if (roll < 0.78 && window.GuildCat && isFinite(window.GuildCat.gx)) {
+      wa.mode = 'cat';
+      wa.spot = iso(window.GuildCat.gx + 1.1, window.GuildCat.gy + 1.1);
+    } else { wa.mode = 'sky'; wa.spot = randomFloorSpot(wi); }
+    wa.nextAt = 6 + rand() * 9;
+  }
+  w.sitting = (wa.mode === 'campfire' || wa.mode === 'cat');
+  if (wa.mode === 'sky' && Math.hypot(w.x - wa.spot.x, w.y - wa.spot.y) < 4) w.facing = 'up';
+  return wa.spot;
 }
 function drawSky(now) {
   const ctx = V.ctx;
@@ -1917,7 +1960,7 @@ function drawWorker(w, meta, now) {
   const legColor = isStep ? '#4c1d95' : '#26323f';
   const nameColor = isStep ? '#c4b5fd' : '#facc15';
   const nameBorder = isStep ? '#a78bfa' : '#facc15';
-  const sitting = (w.mode === 'idle' && w.atDesk);
+  const sitting = (w.mode === 'idle' && w.atDesk && w.sitting !== false);
   const bob = w.moving ? (w.walkFrame % 2 === 0 ? 0 : 1) : (sitting ? 0 : Math.round(Math.sin(w.bob) * 1.1));
   const x = Math.round(w.x);
   const y = Math.round(w.y) + bob;
@@ -2070,6 +2113,15 @@ function renderGameScene(now) {
   drawWorkerChatBubbles(now);
   if (window.GuildVisitor && V.gameState === 'play') {
     try { window.GuildVisitor.update(now); window.GuildVisitor.draw(ctx); } catch (e) {}
+  }
+  if (window.GuildTrail && V.gameState === 'play') {
+    try { window.GuildTrail.update(now); window.GuildTrail.draw(ctx); } catch (e) {}
+  }
+  if (window.GuildCat && V.gameState === 'play') {
+    try { window.GuildCat.update(now); window.GuildCat.draw(ctx); } catch (e) {}
+  }
+  if (window.GuildBoat && V.gameState === 'play') {
+    try { window.GuildBoat.update(now); window.GuildBoat.draw(ctx); } catch (e) {}
   }
   drawParticles(now);
   drawLighting(now);

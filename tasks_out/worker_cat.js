@@ -1,5 +1,3 @@
-worker_cat.js
-```javascript
 const BUILDINGS = [{gx:-2,gy:0},{gx:0,gy:-2},{gx:1,gy:0},{gx:0,gy:1}];
 
 function root() { return (typeof window !== 'undefined') ? window : null; }
@@ -250,4 +248,3 @@ if (typeof window !== 'undefined') {
 }
 
 export {};
-```
