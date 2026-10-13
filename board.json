@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T15:09:50Z",
+    "checked_at": "2026-10-13T15:33:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -480,15 +480,16 @@
     {
       "id": "T34",
       "title": "P4: charter \u2014 tiny garden (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_garden.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_garden.js /opt/data/cache/scratch/t34_check.mjs && node --check /opt/data/cache/scratch/t34_check.mjs && grep -q \"window.GuildGarden\" /opt/data/cache/scratch/t34_check.mjs && head -1 tasks_out/worker_garden.js | grep -qv '^worker_' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 tiny growing garden \u2014 window.GuildGarden = { plots: [], bornAt: 0 }:\n1. 5 plots in a short row. Anchor: if window.GuildMuseum && GuildMuseum.pedestals && GuildMuseum.pedestals.length, offset from the first pedestal's tile by (+1.5 gx, +1.0 gy); else anchor at the island's north-west corner derived from V.growthStep floor math (core 4x4 + rings), inset 1 tile. Each plot = a tilled soil square (dark brown #4a3423, lighter rim), prop layer, no collision.\n2. Each plot has stage 0-3: 0 seed mound, 1 green sprout, 2 tall bud, 3 ripe golden wheat (sways via sin). Growth from REAL elapsed session time: every 90s since bornAt all plots advance one stage (bornAt set on first update); cap at 3.\n3. Tending: when an IDLE worker (V.workerStates entry whose fields read IDLE, defensively) is within 1.5 tiles of a plot whose stage < 3, advance it one stage with a small dirt-puff FX + a one-time tiny green sparkle; 2s cooldown per plot.\n4. Harvest loop: a plot that has been ripe (stage 3) for more than 60s resets to stage 0 with a gold sparkle pop (the guild 'harvested' it). Purely cosmetic; no persistence beyond the session.\n5. Zero exceptions when V, V.workerStates or window.GuildMuseum are absent (fallback anchor used)."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR \u2014 tiny growing garden \u2014 window.GuildGarden = { plots: [], bornAt: 0 }:\n1. 5 plots in a short row. Anchor: if window.GuildMuseum && GuildMuseum.pedestals && GuildMuseum.pedestals.length, offset from the first pedestal's tile by (+1.5 gx, +1.0 gy); else anchor at the island's north-west corner derived from V.growthStep floor math (core 4x4 + rings), inset 1 tile. Each plot = a tilled soil square (dark brown #4a3423, lighter rim), prop layer, no collision.\n2. Each plot has stage 0-3: 0 seed mound, 1 green sprout, 2 tall bud, 3 ripe golden wheat (sways via sin). Growth from REAL elapsed session time: every 90s since bornAt all plots advance one stage (bornAt set on first update); cap at 3.\n3. Tending: when an IDLE worker (V.workerStates entry whose fields read IDLE, defensively) is within 1.5 tiles of a plot whose stage < 3, advance it one stage with a small dirt-puff FX + a one-time tiny green sparkle; 2s cooldown per plot.\n4. Harvest loop: a plot that has been ripe (stage 3) for more than 60s resets to stage 0 with a gold sparkle pop (the guild 'harvested' it). Purely cosmetic; no persistence beyond the session.\n5. Zero exceptions when V, V.workerStates or window.GuildMuseum are absent (fallback anchor used).",
+      "updated_at": "2026-10-13T15:34:40Z"
     }
   ],
   "projects": [
