@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T06:06:48Z",
+    "checked_at": "2026-10-13T06:11:12Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -223,9 +223,9 @@
     {
       "id": "T19",
       "title": "P4: game pass 5 \u2014 chiptune sound cues (pure WebAudio, no deps)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:11:30Z",
       "target_file": "tasks_out/worker_office_sound.js",
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_office_sound.js /opt/data/cache/scratch/sound_check.mjs && node --check /opt/data/cache/scratch/sound_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module `worker_office_sound.js` \u2014 a tiny retro chiptune cue layer for the guild office, PURE Web Audio API, zero dependencies, no audio files, everything synthesized.\n\nEXPORTS: `installSound(bar)` (bar = a DOM element to add the button to; creates a bold monospace 'SOUND: OFF' button styled like the existing modebar buttons \u2014 gold #d4af37 text, #0d1324 background, #3a342f border, gold border when active) and `cue(name)`.\n\nBEHAVIOR: browsers autoplay policy \u2014 the AudioContext must be created/resumed on a USER GESTURE. So: sound starts OFF; clicking the button toggles OFF->ON (create/resume AudioContext) or ON->OFF (suspend + button text update). When OFF, cue() is a silent no-op. No localStorage \u2014 session only, default OFF every load.\n\nCUES (all synthesized: square/triangle oscillators + gain envelopes, chiptune feel, short, LOW volume ~0.15 gain, never harsh):\n- cue('done'): two-note major up (C5->E5, ~90ms each) \u2014 a quest shipped\n- cue('levelup'): fast arpeggio C5-E5-G5-C6 (~400ms total) \u2014 celebration\n- cue('failed'): low double-blip (G3, G3, ~60ms each) \u2014 a quest failed\n- cue('grow'): soft rising sweep (~200ms) \u2014 the island grew\n- cue('alert'): low urgent triple-blip A3 \u2014 window closed / needs attention\n- cue('meow'): two short triangle notes with pitch bend down (E5->C5) \u2014 the guild cat (fired occasionally when the cat tail flicks, caller throttles)\nKeep each cue a small function using a shared helper (osc + freq + dur + when + type + gain envelope). Total file under ~120 lines, compact, node --check clean as ESM (no top-level DOM access outside functions)."
