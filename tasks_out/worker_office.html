@@ -7,14 +7,59 @@
 html, body { margin: 0; padding: 0; height: 100%; background: #1a1a2e; color: #eee; }
 body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
 canvas#office-canvas { max-width: 100%; height: auto; display: block; }
+#modebar { margin: 8px 0; display: flex; gap: 8px; }
+#modebar button { font-family: monospace; font-size: 13px; font-weight: bold; letter-spacing: 1px;
+  color: #d4af37; background: #0d1324; border: 2px solid #3a342f; padding: 4px 14px; cursor: pointer; }
+#modebar button.active { border-color: #d4af37; color: #fff; background: #2a2418; }
+#office3d-container { width: 960px; max-width: 100%; height: 600px; display: none; }
 footer { position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 12px; color: #888; }
 </style>
 </head>
 <body>
+<div id="modebar">
+  <button id="btn-2d" class="active">2D</button>
+  <button id="btn-3d">3D LIVE</button>
+</div>
 <canvas id="office-canvas" width="960" height="600"></canvas>
+<div id="office3d-container"></div>
 <footer>missingno worker office — loopback only</footer>
 <script src="worker_office.js"></script>
 <script>
+(function () {
+  var mode = '2d';
+  var btn2d = document.getElementById('btn-2d');
+  var btn3d = document.getElementById('btn-3d');
+  var canvas = document.getElementById('office-canvas');
+  var container = document.getElementById('office3d-container');
+  var cleanup3d = null;
+
+  function setMode(next) {
+    if (next === mode) return;
+    if (next === '3d') {
+      mode = '3d';
+      btn3d.classList.add('active'); btn2d.classList.remove('active');
+      canvas.style.display = 'none';
+      container.style.display = 'block';
+      import('./worker_office3d.js').then(function (m) {
+        m.init3d(container, '');
+        cleanup3d = function () { m.dispose3d(); };
+      }).catch(function (e) {
+        console.error('3D mode failed to load:', e);
+        setMode('2d'); // fall back cleanly
+      });
+    } else {
+      mode = '2d';
+      btn2d.classList.add('active'); btn3d.classList.remove('active');
+      container.style.display = 'none';
+      if (cleanup3d) { try { cleanup3d(); } catch (e) {} cleanup3d = null; }
+      canvas.style.display = 'block';
+    }
+  }
+
+  btn2d.addEventListener('click', function () { setMode('2d'); });
+  btn3d.addEventListener('click', function () { setMode('3d'); });
+  if (window.location.search.indexOf('mode=3d') !== -1) setMode('3d');
+})();
 window.addEventListener('load', function () {
   init(document.getElementById('office-canvas'), '');
 });
