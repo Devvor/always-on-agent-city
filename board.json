@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T21:12:51Z",
+    "checked_at": "2026-10-13T22:57:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -582,6 +582,20 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-14",
       "updated_at": "2026-10-13T21:13:35Z"
+    },
+    {
+      "id": "T51",
+      "title": "P4: playability - shooting-star wishes (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_wishes.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_wishes.js /opt/data/cache/scratch/t51_check.mjs && node --check /opt/data/cache/scratch/t51_check.mjs && grep -q \"window.GuildWishes\" /opt/data/cache/scratch/t51_check.mjs && head -1 tasks_out/worker_wishes.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - SHOOTING-STAR WISH - window.GuildWishes = { stars: [], nextAt: 0, wish: null } with update/draw/__probe (probe returns { stars: stars.length, wish: !!wish }):\n1. Every 3-5 min (random within that window) spawn a shooting star: a bright 3px gold-white pixel streaking diagonally across the SKY area over ~2.5s (from upper-left off-canvas toward the island), with a fading trail of 6-8 dimmer pixels behind it. Draw in the sky layer, behind the top HUD.\n2. WISH: while a star is visible, if window.GuildVisitor presses 'e' (one-shot key flag like the visitor module) and no wish is active, make a wish: wish = { t0: now } and a 2s gold ceremony - 10 tiny star-dust particles fall from the streak point toward the visitor, a small '+1 REP' gold text floats up from the visitor, and if window.GuildPurpose exists with a numeric rep, increment it by 1 (defensively, in try/catch). Also cue('grow') in try/catch.\n3. CAMPFIRE FLARE: on a wish, the campfire flares brighter for 10s - a simple 10s warm radial glow pulse near the campfire area (south-center of the island). Never write to other modules' state except the guarded GuildPurpose rep bump.\n4. Zero exceptions when GuildVisitor or V is absent; stars still spawn (idle sky-gazing stays alive).",
+      "updated_at": "2026-10-13T22:59:04Z"
     }
   ],
   "projects": [
