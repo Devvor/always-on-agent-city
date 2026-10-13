@@ -90,6 +90,7 @@ function buildScene() {
   V.recentTicks = [];
   V.totalDone = 0;
   V.growthStep = 0;
+  V.primeBaseline = true;
   V.mapLevel = 1;
   V.mapGlint = { active: false, t: 0, duration: 1.2, step: -1 };
   V.growthAnim = null;
