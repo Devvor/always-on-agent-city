@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-13T16:25:50Z",
+    "checked_at": "2026-10-13T16:46:50Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -93,12 +93,13 @@
     {
       "id": "L4",
       "title": "P4: retry \u2014 rain ripples (small spec-only module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_rain.js",
       "include_files": [],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_rain.js /opt/data/cache/scratch/rain_check.mjs && node --check /opt/data/cache/scratch/rain_check.mjs && head -1 tasks_out/worker_rain.js | grep -qv '^worker_' && grep -q \"window.GuildRain\" /opt/data/cache/scratch/rain_check.mjs && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module file worker_rain.js \u2014 rain ripple effects on the island floor. It is a self-installing ES module with NO imports: no top-level DOM access (wrap window/document use in typeof guards or functions), safe under node --check.\n\nCONTRACT (all on window): V (V.gameState is 'title' or 'play'; V.weather is 'CLEAR' or 'RAIN'), iso(gx, gy) -> {x, y} world coords. The client render loop auto-calls your update(now) and draw(ctx) every frame when V.gameState is 'play' (it discovers any window global starting with 'Guild' that has an update function).\n\nBEHAVIOR \u2014 on import create window.GuildRain = { ripples: [], nextDrop: 0 } and attach:\n1. update(now): if window.V is undefined or V.gameState !== 'play' or V.weather !== 'RAIN', return. Every 120-260 ms (randomized) spawn a ripple at a random on-island spot: pick gx and gy integers each between -5 and 3, project with iso(gx + 0.5, gy + 0.5) to world coords, keep only ripples whose y is between 120 and canvas height - 90. Cap ripples at 24 (drop oldest). Each ripple has t (spawn time) and a 900 ms life; prune expired ones every update.\n2. draw(ctx): guard the same way. Each ripple: an expanding ellipse ring (light blue #93c5fd, globalAlpha fading from 0.5 to 0 over its life, ring radius growing from 2 to 9 px, drawn with ctx.ellipse \u2014 save/restore, no leaks). Draw ripples oldest first.\n3. Also attach __probe = function () { return { ripples: ripples.length }; } for testing.\n4. Zero exceptions if V or iso are absent (spawn nothing, draw nothing).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+      "spec": "Create a NEW ES-module file worker_rain.js \u2014 rain ripple effects on the island floor. It is a self-installing ES module with NO imports: no top-level DOM access (wrap window/document use in typeof guards or functions), safe under node --check.\n\nCONTRACT (all on window): V (V.gameState is 'title' or 'play'; V.weather is 'CLEAR' or 'RAIN'), iso(gx, gy) -> {x, y} world coords. The client render loop auto-calls your update(now) and draw(ctx) every frame when V.gameState is 'play' (it discovers any window global starting with 'Guild' that has an update function).\n\nBEHAVIOR \u2014 on import create window.GuildRain = { ripples: [], nextDrop: 0 } and attach:\n1. update(now): if window.V is undefined or V.gameState !== 'play' or V.weather !== 'RAIN', return. Every 120-260 ms (randomized) spawn a ripple at a random on-island spot: pick gx and gy integers each between -5 and 3, project with iso(gx + 0.5, gy + 0.5) to world coords, keep only ripples whose y is between 120 and canvas height - 90. Cap ripples at 24 (drop oldest). Each ripple has t (spawn time) and a 900 ms life; prune expired ones every update.\n2. draw(ctx): guard the same way. Each ripple: an expanding ellipse ring (light blue #93c5fd, globalAlpha fading from 0.5 to 0 over its life, ring radius growing from 2 to 9 px, drawn with ctx.ellipse \u2014 save/restore, no leaks). Draw ripples oldest first.\n3. Also attach __probe = function () { return { ripples: ripples.length }; } for testing.\n4. Zero exceptions if V or iso are absent (spawn nothing, draw nothing).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "updated_at": "2026-10-13T16:47:31Z"
     }
   ]
 }
