@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T10:30:51Z",
+    "checked_at": "2026-10-13T10:53:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -354,9 +354,9 @@
     {
       "id": "T36",
       "title": "P4: charter \u2014 museum (fresh module)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "2026-10-13T10:12:55Z",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T10:54:47Z",
       "target_file": "tasks_out/worker_museum.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
