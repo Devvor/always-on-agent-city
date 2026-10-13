@@ -21,6 +21,18 @@ function init(canvas, apiBase) {
     V._keyBound = true;
     window.addEventListener('keydown', onTitleKeyDown);
   }
+  if (!V._fitBound) {
+    V._fitBound = true;
+    const fit = function () {
+      const w = Math.max(640, Math.floor(canvas.clientWidth || 960));
+      const h = Math.max(420, Math.floor(canvas.clientHeight || 600));
+      if (canvas.width !== w) canvas.width = w;
+      if (canvas.height !== h) canvas.height = h;
+      updateGrid();
+    };
+    window.addEventListener('resize', fit);
+    fit();
+  }
   buildScene();
   V.titleClouds = [];
   for (let i = 0; i < 14; i++) {
@@ -2440,7 +2452,7 @@ function drawUI(c, now) {
   const doneCount = V.allTasks.filter(function (t) { return t.status === 'done'; }).length;
   const failedCount = V.allTasks.filter(function (t) { return t.status === 'failed'; }).length;
   const totalCount = V.allTasks.length;
-  const topH = 34;
+  const topH = 46;
   ctx.fillStyle = '#0a0d14';
   ctx.fillRect(0, 0, c.width, topH);
   ctx.fillStyle = '#d4af37';
@@ -2449,10 +2461,14 @@ function drawUI(c, now) {
   ctx.beginPath();
   ctx.rect(0, 0, c.width, topH);
   ctx.clip();
-  ctx.font = 'bold 13px monospace';
   ctx.textBaseline = 'middle';
+  const row1Y = 12, row2Y = 32;
+  let hx = 12;
+  ctx.font = 'bold 13px monospace';
   ctx.fillStyle = '#f3d37a';
-  ctx.fillText(fitText('WORKER GUILD ONLINE', 180), 12, 17);
+  const tTitle = fitText('WORKER GUILD ONLINE', 170);
+  ctx.fillText(tTitle, hx, row1Y);
+  hx += ctx.measureText(tTitle).width + 18;
   let statusText = V.windowStatus;
   let statusColor = '#bdc3c7';
   if (V.offline) {
@@ -2463,12 +2479,11 @@ function drawUI(c, now) {
   } else if (V.windowStatus === 'CLOSED') {
     statusColor = '#ef4444';
   }
+  ctx.font = 'bold 11px monospace';
   ctx.fillStyle = statusColor;
-  ctx.font = 'bold 14px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText(fitText(statusText, 120), c.width * 0.5, 17);
-  ctx.textAlign = 'left';
-  let chipX = 228;
+  const tStat = fitText(String(statusText).toUpperCase(), 110);
+  ctx.fillText(tStat, hx, row1Y);
+  hx += ctx.measureText(tStat).width + 20;
   for (let i = 0; i < V.workers.length; i++) {
     const meta = V.workers[i];
     const name = String(meta.name || (i === 0 ? 'MISSINGNO' : 'STEP5'));
@@ -2476,30 +2491,32 @@ function drawUI(c, now) {
     const isStep = i === 1 || name.toLowerCase().indexOf('step') !== -1;
     const accent = isStep ? '#a78bfa' : '#facc15';
     const stateColor = label === 'WORKING' ? '#22c55e' : '#9ca3af';
-    const avail = c.width - chipX - 360;
-    if (avail < 50) break;
-    const fixedBits = '[' + ': ' + label + ']';
-    const nameMax = Math.max(20, avail - ctx.measureText(fixedBits).width);
-    const shownName = fitText(name, nameMax);
+    if (hx > c.width - 170) break;
+    const shownName = fitText(name, 110);
     const prefix = '[' + shownName + ': ';
     ctx.font = 'bold 11px monospace';
     ctx.fillStyle = accent;
-    ctx.fillText(prefix, chipX, 17);
-    const pw = ctx.measureText(prefix).width;
+    ctx.fillText(prefix, hx, row1Y);
+    hx += ctx.measureText(prefix).width;
     ctx.fillStyle = stateColor;
-    ctx.fillText(label, chipX + pw, 17);
-    const lw = ctx.measureText(label).width;
+    ctx.fillText(label, hx, row1Y);
+    hx += ctx.measureText(label).width;
     ctx.fillStyle = accent;
-    ctx.fillText(']', chipX + pw + lw, 17);
-    const total = ctx.measureText(prefix + label + ']').width;
-    chipX += total + 10;
+    ctx.fillText(']', hx, row1Y);
+    hx += ctx.measureText(']').width + 16;
   }
-  ctx.fillStyle = '#e5e7eb';
   ctx.font = '12px monospace';
-  ctx.fillText(fitText('Pending: ' + pendingCount + '   Done: ' + doneCount + '   Failed: ' + failedCount + '   Total: ' + totalCount, 350), c.width - 360, 17);
+  ctx.fillStyle = '#e5e7eb';
+  let sx = 12;
+  const bits = ['Pending: ' + pendingCount, 'Done: ' + doneCount, 'Failed: ' + failedCount, 'Total: ' + totalCount];
+  for (let bi = 0; bi < bits.length; bi++) {
+    ctx.fillText(bits[bi], sx, row2Y);
+    sx += ctx.measureText(bits[bi]).width + 22;
+  }
   ctx.fillStyle = '#cbd5e1';
   ctx.font = 'bold 11px monospace';
-  ctx.fillText(fitText('WEATHER: ' + V.weather, 150), c.width - 520, 17);
+  const wText = fitText('WEATHER: ' + V.weather, 200);
+  ctx.fillText(wText, c.width - ctx.measureText(wText).width - 12, row2Y);
   ctx.restore();
   drawRightPanel(c, now, doneCount, totalCount);
   drawChat(c);
