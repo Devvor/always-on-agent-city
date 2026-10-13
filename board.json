@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T06:04:24Z",
+    "checked_at": "2026-10-13T06:06:48Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -210,9 +210,9 @@
     {
       "id": "T18",
       "title": "P4: game pass 4 \u2014 three.js 3D mode (scaffold, toggle with 2D)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:07:46Z",
       "target_file": "tasks_out/worker_office3d.js",
       "include_files": [
         "tasks_out/worker_office.html"
