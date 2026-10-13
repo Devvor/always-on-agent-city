@@ -49,11 +49,14 @@ board and flag it in the status. Never seed a task touching anything outside
 tasks_out/.
 
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
-1. T48 SCROLL RUN - playability fetch quest: 3 glowing scrolls drop near random floor tiles every few minutes; the visitor picks one up by walking over it, and delivering it to the quest board earns +5 REP (via window.GuildPurpose if present, else own counter) with a small ceremony. Turns walking into purpose. Fresh module.
-
-2. T49 ECONOMY - SNACK STALL (economy made visible): a stall prop near the campfire where IDLE workers with purse > 0 (window.GuildEconomy purses if present) occasionally walk over, buy a snack (coin FX leaves the purse chip, snack in hand 60s, tiny happiness hop), while broke workers linger looking wistful (gray '...' bubble); prices nudge up with session snack count. Rationale: makes theme-5 wealth drive visible behavior - playability + economy compounding. Fresh module worker_snackstall.js.
-4. T50 SELF-DOCUMENTATION - GUILD PLAQUE CARVER (the island tells the guild's story): a stone-carver prop where the visitor can press E to engrave the newest milestone milestone (first five shipped, flawless streak, map level) onto a real plaque wall built from live board history (done/failed counts, mapLevel), each plaque dated. Rationale: deepens the user's aggressive self-documentation green-light with a hands-on ceremony. Fresh module worker_carver.js.
+1. T51 PLAYABILITY - SHOOTING-STAR WISH: every 3-5 min a shooting star streaks across the sky; if the visitor presses E while it passes, they make a wish - a small 2s gold ceremony (star dust falls, tiny REP +1 via window.GuildPurpose if present) and the campfire flares brighter for 10s. Turns idle sky-gazing into play. Rationale: playability + spectacle compounding, zero new state. Fresh module worker_wishes.js.
+2. T52 LIVING WORLD - ARRIVAL PIGEON: whenever the live board shows a NEW pending quest (pending count rises between polls), a pixel pigeon flies across the sky to the quest board and pins a parchment 'NEW QUEST' notice (quest id, fades after 60s), with a soft horn cue (cue('alert') in try/catch). The island reacts to the real repo. Rationale: living world + self-documentation from board data. Fresh module worker_arrivals.js.
 ## Seeded (foreman, 2026-10-13)
+- Run 5 (2026-10-14 ~21Z): seeded to missingno - T48 scroll run (RE-ROUTED from
+  laguna after its failure; spec unchanged, attempts reset), T49 snack stall;
+  to laguna - T50 plaque carver (laguna tail breaker cleared: only 1 trailing
+  failure T48; window open). Queue replenished with T51 shooting-star wishes,
+  T52 arrival pigeon (foreman proposals).
 - Run 4 (2026-10-13 evening): seeded to missingno - T45 guild archives, T46 spar
   break (both from Queue; laguna NOT seeded - circuit breaker still active from
   T38-T40; step5 not seeded, window dies ~Oct 16). Queue replenished with
