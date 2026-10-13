@@ -1,0 +1,30 @@
+{
+  "window": {
+    "model": "stepfun/step-5-preview:free",
+    "status": "open",
+    "checked_at": null,
+    "note": "step5 worker; free until ~Oct 16"
+  },
+  "tasks": [
+    {
+      "id": "S1",
+      "title": "WORKERS.md \u2014 document the worker toolchain",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/WORKERS.md",
+      "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python -c \"s=open('tasks_out/WORKERS.md').read(); need=['## ','board.json','tick','verify','$0.00']; [n for n in need if n not in s] and (_ for _ in ()).throw(AssertionError(need)); print('VERIFY-OK')\"",
+      "spec": "Write a Markdown file WORKERS.md documenting the missingno-worker toolchain for a new engineer. Sections (use ## headers): Overview (what the always-on free-model worker is: a $0.00 cron loop that builds code from a task board), Architecture (board.json as the only state; the 20-minute no_agent tick script missingno_worker_tick.py; health gate: model must be present AND priced $0 AND pass a canary call before any work; one task per tick; MAX 3 attempts with error feedback; git commit per completed task), The Board (JSON shape: window{model,status,checked_at}, tasks[{id,title,status:pending|in_progress|done|failed,attempts,target_file,verify_cmd,spec}]), Safety rules (quarantine: worker only writes under tasks_out/; verify commands run in the repo dir; nothing touches live systems; free-window death is handled by the gate and is silent after one alert), The Office (worker_office_server.py on loopback 8798 serves /api/board and static files; worker_office.js renders the 2.5D office from live board data), Cost (all model calls are zero-priced free-window models; if pricing ever shows >0 the tick refuses). Plain professional English, ~120-180 lines."
+    },
+    {
+      "id": "S2",
+      "title": "WORKER_RUNBOOK.md \u2014 ops runbook for the guild",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/WORKER_RUNBOOK.md",
+      "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python -c \"s=open('tasks_out/WORKER_RUNBOOK.md').read(); need=['## ','cron','seed','reset','ALERT']; [n for n in need if n not in s] and (_ for _ in ()).throw(AssertionError(need)); print('VERIFY-OK')\"",
+      "spec": "Write WORKER_RUNBOOK.md \u2014 an operations runbook for the worker fleet. Sections (## headers): Daily operation (cron jobs run the tick every 20 minutes; empty board = silent tick; one-line DONE/FAILED messages delivered to the ops thread; ALERT on window close), Seeding new tasks (how to append a task to board.json: id, title, spec with machine-checkable verify_cmd, target_file under tasks_out/; for edits of existing files add include_files so the model sees current content), Resetting a failed task (set status back to pending and attempts to 0), Diagnosis (read logs/tick.log; common failures: empty content = reasoning budget exhausted; verify 'no output' = grader too silent; 429 = free-tier capacity, tick retries), Window death (the gate closes the worker automatically when price > 0 or model vanishes; repoint by changing window.model to another free model or pause the cron), Multi-worker (worker #2 runs via missingno_worker_tick2.py with its own board board_step5.json and log; env vars WBOARD/WLOG/WNAME parametrize the tick). Plain English, ~100-150 lines."
+    }
+  ]
+}

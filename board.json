@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T04:15:55Z",
+    "checked_at": "2026-10-13T04:33:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -113,6 +113,32 @@
       "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && node -e \"const s=require('fs').readFileSync('tasks_out/worker_office.js','utf8'); ['questLog','torch','xp','chat','MISSINGNO'].every(k=>s.includes(k)) || process.exit(1); console.log('MARKERS-OK')\" && echo VERIFY-OK",
       "spec": "Restyle the existing canvas client (FULL CURRENT CONTENT below) into a RETRO MMORPG scene \u2014 think classic isometric MMOs (Ultima Online, RuneScape, Ragnarok Online): chunky pixel art, dark fantasy palette, warm torchlight, gold-trimmed stone UI. KEEP the data contract exactly: function init(canvas, apiBase), poll (apiBase||'') + '/api/board' every 5s, graceful OFFLINE handling, requestAnimationFrame loop, no external assets/network.\n\nRESTYLE REQUIREMENTS:\n1. WORLD: dark stone-navy background; floor tiles become warm WOOD planks or cobblestone with per-tile shade variation (use the existing rand()); back wall becomes a stone wall with 2 wall torches that FLICKER (radial warm-orange glow, brightness varies per frame).\n2. WORKER SPRITE: bigger (16-20px), 2-frame walk animation (leg swap) while moving, subtle idle bob at rest; above the head a yellow RPG nameplate 'MISSINGNO' in a small dark tag with a thin HP-style bar under the name showing XP progress (done/total tasks).\n3. DESKS: wooden workbenches with a slight top-face/side-face two-tone (fake 2.5D); tasks render as glowing runes/scrolls on benches: pending=amber pulse, in_progress=blue pulse, done=green steady glow, failed=red.\n4. RIGHT PANEL - QUEST LOG: parchment-look panel (tan bg, darker border, ~220px wide) listing tasks as quest entries: '!' marker pending, active task highlighted, done entries struck-dim with a green check glyph, failed with red cross glyph; header 'QUEST LOG'.\n5. BOTTOM-LEFT - CHAT BOX: translucent black monospace box showing the recent_ticks array (from the API payload) as system lines, newest at bottom, keep last 6, faint gold text.\n6. BOTTOM BAR - XP BAR: gold-framed bar that fills proportionally to done/total tasks; label 'LVL <n>' where n = number of done tasks; brief bright flash + floating '+XP' text over the worker when a task transitions to done (compare previous poll).\n7. TOP BAR: MMORPG server banner: 'MISSINGNO WORKER ONLINE' left, window status center (OPEN green / CLOSED red), task counts right, all on a dark bar with gold trim.\nAll drawing stays pure canvas fillRect/polygon primitives, pixel-perfect at integer coordinates. Keep the whole file valid standalone JS (node --check must pass). Output the complete updated file.",
       "note": "grader markers too literal (questLog/torch strings); restyle verified via rendered screenshot: torches, quest log, chat, XP bar, nameplate all present"
+    },
+    {
+      "id": "T11",
+      "title": "P4: office server guild API \u2014 serve both workers",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office_server.py",
+      "include_files": [
+        "tasks_out/worker_office_server.py"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && /opt/hermes/.venv/bin/python tasks_out/verify_office_server.py",
+      "spec": "Update the existing office server (FULL CURRENT CONTENT below) so /api/board serves the WHOLE GUILD: read board.json AND board_step5.json (if present) from the repo root and return a payload {\"workers\": [{\"name\": \"missingno\", \"model\": <window.model>, \"window\": <window obj>, \"tasks\": <tasks>, \"recent_ticks\": <last 10 lines of logs/tick.log>}, {\"name\": \"step5\", \"model\": ..., \"window\": ..., \"tasks\": ..., \"recent_ticks\": <last 10 of logs/tick_step5.log>}], \"window\": <first worker's window>}. Missing board file -> that worker is served with {\"error\": \"board missing\"} but the response still returns 200 with the other worker. Keep everything else: loopback-only bind, ThreadingHTTPServer, clean SIGINT/SIGTERM shutdown, CLI flags (--port, --board now means the MAIN board; --extra-board optional path, default <repo>/board_step5.json), static .js/.html routes from script dir, no tracebacks. For backwards compatibility ALSO include the old top-level keys \"window\", \"tasks\", \"recent_ticks\" mirroring the FIRST worker. Output the complete updated file."
+    },
+    {
+      "id": "T12",
+      "title": "P4: growing map + multi-worker + walk-cycle client",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": null,
+      "target_file": "tasks_out/worker_office.js",
+      "include_files": [
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && node --check tasks_out/worker_office.js && node -e \"const s=require('fs').readFileSync('tasks_out/worker_office.js','utf8'); ['grow','unlocked','walkFrame','step5','MISSINGNO'].every(k=>s.includes(k)) || (console.log('MISSING:', ['grow','unlocked','walkFrame','step5','MISSINGNO'].filter(k=>!s.includes(k))), process.exit(1)); console.log('MARKERS-OK')\" && echo VERIFY-OK",
+      "spec": "Update the existing retro-MMORPG client (FULL CURRENT CONTENT below). Keep the init(canvas, apiBase) contract and 5s polling, OFFLINE handling, requestAnimationFrame. NEW FEATURES:\n1. MULTI-WORKER: the API payload now has \"workers\": [{name, model, window, tasks, recent_ticks}] (old top-level keys still mirror worker #1 \u2014 support BOTH shapes: if payload.workers exists use it, else wrap the legacy payload into a one-worker array). Render one character per worker: MISSINGNO keeps its current look; the second worker gets a purple/violet robe variant with nameplate 'STEP5'. Each has its own nameplate+XP bar (done/total of its own tasks) and walks its own loop between benches. Chat box merges recent_ticks of all workers with a colored [name] prefix per line (gold for missingno, violet for step5).\n2. GROWING MAP (colony-growth mechanic): the floor STARTS SMALL (a 4x4 core area around the center) and GROWS as the GUILD gains completed tasks: every 2 completed tasks (across all workers) permanently unlocks a ring/belt of new floor tiles (grow the isometric floor bounds outward, max 8 growth steps), each newly unlocked area renders with a brief white-glint animation and slightly different tile shade (newer = lighter wood). Show a small 'MAP LEVEL n/9' counter near the XP bar. Derived only from the payload \u2014 no localStorage.\n3. WALK CYCLE: upgrade the worker sprite to a 4-frame walk cycle (leg alternation + 1px body bob), with left/right/up/down facing (simple per-direction sprite variants drawn with fillRect), frame switches every ~150ms while moving; keep the idle bob. Quest-log panel now shows BOTH workers' quests grouped under their name headers. Keep pure canvas primitives, valid standalone JS (node --check). Output the complete updated file."
     }
   ],
   "projects": [
