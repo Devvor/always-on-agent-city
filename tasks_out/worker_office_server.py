@@ -204,9 +204,15 @@ class OfficeHandler(BaseHTTPRequestHandler):
                         break
                 extra_log_path = chosen if chosen is not None else candidates[0]
 
+        laguna_board = None
+        if main_board_path:
+            laguna_board = os.path.join(
+                os.path.dirname(os.path.abspath(main_board_path)), "board_laguna.json"
+            )
         workers = [
             self._build_worker("missingno", main_board_path, main_log_path),
             self._build_worker("step5", extra_board_path, extra_log_path),
+            self._build_worker("laguna", laguna_board, os.path.join(os.path.dirname(os.path.abspath(main_board_path or "")), "logs", "tick_laguna.log")),
         ]
 
         first = workers[0] if workers else {}
