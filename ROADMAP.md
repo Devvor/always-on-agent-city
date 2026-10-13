@@ -46,6 +46,9 @@ tasks_out/.
 10. T36 MUSEUM WING (longcat W2) — worker_museum.js: pedestal plaques auto-generated from V.allTasks history; gold done / amber pending / red failed; guided labels when visitor stands near.
 11. T37 PATRON LICENSE (longcat W3) — worker_purpose.js: visitor endorses a working worker's quest (E near them); when it ships, +REP with ceremony + cue; PATRON LICENSE card bottom-left, ranks NOVICE->FRIEND->LEGEND.
 12. T38 GUILD LEDGER — worker_ledger.js: ticker-tape strip near the entrance scrolling the guild's real recent tick lines; the island reads like a repo.
+13. T39 CONTROLS CARD (steal: balik-kampung onboarding) — worker_controls.js: first-visit parchment card listing the controls (WASD/arrows walk, E talk/pet/endorse, drag pan, wheel zoom, 1-4 emotes), any-key dismiss, gold #d4af37 accents; never blocks after first dismiss (session-only).
+14. T40 GOLD GUIDES (steal: balik-kampung 'ikut penanda emas') — worker_guides.js: soft gold chevron markers orbiting the visitor pointing at the nearest point of interest (quest board, museum pedestal, a working worker, the cat), rotating when reached.
+15. T41 MINIGAME: XP ORB CATCH (steal: balik-kampung permainan hub) — worker_minigame.js: near the campfire press E to start a 20s arcade — gold XP orbs rain, visitor (arrow keys) catches them; score card + 'done' cue at the end; pure fun, no persistence.
 1. T27 QUEST BOARD — in-world wooden quest board near spawn: visitor walks up,
    presses E, reads the REAL pending/done quest list from window.V (fresh module
    worker_questboard.js).

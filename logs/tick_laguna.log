@@ -6,3 +6,15 @@
 2026-10-13 08:05:19 L2 attempt 2 verify rc 0 out tail: VERIFY-OK
 
 2026-10-13 08:05:19 L2 DONE on attempt 2
+2026-10-13 08:27:36 L3 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/boat_check.mjs:1
+# worker_boat.js — periodic SKY-BOAT COURIER event for the 2D guild client
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 08:28:43 L3 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 08:28:43 L3 DONE on attempt 2
