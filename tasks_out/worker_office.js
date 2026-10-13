@@ -68,10 +68,21 @@ function resetRng() {
   V.rnd = 123456789;
 }
 
+function updateGrid() {
+  // Camera zoom-out: as the island grows, shrink the isometric tile size so
+  // the whole island (floor + ~90px rock underside + bobbing rocks) stays
+  // inside the canvas. At growthStep 0 tiles are full size (70x35).
+  const s = V.growthStep;
+  const scale = Math.min(1, 384 / ((2 + 2 * s) * 35));
+  const c = V.canvas;
+  V.grid = { originX: Math.round(c.width * 0.5), originY: Math.round(c.height * 0.42),
+             tileW: 70 * scale, tileH: 35 * scale };
+}
+
 function buildScene() {
   const c = V.canvas;
   V.desks = [];
-  V.grid = { originX: Math.round(c.width * 0.5), originY: Math.round(c.height * 0.42), tileW: 70, tileH: 35 };
+  updateGrid();
   const positions = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
   for (let i = 0; i < positions.length; i++) {
     const p = iso(positions[i][0], positions[i][1]);
@@ -451,6 +462,7 @@ function normalizeBoard(data) {
   }
   if (newSteps > V.growthStep) V.growthStep = newSteps;
   V.mapLevel = V.growthStep + 1;
+  updateGrid();
   V.totalDone = totalDone;
 
   V.workers = normalized;

@@ -121,3 +121,27 @@ PARSES
 
 2026-10-13 04:44:46 T12 FAILED MISSING: [ 'step5' ]
 
+2026-10-13 05:29:31 T13 attempt 1 verify rc 1 out tail: /opt/data/missingno-worker/tasks_out/worker_office.js:1194
+
+
+
+SyntaxError: Unexpected end of input
+    at wrapSafe (node:internal/modules/cjs/loader:1866:18)
+    at checkSyntax (node:internal/main/check_syntax:88:3)
+
+Node.js v26.8.1
+
+2026-10-13 05:31:05 T13 attempt 2 verify rc 1 out tail: /opt/data/missingno-worker/tasks_out/worker_office.js:1004
+
+
+
+SyntaxError: Unexpected end of input
+    at wrapSafe (node:internal/modules/cjs/loader:1866:18)
+    at checkSyntax (node:internal/main/check_syntax:88:3)
+
+Node.js v26.8.1
+
+2026-10-13 05:32:16 T13 attempt 3 verify rc 1 out tail: MISSING: [ 'island', 'embers', 'godray' ]
+
+2026-10-13 05:32:16 T13 FAILED MISSING: [ 'island', 'embers', 'godray' ]
+
