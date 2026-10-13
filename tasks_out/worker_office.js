@@ -372,7 +372,7 @@ function ensureWorkerStates(count) {
   if (V.workerStates.length > count) V.workerStates = V.workerStates.slice(0, count);
 }
 function normalizeBoard(data) {
-  const prevTotalDone = V.totalDone;
+  let prevTotalDone = V.totalDone;
   const root = data && typeof data === 'object' ? data : {};
   const roots = Array.isArray(root.workers) ? root.workers.slice() : [root];
   const metas = [];
