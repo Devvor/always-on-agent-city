@@ -103,3 +103,7 @@ SyntaxError: Invalid or unexpected token
 Node.js v26.7.0
 
 2026-10-13 15:01:50 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-13 16:47:13 L4 attempt 1 verify rc 1 out tail: 
+2026-10-13 16:47:31 L4 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 16:47:31 L4 DONE on attempt 2

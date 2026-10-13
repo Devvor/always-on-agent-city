@@ -323,3 +323,15 @@ Node.js v26.7.0
 2026-10-13 15:34:40 T34 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-13 15:34:40 T34 DONE on attempt 1
+2026-10-13 16:37:42 T42 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 16:37:42 T42 DONE on attempt 1
+2026-10-13 16:58:58 T45 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 16:58:58 T45 DONE on attempt 1
+2026-10-13 17:20:51 T46 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 17:20:51 T46 DONE on attempt 1
+2026-10-13 17:43:00 T47 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 17:43:01 T47 DONE on attempt 1
