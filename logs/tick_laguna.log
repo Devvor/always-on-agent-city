@@ -2,3 +2,7 @@
 2026-10-13 07:39:52 L1 attempt 2 verify rc 0 out tail: VERIFY-OK
 
 2026-10-13 07:39:52 L1 DONE on attempt 2
+2026-10-13 08:04:52 L2 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 08:05:19 L2 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 08:05:19 L2 DONE on attempt 2
