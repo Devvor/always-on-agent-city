@@ -59,7 +59,19 @@ const V = {
   nebulaPhase: 0,
   xpTexts: [],
   levelUp: { active: false, t: 0, duration: 2 },
-  shake: { active: false, t: 0, duration: 0.3, amp: 3 }
+  shake: { active: false, t: 0, duration: 0.3, amp: 3 },
+  dayPhase: 0,
+  dayHour: 0,
+  daylight: 0,
+  nightFactor: 1,
+  starAlpha: 1,
+  torchIntensity: 1,
+  weather: 'CLEAR',
+  weatherDate: '',
+  weatherFactor: 0,
+  wind: 0,
+  rainDrops: [],
+  snowFlakes: []
 };
 function rand() {
   V.rnd = (V.rnd * 1664525 + 1013904223) >>> 0;
@@ -72,12 +84,82 @@ function seeded(seed) {
 function resetRng() {
   V.rnd = 123456789;
 }
+function hexRgb(hex) {
+  const h = String(hex || '').replace('#', '');
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16)
+  };
+}
+function lerpColor(a, b, t) {
+  t = clamp(t == null ? 0 : t, 0, 1);
+  return {
+    r: Math.round(a.r + (b.r - a.r) * t),
+    g: Math.round(a.g + (b.g - a.g) * t),
+    b: Math.round(a.b + (b.b - a.b) * t)
+  };
+}
+function rgbStr(c) { return 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')'; }
 function updateGrid() {
   const s = V.growthStep;
   const scale = Math.min(1, 384 / ((2 + 2 * s) * 35));
   const c = V.canvas;
   V.grid = { originX: Math.round(c.width * 0.5), originY: Math.round(c.height * 0.42),
              tileW: 70 * scale, tileH: 35 * scale };
+}
+function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+function computeDiurnal() {
+  const d = new Date();
+  const hour = d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600;
+  V.dayHour = hour;
+  V.dayPhase = hour / 24;
+  let dl = 0;
+  if (hour < 5) dl = 0;
+  else if (hour < 7) dl = (hour - 5) / 2;
+  else if (hour < 17) dl = 1;
+  else if (hour < 19) dl = 1 - (hour - 17) / 2;
+  else dl = 0;
+  V.daylight = clamp(dl, 0, 1);
+  V.nightFactor = 1 - V.daylight;
+  V.starAlpha = (hour >= 19 || hour < 5) ? 1 : (hour < 10 ? clamp((10 - hour) / 5, 0, 1) : 0);
+  V.torchIntensity = 0.08 + 1.92 * V.nightFactor;
+}
+function hashString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h |= 0;
+  }
+  return h >>> 0;
+}
+function dateKeyLocal(d) {
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  return y + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+}
+function updateWeather() {
+  const d = new Date();
+  const key = dateKeyLocal(d);
+  if (V.weatherDate === key) return;
+  V.weatherDate = key;
+  const r = seeded(hashString(key) * 0.000001 + 7.25);
+  if (r < 0.70) {
+    V.weather = 'CLEAR';
+    V.weatherFactor = 0.0;
+  } else if (r < 0.90) {
+    V.weather = 'RAIN';
+    V.weatherFactor = 0.72;
+  } else {
+    V.weather = 'SNOW';
+    V.weatherFactor = 0.28;
+  }
+}
+function updateEnvironment() {
+  computeDiurnal();
+  updateWeather();
+  V.wind = Math.sin(V.dayPhase) + V.weatherFactor;
 }
 function buildScene() {
   const c = V.canvas;
@@ -108,6 +190,18 @@ function buildScene() {
   V.xpTexts = [];
   V.levelUp = { active: false, t: 0, duration: 2 };
   V.shake = { active: false, t: 0, duration: 0.3, amp: 3 };
+  V.dayPhase = 0;
+  V.dayHour = 0;
+  V.daylight = 0;
+  V.nightFactor = 1;
+  V.starAlpha = 1;
+  V.torchIntensity = 1;
+  V.weather = 'CLEAR';
+  V.weatherDate = '';
+  V.weatherFactor = 0;
+  V.wind = 0;
+  V.rainDrops = [];
+  V.snowFlakes = [];
   resetRng();
   V.starsSmall = [];
   for (let i = 0; i < 60; i++) {
@@ -145,6 +239,23 @@ function buildScene() {
       shade: Math.floor(seeded(seed * 27.1) * 3)
     });
   }
+  for (let i = 0; i < 60; i++) {
+    V.rainDrops.push({
+      xSeed: seeded(900 + i * 3.1),
+      ySeed: seeded(901 + i * 5.7),
+      speed: 360 + seeded(902 + i * 7.9) * 260,
+      drift: 0.2 + seeded(903 + i * 11.3) * 0.6
+    });
+  }
+  for (let i = 0; i < 40; i++) {
+    V.snowFlakes.push({
+      xSeed: seeded(1500 + i * 4.7),
+      ySeed: seeded(1501 + i * 6.1),
+      speed: 18 + seeded(1502 + i * 8.3) * 26,
+      phase: seeded(1503 + i * 9.7) * Math.PI * 2
+    });
+  }
+  updateEnvironment();
 }
 function iso(gx, gy) {
   const g = V.grid;
@@ -716,6 +827,7 @@ function updateParticles(dt) {
   V.particles = next;
 }
 function update(dt) {
+  updateEnvironment();
   V.dt = dt;
   for (let wi = 0; wi < V.workerStates.length; wi++) {
     const w = V.workerStates[wi];
@@ -894,7 +1006,6 @@ function godRayGeometry() {
     bottomHalf: 58
   };
 }
-function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 function guildCatPos() {
   const base = iso(1, 1);
   return { x: Math.round(base.x + 8), y: Math.round(base.y - 6) };
@@ -917,22 +1028,40 @@ function campfireSitPos(index) {
 function drawSky(now) {
   const ctx = V.ctx;
   const c = V.canvas;
+  const dl = V.daylight;
+  const nightTop = hexRgb('#1a1a2e');
+  const nightBottom = hexRgb('#0d0a1e');
+  const dayTop = hexRgb('#8fc9f0');
+  const dayBottom = hexRgb('#ffe8bc');
+  const topC = lerpColor(nightTop, dayTop, dl);
+  const bottomC = lerpColor(nightBottom, dayBottom, dl);
   const g = ctx.createLinearGradient(0, 0, 0, c.height);
-  g.addColorStop(0, '#1a1a2e');
-  g.addColorStop(1, '#0d0a1e');
+  g.addColorStop(0, rgbStr(topC));
+  g.addColorStop(1, rgbStr(bottomC));
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, c.width, c.height);
-  const ng = ctx.createRadialGradient(c.width * 0.35, c.height * 0.24, 20, c.width * 0.35, c.height * 0.24, 170);
-  ng.addColorStop(0, 'rgba(255,110,220,0.10)');
-  ng.addColorStop(1, 'rgba(255,110,220,0.00)');
-  ctx.fillStyle = ng;
-  ctx.fillRect(0, 0, c.width, c.height);
+  const ngAlpha = 0.10 * V.nightFactor;
+  if (ngAlpha > 0.005) {
+    const ng = ctx.createRadialGradient(c.width * 0.35, c.height * 0.24, 20, c.width * 0.35, c.height * 0.24, 170);
+    ng.addColorStop(0, 'rgba(255,110,220,' + (0.10 * V.nightFactor) + ')');
+    ng.addColorStop(1, 'rgba(255,110,220,0.00)');
+    ctx.fillStyle = ng;
+    ctx.fillRect(0, 0, c.width, c.height);
+  }
+  if (V.weather === 'RAIN') {
+    ctx.fillStyle = 'rgba(0,0,20,0.18)';
+    ctx.fillRect(0, 0, c.width, c.height);
+  } else if (V.weather === 'SNOW') {
+    ctx.fillStyle = 'rgba(200,225,255,' + (0.05 + 0.06 * V.nightFactor) + ')';
+    ctx.fillRect(0, 0, c.width, c.height);
+  }
   const drawStars = function (arr, bright) {
     for (let i = 0; i < arr.length; i++) {
       const p = arr[i];
       const x = (p.x + now * 0.001 * p.speed) % c.width;
       const y = p.y + Math.sin(now * 0.00035 + p.phase) * 1.2;
-      const tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(now * 0.0023 + p.phase));
+      const tw = (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(now * 0.0023 + p.phase))) * (V.starAlpha || 0);
+      if (tw <= 0.01) continue;
       ctx.globalAlpha = tw;
       ctx.fillStyle = p.blue ? (bright ? '#dbeafe' : '#bfdbfe') : '#ffffff';
       ctx.fillRect(Math.round(x), Math.round(y), p.size, p.size);
@@ -944,33 +1073,96 @@ function drawSky(now) {
   const mx = Math.round(c.width * 0.72);
   const my = Math.round(c.height * 0.15);
   const mr = 34;
-  for (let yy = -mr; yy <= mr; yy += 3) {
-    for (let xx = -mr; xx <= mr; xx += 3) {
-      if (xx * xx + yy * yy <= mr * mr) {
-        ctx.fillStyle = '#e8e6df';
-        ctx.fillRect(mx + xx - 1, my + yy - 1, 4, 4);
-      }
-    }
-  }
-  const craters = [[-8, -6, 7], [7, 3, 9], [-3, 9, 6]];
-  for (let i = 0; i < craters.length; i++) {
-    const cr = craters[i];
-    const crx = mx + cr[0];
-    const cry = my + cr[1];
-    const crr = cr[2];
-    for (let yy = -crr; yy <= crr; yy += 2) {
-      for (let xx = -crr; xx <= crr; xx += 2) {
-        if (xx * xx + yy * yy <= crr * crr) {
-          ctx.fillStyle = '#b9b5a8';
-          ctx.fillRect(crx + xx, cry + yy, 2, 2);
+  if (V.daylight > 0.12) {
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(mx - 7, my - 7, 14, 14);
+    ctx.fillStyle = '#fde68a';
+    ctx.fillRect(mx - 4, my - 4, 8, 8);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(mx - 2, my - 2, 4, 4);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(mx - 9, my - 1, 3, 2);
+    ctx.fillRect(mx + 6, my - 1, 3, 2);
+    ctx.fillRect(mx - 1, my - 9, 2, 3);
+    ctx.fillRect(mx - 1, my + 6, 2, 3);
+  } else {
+    for (let yy = -mr; yy <= mr; yy += 3) {
+      for (let xx = -mr; xx <= mr; xx += 3) {
+        if (xx * xx + yy * yy <= mr * mr) {
+          ctx.fillStyle = '#e8e6df';
+          ctx.fillRect(mx + xx - 1, my + yy - 1, 4, 4);
         }
       }
     }
+    const craters = [[-8, -6, 7], [7, 3, 9], [-3, 9, 6]];
+    for (let i = 0; i < craters.length; i++) {
+      const cr = craters[i];
+      const crx = mx + cr[0];
+      const cry = my + cr[1];
+      const crr = cr[2];
+      for (let yy = -crr; yy <= crr; yy += 2) {
+        for (let xx = -crr; xx <= crr; xx += 2) {
+          if (xx * xx + yy * yy <= crr * crr) {
+            ctx.fillStyle = '#b9b5a8';
+            ctx.fillRect(crx + xx, cry + yy, 2, 2);
+          }
+        }
+      }
+    }
+    ctx.globalAlpha = 0.22;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(mx - 18, my - 18, 8, 6);
+    ctx.globalAlpha = 1;
   }
-  ctx.globalAlpha = 0.22;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(mx - 18, my - 18, 8, 6);
+  drawClockDial(c);
   ctx.globalAlpha = 1;
+}
+function drawClockDial(c) {
+  const ctx = V.ctx;
+  const cx = c.width - 46;
+  const cy = 26;
+  const r = 22;
+  ctx.strokeStyle = 'rgba(230,225,210,0.45)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i <= 24; i++) {
+    const t = i / 24;
+    const dx = (t * 2 - 1) * r;
+    const rad = Math.sqrt(Math.max(0, r * r - dx * dx));
+    const x = Math.round(cx + dx);
+    const y = Math.round(cy - rad);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(230,225,210,0.65)';
+  for (let h = 0; h <= 24; h += 6) {
+    const t = h / 24;
+    const dx = (t * 2 - 1) * r;
+    const rad = Math.sqrt(Math.max(0, r * r - dx * dx));
+    ctx.fillRect(Math.round(cx + dx) - 1, Math.round(cy - rad) - 1, 2, 2);
+  }
+  const frac = clamp(V.dayHour / 24, 0, 1);
+  const dx = (frac * 2 - 1) * r;
+  const rad = Math.sqrt(Math.max(0, r * r - dx * dx));
+  const px = Math.round(cx + dx);
+  const py = Math.round(cy - rad);
+  if (V.daylight > 0.12) {
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(px - 2, py - 2, 4, 4);
+    ctx.fillStyle = '#fde68a';
+    ctx.fillRect(px - 1, py - 1, 2, 2);
+  } else {
+    ctx.fillStyle = '#e8e6df';
+    ctx.fillRect(px - 2, py - 2, 4, 4);
+    ctx.fillStyle = '#b9b5a8';
+    ctx.fillRect(px, py, 2, 2);
+  }
+  ctx.fillStyle = 'rgba(230,225,210,0.75)';
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('24H', cx, cy + 8);
+  ctx.textAlign = 'left';
 }
 function drawIslandUnderside(now) {
   const ctx = V.ctx;
@@ -1035,7 +1227,7 @@ function drawIslandUnderside(now) {
     const b = pts[(edge + 1) % 4];
     const mx = (a.x + b.x) * 0.5;
     const my = (a.y + b.y) * 0.5;
-    const sway = Math.sin(now * 0.0015 + i * 1.7) * 4;
+    const sway = Math.sin(now * 0.0015 + i * 1.7) * 4 + V.wind * 6;
     ctx.fillStyle = '#2f4a2f';
     for (let s = 0; s < 24; s += 4) {
       ctx.fillRect(Math.round(mx + sway * (s / 24) - 1), Math.round(my + s), 2, 4);
@@ -1134,6 +1326,24 @@ function drawFloor(now) {
       }
     }
   }
+  if (V.weather === 'SNOW') {
+    const inner = outerCorners();
+    if (inner) {
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      for (let i = 0; i < 4; i++) {
+        const a = inner[i];
+        const b = inner[(i + 1) % 4];
+        const dist = Math.hypot(b.x - a.x, b.y - a.y);
+        const steps = Math.max(6, Math.round(dist / 6));
+        for (let s = 0; s <= steps; s++) {
+          const t = s / steps;
+          const x = a.x + (b.x - a.x) * t;
+          const y = a.y + (b.y - a.y) * t;
+          ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
+        }
+      }
+    }
+  }
 }
 function drawBuildings(now) {
   const ctx = V.ctx;
@@ -1182,13 +1392,14 @@ function drawBuildings(now) {
     ctx.lineWidth = 1;
     ctx.strokeRect(winX, winY, 10, 8);
     if (i === 0) {
+      const sway = Math.round(Math.sin(now * 0.004) * 3 + V.wind * 2);
       ctx.fillStyle = '#5a3f25';
-      ctx.fillRect(x + 10, y - b.h - 16, 2, 14);
+      ctx.fillRect(x + 10 + sway, y - b.h - 16, 2, 14);
       ctx.fillStyle = '#f4e8c1';
-      ctx.fillRect(x + 4, y - b.h - 24, 18, 12);
+      ctx.fillRect(x + 4 + sway, y - b.h - 24, 18, 12);
       ctx.fillStyle = '#6b4a2d';
-      ctx.fillRect(x + 6, y - b.h - 20, 14, 1);
-      ctx.fillRect(x + 6, y - b.h - 16, 14, 1);
+      ctx.fillRect(x + 6 + sway, y - b.h - 20, 14, 1);
+      ctx.fillRect(x + 6 + sway, y - b.h - 16, 14, 1);
     } else if (i === 1) {
       ctx.fillStyle = '#334155';
       ctx.fillRect(x + 8, y - b.h - 18, 2, 14);
@@ -1338,7 +1549,7 @@ function drawProps(now) {
     const base = iso(0, -1);
     const px = Math.round(base.x);
     const py = Math.round(base.y);
-    const sway = Math.round(Math.sin(now * 0.004) * 3);
+    const sway = Math.round(Math.sin(now * 0.004) * 3 + V.wind * 4);
     ctx.fillStyle = '#4b3320';
     ctx.fillRect(px - 2, py - 50, 4, 52);
     ctx.fillStyle = '#5a1118';
@@ -1456,15 +1667,17 @@ function drawProps(now) {
     ctx.fillRect(cp.x - 7, cp.y - 9, 2, 4);
     ctx.fillStyle = '#1f2937';
     ctx.fillRect(cp.x - 10, cp.y - 4, 4, 1);
-    const tailFlick = Math.sin(now * 0.0013) > 0.93 ? -5 : 0;
+    const tailSway = Math.round(V.wind * 3 + (Math.sin(now * 0.0013) > 0.93 ? -5 : 0));
     ctx.fillStyle = '#9ca3af';
-    ctx.fillRect(cp.x + 7, cp.y - 2 + tailFlick, 6, 2);
-    ctx.fillRect(cp.x + 12, cp.y - 4 + tailFlick * 2, 4, 2);
+    ctx.fillRect(cp.x + 7 + tailSway, cp.y - 2, 6, 2);
+    ctx.fillRect(cp.x + 12 + tailSway * 2, cp.y - 4, 4, 2);
   }
 }
 function drawTorch(cx, cy, index, now) {
   const ctx = V.ctx;
-  const b = Math.max(0.32, Math.min(1, 0.58 + 0.34 * Math.sin(now * 0.012 + index * 2.1) + (rand() - 0.5) * 0.16));
+  const intensity = V.torchIntensity || 1;
+  let b = Math.max(0.32, Math.min(1, 0.58 + 0.34 * Math.sin(now * 0.012 + index * 2.1) + (rand() - 0.5) * 0.16));
+  b = clamp(b * intensity, 0, 1);
   const sizes = [46, 34, 22, 12];
   for (let k = 0; k < sizes.length; k++) {
     const a = b * (0.24 - k * 0.045);
@@ -1619,6 +1832,7 @@ function render(now) {
   drawSky(now);
   drawIslandUnderside(now);
   drawFloor(now);
+  drawWeather(c, now);
   drawBuildings(now);
   drawShadows();
   drawProps(now);
@@ -1690,31 +1904,36 @@ function drawLighting(now) {
   const c = V.canvas;
   const gr = godRayGeometry();
   const shimmer = 0.92 + 0.08 * Math.sin(now * 0.0019);
-  ctx.save();
-  ctx.globalAlpha = 0.06 * shimmer;
-  ctx.fillStyle = 'rgba(200,230,255,1)';
-  ctx.beginPath();
-  ctx.moveTo(gr.topX - 10, gr.topY);
-  ctx.lineTo(gr.topX + 10, gr.topY);
-  ctx.lineTo(gr.bottomX + gr.bottomHalf, gr.bottomY);
-  ctx.lineTo(gr.bottomX - gr.bottomHalf, gr.bottomY);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
+  if (V.daylight > 0.02) {
+    ctx.save();
+    ctx.globalAlpha = 0.06 * shimmer * V.daylight;
+    ctx.fillStyle = 'rgba(200,230,255,1)';
+    ctx.beginPath();
+    ctx.moveTo(gr.topX - 10, gr.topY);
+    ctx.lineTo(gr.topX + 10, gr.topY);
+    ctx.lineTo(gr.bottomX + gr.bottomHalf, gr.bottomY);
+    ctx.lineTo(gr.bottomX - gr.bottomHalf, gr.bottomY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
   const prevComposite = ctx.globalCompositeOperation;
   ctx.globalCompositeOperation = 'lighter';
   for (let i = 0; i < V.torchPts.length; i++) {
     const tp = V.torchPts[i];
     const pulse = 0.58 + 0.34 * Math.sin(now * 0.012 + i * 2.1) + (rand() - 0.5) * 0.14;
     const radius = 42 + pulse * 16;
+    const intensity = V.torchIntensity || 1;
     const gradient = ctx.createRadialGradient(tp.x, tp.y, 2, tp.x, tp.y, radius);
-    gradient.addColorStop(0, 'rgba(255,180,90,0.36)');
-    gradient.addColorStop(0.45, 'rgba(255,120,40,0.16)');
+    gradient.addColorStop(0, 'rgba(255,180,90,' + (0.36 * intensity) + ')');
+    gradient.addColorStop(0.45, 'rgba(255,120,40,' + (0.16 * intensity) + ')');
     gradient.addColorStop(1, 'rgba(255,90,20,0)');
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(tp.x, tp.y, radius, 0, Math.PI * 2);
-    ctx.fill();
+    if (intensity > 0.05) {
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(tp.x, tp.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
   for (let wi = 0; wi < V.workerStates.length; wi++) {
     const w = V.workerStates[wi];
@@ -1739,6 +1958,46 @@ function drawLighting(now) {
   ctx.fillStyle = 'rgba(0,0,0,0.03)';
   for (let y = 0; y < c.height; y += 3) {
     ctx.fillRect(0, y, c.width, 1);
+  }
+}
+function drawWeather(c, now) {
+  const ctx = V.ctx;
+  if (V.weather === 'RAIN') {
+    const t = now * 0.001;
+    ctx.strokeStyle = 'rgba(180,210,255,0.62)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < V.rainDrops.length; i++) {
+      const drop = V.rainDrops[i];
+      const y = (drop.ySeed * (c.height + 80) + t * drop.speed) % (c.height + 80) - 40;
+      const x = drop.xSeed * (c.width * 0.78) + c.width * 0.11 + drop.drift * 18 + V.wind * 8;
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x), Math.round(y));
+      ctx.lineTo(Math.round(x + 3), Math.round(y + 11));
+      ctx.stroke();
+    }
+    const minC = -2 - V.growthStep;
+    const maxC = 1 + V.growthStep;
+    ctx.fillStyle = 'rgba(210,225,255,0.45)';
+    for (let i = 0; i < 26; i++) {
+      const gx = minC + Math.floor(seeded(1300 + i * 17.1) * (maxC - minC + 1));
+      const gy = minC + Math.floor(seeded(1301 + i * 19.3) * (maxC - minC + 1));
+      const pt = iso(gx + 0.5, gy + 0.5);
+      const pulse = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(now * 0.009 + i * 1.7));
+      ctx.globalAlpha = pulse * 0.45;
+      ctx.fillRect(Math.round(pt.x) - 2, Math.round(pt.y) + 2, 4, 1);
+      ctx.fillRect(Math.round(pt.x) - 1, Math.round(pt.y) + 4, 2, 1);
+    }
+    ctx.globalAlpha = 1;
+  } else if (V.weather === 'SNOW') {
+    const t = now * 0.001;
+    for (let i = 0; i < V.snowFlakes.length; i++) {
+      const fl = V.snowFlakes[i];
+      const y = (fl.ySeed * c.height + t * fl.speed) % c.height;
+      const sway = Math.sin(t * 0.9 + fl.phase) * (8 + Math.abs(V.wind) * 7);
+      const x = fl.xSeed * c.width + sway;
+      ctx.fillStyle = 'rgba(255,255,255,0.82)';
+      ctx.fillRect(Math.round(x), Math.round(y), 2, 2);
+    }
   }
 }
 function drawUI(c, now) {
@@ -1842,6 +2101,9 @@ function drawUI(c, now) {
   ctx.fillStyle = '#e5e7eb';
   ctx.font = '12px monospace';
   ctx.fillText('Pending: ' + pendingCount + '   Done: ' + doneCount + '   Failed: ' + failedCount + '   Total: ' + totalCount, c.width - 360, 17);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = 'bold 11px monospace';
+  ctx.fillText('WEATHER: ' + V.weather, c.width - 520, 17);
   drawRightPanel(c, now, doneCount, totalCount);
   drawChat(c);
   drawBottomBar(c, doneCount, totalCount);

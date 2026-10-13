@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T05:58:14Z",
+    "checked_at": "2026-10-13T06:01:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -184,9 +184,9 @@
     {
       "id": "T16",
       "title": "P4: game pass 2 \u2014 day/night cycle + weather",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": null,
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-13T06:03:09Z",
       "target_file": "tasks_out/worker_office.js",
       "include_files": [
         "tasks_out/worker_office.js"
