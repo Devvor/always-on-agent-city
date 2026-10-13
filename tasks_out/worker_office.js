@@ -17,10 +17,27 @@ function init(canvas, apiBase) {
     canvas.addEventListener('wheel', onCanvasWheel, { passive: false });
     canvas.addEventListener('dblclick', onCanvasDblClick);
   }
+  if (!V._keyBound) {
+    V._keyBound = true;
+    window.addEventListener('keydown', onTitleKeyDown);
+  }
   buildScene();
+  V.titleClouds = [];
+  for (let i = 0; i < 14; i++) {
+    V.titleClouds.push({
+      seed: i,
+      y: 40 + seeded(700 + i * 4.7) * 180,
+      speed: 6 + seeded(701 + i * 5.1) * 18,
+      size: 60 + seeded(702 + i * 6.3) * 80,
+      alpha: 0.12 + seeded(703 + i * 7.9) * 0.18
+    });
+  }
   fetchBoard();
   if (V.pollTimer) clearInterval(V.pollTimer);
   V.pollTimer = setInterval(fetchBoard, 5000);
+  V.gameState = 'title';
+  V.titleTransition = null;
+  V.titleStart = V.nowTime;
   V.lastTime = (typeof performance !== 'undefined' ? performance.now() : Date.now());
   requestAnimationFrame(frame);
 }
@@ -85,7 +102,12 @@ const V = {
   workerChatBubbles: [],
   camera: { x: 0, y: 0, zoom: 1 },
   cameraDrag: { active: false, startX: 0, startY: 0, pan0X: 0, pan0Y: 0 },
-  _inputBound: false
+  gameState: 'title',
+  titleStart: 0,
+  titleClouds: [],
+  titleTransition: null,
+  _inputBound: false,
+  _keyBound: false
 };
 function rand() {
   V.rnd = (V.rnd * 1664525 + 1013904223) >>> 0;
@@ -143,6 +165,7 @@ function canvasPoint(e) {
 }
 function onCanvasMouseDown(e) {
   if (e.button !== 0) return;
+  if (V.gameState === 'title') { triggerTitleWipe(); e.preventDefault(); return; }
   const p = canvasPoint(e);
   V.cameraDrag = { active: true, startX: p.x, startY: p.y, pan0X: V.camera.x, pan0Y: V.camera.y };
   if (V.canvas) V.canvas.style.cursor = 'grabbing';
@@ -170,6 +193,7 @@ function onCanvasMouseLeave() {
   if (V.canvas) V.canvas.style.cursor = 'default';
 }
 function onCanvasWheel(e) {
+  if (V.gameState === 'title') { e.preventDefault(); return; }
   e.preventDefault();
   const p = canvasPoint(e);
   const z = V.camera.zoom || 1;
@@ -187,6 +211,23 @@ function onCanvasDblClick(e) {
   V.camera.y = 0;
   V.camera.zoom = 1;
   if (V.canvas) V.canvas.style.cursor = 'grab';
+}
+function onTitleKeyDown(e) {
+  if (V.gameState !== 'title') return;
+  triggerTitleWipe();
+}
+function triggerTitleWipe() {
+  if (V.gameState !== 'title' || V.titleTransition) return;
+  V.titleTransition = { active: true, start: V.nowTime || (typeof performance !== 'undefined' ? performance.now() : Date.now()), duration: 0.9 };
+}
+function updateTitleTransition(now) {
+  const tr = V.titleTransition;
+  if (!tr || !tr.active) return;
+  if (now - tr.start >= tr.duration * 1000) {
+    tr.active = false;
+    V.titleTransition = null;
+    V.gameState = 'play';
+  }
 }
 function computeDiurnal() {
   const d = new Date();
@@ -630,7 +671,7 @@ function normalizeBoard(data) {
     const focus0 = chooseFocus(nw.tasks);
     st.project = focus0 ? focus0.project : null;
     if (newDone > 0) {
-      if (window.cue) try { window.cue('done'); } catch (e) {}
+      if (V.gameState === 'play' && window.cue) try { window.cue('done'); } catch (e) {}
       st.flash.active = true;
       st.flash.t = 0;
       st.flash.duration = 0.9;
@@ -669,7 +710,7 @@ function normalizeBoard(data) {
     };
   }
   if (newSteps > V.growthStep) {
-    if (window.cue) try { window.cue('grow'); } catch (e) {}
+    if (V.gameState === 'play' && window.cue) try { window.cue('grow'); } catch (e) {}
     V.growthStep = newSteps;
   }
   V.mapLevel = V.growthStep + 1;
@@ -677,7 +718,7 @@ function normalizeBoard(data) {
   if (V.primeBaseline) { V.primeBaseline = false; prevTotalDone = totalDone; }
   if (totalDone > prevTotalDone) {
     V.levelUp = { active: true, t: 0, duration: 2 };
-    if (window.cue) try { window.cue('levelup'); } catch (e) {}
+    if (V.gameState === 'play' && window.cue) try { window.cue('levelup'); } catch (e) {}
     V.shake = { active: true, t: 0, duration: 0.3, amp: 3 };
     const cx = V.canvas.width * 0.5;
     const cy = V.canvas.height * 0.45;
@@ -1075,7 +1116,12 @@ function frame(now) {
   if (dt > 0.12) dt = 0.12;
   V.lastTime = now;
   V.dt = dt;
-  try { update(dt); } catch (e) {}
+  if (V.gameState === 'title') {
+    if (!V.titleTransition && now - V.titleStart >= 4000) triggerTitleWipe();
+    if (V.titleTransition) updateTitleTransition(now);
+  } else {
+    try { update(dt); } catch (e) {}
+  }
   try { render(now); } catch (e) {}
 }
 function colorForStatus(status) {
@@ -1974,9 +2020,19 @@ function drawWorker(w, meta, now) {
   ctx.fillRect(barX, barY, Math.round(barW * ratio), barH);
 }
 function render(now) {
+  if (V.gameState === 'title') { renderTitle(now); return; }
+  if (V.titleTransition && V.titleTransition.active) { renderTitleTransition(now); return; }
+  renderGame(now);
+}
+function renderGame(now) {
   const ctx = V.ctx;
   const c = V.canvas;
   ctx.clearRect(0, 0, c.width, c.height);
+  renderGameScene(now);
+}
+function renderGameScene(now) {
+  const ctx = V.ctx;
+  const c = V.canvas;
   ctx.save();
   if (V.shake.active) {
     const progress = V.shake.t / V.shake.duration;
@@ -2004,6 +2060,108 @@ function render(now) {
   drawUI(c, now);
   drawMinimap(c, now);
   ctx.restore();
+}
+function renderTitle(now) {
+  const ctx = V.ctx;
+  const c = V.canvas;
+  ctx.clearRect(0, 0, c.width, c.height);
+  const g = ctx.createLinearGradient(0, 0, 0, c.height);
+  g.addColorStop(0, '#060a16');
+  g.addColorStop(0.55, '#0a1020');
+  g.addColorStop(1, '#05070f');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, c.width, c.height);
+  const starsTw = 1;
+  for (let pass = 0; pass < 2; pass++) {
+    const arr = pass ? V.starsBright : V.starsSmall;
+    for (let i = 0; i < arr.length; i++) {
+      const p = arr[i];
+      const x = (p.x + now * 0.001 * p.speed) % c.width;
+      const y = p.y + Math.sin(now * 0.00035 + p.phase) * 1.2;
+      const tw = (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(now * 0.0023 + p.phase))) * starsTw;
+      if (tw <= 0.01) continue;
+      ctx.globalAlpha = tw;
+      ctx.fillStyle = p.blue ? (pass ? '#dbeafe' : '#bfdbfe') : '#ffffff';
+      ctx.fillRect(Math.round(x), Math.round(y), p.size, p.size);
+    }
+  }
+  ctx.globalAlpha = 1;
+  const t = now * 0.001;
+  for (let i = 0; i < (V.titleClouds || []).length; i++) {
+    const cloud = V.titleClouds[i];
+    const x = ((cloud.seed * 137 + t * cloud.speed * 0.4) % (c.width + cloud.size)) - cloud.size * 0.5;
+    const y = cloud.y;
+    ctx.globalAlpha = cloud.alpha;
+    ctx.fillStyle = '#1f2840';
+    ctx.fillRect(Math.round(x), Math.round(y), cloud.size, 10);
+    ctx.fillRect(Math.round(x + 14), Math.round(y - 7), Math.round(cloud.size * 0.5), 8);
+    ctx.fillRect(Math.round(x + cloud.size * 0.6), Math.round(y + 3), Math.round(cloud.size * 0.25), 6);
+  }
+  ctx.globalAlpha = 1;
+  const lx = c.width * 0.5;
+  const ly = 178;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 46px monospace';
+  ctx.fillStyle = 'rgba(0,0,0,0.85)';
+  ctx.fillText('WORKER GUILD ONLINE', lx + 4, ly + 4);
+  ctx.lineWidth = 7;
+  ctx.strokeStyle = '#1a1208';
+  ctx.strokeText('WORKER GUILD ONLINE', lx, ly);
+  ctx.fillStyle = '#d4af37';
+  ctx.fillText('WORKER GUILD ONLINE', lx, ly);
+  ctx.font = 'bold 15px monospace';
+  ctx.fillStyle = '#e8e6df';
+  ctx.fillText('a free-model worker guild — $0.00 burned', lx, ly + 42);
+  const workersY = c.height - 96;
+  for (let k = 0; k < 2; k++) {
+    const x = ((now * 0.085 + k * (c.width * 0.52)) % (c.width + 140)) - 70;
+    drawTitleWorker(x, workersY, now, k);
+  }
+  if (Math.floor(now / 420) % 2 === 0) {
+    ctx.font = 'bold 15px monospace';
+    ctx.fillStyle = '#f3d37a';
+    ctx.fillText('[ CLICK OR PRESS ANY KEY ]', lx, c.height - 44);
+  }
+  ctx.textAlign = 'left';
+}
+function renderTitleTransition(now) {
+  const ctx = V.ctx;
+  const c = V.canvas;
+  renderTitle(now);
+  const tr = V.titleTransition || { start: now, duration: 0.9 };
+  let progress = (now - tr.start) / (tr.duration * 1000);
+  progress = clamp(progress, 0, 1);
+  const eased = easeOutCubic(progress);
+  const maxR = Math.hypot(c.width * 0.5, c.height * 0.5) + 24;
+  const radius = eased * maxR;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(c.width * 0.5, c.height * 0.5, radius, 0, Math.PI * 2);
+  ctx.clip();
+  renderGameScene(now);
+  ctx.restore();
+}
+function drawTitleWorker(x, y, now, phase) {
+  const ctx = V.ctx;
+  const frame = Math.floor(now / 145 + phase * 2) % 4;
+  x = Math.round(x);
+  y = Math.round(y);
+  let leftY = y + 10, rightY = y + 10, leftH = 8, rightH = 8;
+  if (frame === 1) { leftY = y + 9; rightY = y + 12; leftH = 8; rightH = 5; }
+  else if (frame === 2) { leftY = y + 11; rightY = y + 11; leftH = 6; rightH = 6; }
+  else if (frame === 3) { leftY = y + 12; rightY = y + 9; leftH = 5; rightH = 8; }
+  ctx.fillStyle = 'rgba(0,0,0,0.30)';
+  ctx.fillRect(x - 4, y + 17, 20, 4);
+  ctx.fillStyle = '#0b0b10';
+  ctx.fillRect(x + 2, leftY, 4, leftH);
+  ctx.fillRect(x + 10, rightY, 4, rightH);
+  ctx.fillStyle = '#14141c';
+  ctx.fillRect(x + 1, y - 2, 14, 12);
+  ctx.fillStyle = '#101016';
+  ctx.fillRect(x + 3, y - 11, 10, 9);
+  ctx.fillStyle = '#050507';
+  ctx.fillRect(x + 4, y - 12, 8, 2);
 }
 function drawWorkers(now) {
   const ctx = V.ctx;
