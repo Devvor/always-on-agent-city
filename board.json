@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T18:15:40Z",
+    "checked_at": "2026-10-14T18:37:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1055,8 +1055,8 @@
     {
       "id": "T93",
       "title": "SPECTACLE/SELF-DOC - the guild bell (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_guildbell.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1065,7 +1065,7 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_guildbell.js /opt/data/cache/scratch/T93_check.mjs && node --check /opt/data/cache/scratch/T93_check.mjs && head -1 tasks_out/worker_guildbell.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBell' /opt/data/cache/scratch/T93_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nCOLOR BUDGET: no new accent colors - use the existing palette (gold #d4af37, blue, red, green, white) with alpha/size variation.\nBEHAVIOR - THE GUILD BELL - window.GuildBell = { gx: -1.5, gy: -2.5, rings: 0 } with update/draw/__probe (probe returns { rings }):\n1. BELL TOWER in the W-near-hearth edge, 2+ tiles clear of the campfire and every existing prop: a slim wooden frame with a hanging gold bell (pixel fillRect style).\n2. RING ON SHIP: track the count of done quests in V.allTasks; when it INCREASES, the bell swings (rotation ease-out) for 3s, cue('done') plays once in try/catch, rings++, and a banner floats above the tower for 4s: fitText('QUEST SHIPPED - ' + the newest done quest's id or title fragment).\n3. The banner uses existing palette colors only; multiple rapid rings queue instead of stacking banners.\n4. Zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "created_at": "2026-10-14T17:08:49Z",
-      "updated_at": "2026-10-14T17:08:49Z"
+      "updated_at": "2026-10-14T18:38:32Z"
     }
   ],
   "projects": [
