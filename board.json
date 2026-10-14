@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T00:43:50Z",
+    "checked_at": "2026-10-14T02:49:51Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -612,6 +612,37 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-14",
       "updated_at": "2026-10-14T00:44:31Z"
+    },
+    {
+      "id": "T55",
+      "title": "P4: playability - quest acceptance ritual (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_ritual.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_ritual.js /opt/data/cache/scratch/t55_check.mjs && node --check /opt/data/cache/scratch/t55_check.mjs && grep -q 'window.GuildRitual' tasks_out/worker_ritual.js && head -1 tasks_out/worker_ritual.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - QUEST ACCEPTANCE RITUAL - window.GuildRitual = { lastPending: null, fx: [], rr: 0 } with update/draw/__probe (probe returns { fx: fx.length, lastPending }):\n1. POLL: every frame read V.allTasks; count tasks whose status is 'pending'. On your FIRST poll set lastPending = count and never fire. Only when count RISES above lastPending (defensive: never false-fire on page load) trigger one ceremony and update lastPending.\n2. ASSIGN: pick the worker for the ceremony: first worker whose name appears (case-insensitive) in the newest pending task's title/id; else round-robin fallback over V.workers using your rr counter. Ceremony anchors at that worker's pixel position (from V.workerStates or iso of their grid pos) and lasts 3s.\n3. CEREMONY (draw in an overlay layer, above props, below top HUD): a pixel parchment scroll unfurls above the worker - a tan #e8d5a3 rectangle growing from 4px to 30px wide over 0.5s with a 1px #8b6f47 border and 2 tiny rolled ends; a name-colored 'ACCEPTED!' tag (use the worker's existing nameplate color if available, else #d4af37) floating above it; 6 gold sparkle particles (#facc15 2px) bursting outward with gravity, fading over 1.5s. Call cue('grow') in try/catch.\n4. Coalesce: if multiple pending tasks appear at once, run ONE ceremony. Never write to V.workerStates or any other module's state. Zero exceptions when V or V.allTasks are absent. NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T02:50:31Z"
+    },
+    {
+      "id": "T57",
+      "title": "P4: playability/economy - snack order + delivery (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_snackrun.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_snackrun.js /opt/data/cache/scratch/t57_check.mjs && node --check /opt/data/cache/scratch/t57_check.mjs && grep -q 'window.GuildSnackRun' tasks_out/worker_snackrun.js && head -1 tasks_out/worker_snackrun.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - SNACK ORDER AND DELIVERY - window.GuildSnackRun = { phase: 'idle', held: null, floats: [] } with update/draw/__probe (probe returns { phase, held: !!held }):\n1. ORDER: when window.GuildVisitor is within 2 tiles (pixel distance) of the snack stall and presses 'b'/'B' (one-shot keydown flag like the visitor module) while phase === 'idle': phase = 'making'. Stall position: read window.GuildEconomy.stall if it has pixel x/y, else a fixed point near the south-center of the island (near the campfire). If window.GuildTips exists with numeric coins > 0, decrement it by 1 defensively in try/catch (the visitor pays 1 coin).\n2. PREP: after 1.5s in 'making', phase = 'held', held = true, a small gold snack glyph (4px bun: tan #e8d5a3 with #8b6f47 base) floats above the visitor's head and follows them. cue('grow') in try/catch.\n3. DELIVER: while held, if the visitor is within 1.5 tiles of any worker and presses 'b' again: the worker eats - a name-colored 'Yum!' float (2s) over them, and if window.GuildEconomy has a numeric purses array, increment that worker's purse by 1 defensively in try/catch (a real tipped wage); if window.GuildPurpose exists with numeric rep, +1 defensively. phase back to 'idle', held = null. cue('done') in try/catch.\n4. HUD: when within 2 tiles of the stall and phase === 'idle', show a tiny clipped hint 'B: buy snack 1gc' in 10px monospace near the stall (fitText discipline). Overlays only - never write to V.workerStates or worker positions. Zero exceptions when GuildVisitor, GuildTips, GuildEconomy or GuildPurpose are absent. NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14"
     }
   ],
   "projects": [
