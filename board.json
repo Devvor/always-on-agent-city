@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T09:09:50Z",
+    "checked_at": "2026-10-14T09:30:52Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -732,15 +732,16 @@
     {
       "id": "T69",
       "title": "playability - buried treasure hunt with dig spots (visitor earns coins)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_treasure.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_treasure.js /opt/data/cache/scratch/treasure_check.mjs && node --check /opt/data/cache/scratch/treasure_check.mjs && head -1 tasks_out/worker_treasure.js | grep -qv '^worker_' && grep -q \"window.GuildTreasure\" /opt/data/cache/scratch/treasure_check.mjs && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module worker_treasure.js - a BURIED TREASURE HUNT across the island. worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.visitor position if present, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR - window.GuildTreasure = { spots: [], found: 0 } with update/draw/__probe:\n1. FIVE DIG SPOTS scattered at fixed grid coords across the island (spread across floor rings, not clustered), each drawn as a small dirt mound (#78350f dithered, 10x6 px) with a faint glinting speck that twinkles every ~2 s so sharp-eyed visitors can spot them.\n2. DIG: when the visitor (window.GuildVisitor position if exposed, else nearest-visitor heuristic from V.gameState) stands within ~1 tile and presses E (keydown 'e'/'E'), the mound bursts: shovel-thud dirt particles + gold sparkle + one coin flies up and arcs toward the bottom-right HUD; window.cue('coin') if available. Each spot digs ONCE (dug flag, mound becomes a hole with a wooden X marker).\n3. PROGRESS CHIP: a small parchment chip bottom-right with fitText text like 'Treasure 2/5', gold #d4af37 border; hidden until the first dig.\n4. ALL FOUND: when 5/5, a one-time 2 s golden firework puff over the last hole plus a cue; the chip reads 'Treasure 5/5 - rich!'.\n5. Zero exceptions if V/iso/visitor absent. __probe returns { spots, found } .\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+      "spec": "Create a NEW ES-module worker_treasure.js - a BURIED TREASURE HUNT across the island. worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.visitor position if present, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR - window.GuildTreasure = { spots: [], found: 0 } with update/draw/__probe:\n1. FIVE DIG SPOTS scattered at fixed grid coords across the island (spread across floor rings, not clustered), each drawn as a small dirt mound (#78350f dithered, 10x6 px) with a faint glinting speck that twinkles every ~2 s so sharp-eyed visitors can spot them.\n2. DIG: when the visitor (window.GuildVisitor position if exposed, else nearest-visitor heuristic from V.gameState) stands within ~1 tile and presses E (keydown 'e'/'E'), the mound bursts: shovel-thud dirt particles + gold sparkle + one coin flies up and arcs toward the bottom-right HUD; window.cue('coin') if available. Each spot digs ONCE (dug flag, mound becomes a hole with a wooden X marker).\n3. PROGRESS CHIP: a small parchment chip bottom-right with fitText text like 'Treasure 2/5', gold #d4af37 border; hidden until the first dig.\n4. ALL FOUND: when 5/5, a one-time 2 s golden firework puff over the last hole plus a cue; the chip reads 'Treasure 5/5 - rich!'.\n5. Zero exceptions if V/iso/visitor absent. __probe returns { spots, found } .\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "updated_at": "2026-10-14T09:31:41Z"
     },
     {
       "id": "T70",
