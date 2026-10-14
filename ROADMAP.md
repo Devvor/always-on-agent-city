@@ -55,6 +55,16 @@ CIRCUIT BREAKERS: >=3 consecutive failed tasks on one board = stop seeding that
 board and flag it in the status. Never seed a task touching anything outside
 tasks_out/.
 
+## ROLE: THE DIRECTOR (user directive Oct 14: "who determines the fix on an overall basis?")
+The design conscience of the colony — a 6h cron that looks at the live game and judges it
+against GAME_CRAFT.md (the canon). It captures a screenshot (design_inbox/), reviews it with
+the rubric in GAME_CRAFT.md section 10, appends concrete findings to DESIGN_FINDINGS.md as
+quest seeds, and advances ONE blue-sky arc at a time (GAME_CRAFT.md section 11 template).
+It NEVER builds, NEVER edits boards or worker files — it sees, judges, and proposes.
+The foreman converts its findings into quests; the orchestrator wires what ships; the
+gates verify. Chain of design authority: GAME_CRAFT.md (canon) -> director (critique) ->
+foreman (seeding) -> workers (build) -> gates (verify) -> orchestrator (wiring + visual QA).
+
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
 
 1. T61 LIVING WORLD - NIGHT CAMPFIRE CIRCLE: at night, 2-3 workers drift to the campfire and trade one-liner story bubbles flavored by their personality voices, drawn from real journal/history; spark FX, brighter flicker on a good story. Rationale: living world - idle workers gathering and telling their REAL story is living-world x self-documentation in one cheap module.
