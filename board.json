@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T07:44:51Z",
+    "checked_at": "2026-10-14T08:05:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -676,15 +676,16 @@
     {
       "id": "T63",
       "title": "spectacle - sky isles + shooting stars (backdrop module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_sky.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_sky.js /opt/data/cache/scratch/buildout_check.mjs && node --check /opt/data/cache/scratch/buildout_check.mjs && head -1 tasks_out/worker_sky.js | grep -qv '^worker_' && grep -q \"window.GuildSky\" /opt/data/cache/scratch/buildout_check.mjs && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module worker_sky.js \u2014 the SKY COMES ALIVE (backdrop). worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nSPECIAL HOOK: also attach drawBackdrop(ctx, now) \u2014 the client calls it each frame BEFORE the island is drawn, in screen space (no camera transform). This is where distant scenery belongs.\n\nBEHAVIOR \u2014 window.GuildSky = { isles: [], clouds: [], stars: [], nextStar: 0 } with update/draw/__probe:\n1. DISTANT SKY ISLES: 2 small floating island silhouettes (dark hazy blue #1e293b tops, darker undersides, tiny pixel trees, a hairline waterfall thread beneath one) drifting slowly right-to-left at DIFFERENT parallax speeds (8 and 14 px/min) in the upper third of the screen, wrapping around. Vary their y slightly with a slow sine bob.\n2. CLOUDS BELOW: 4 soft cloud puffs (layered #cbd5e1/#94a3b8 rounded blobs, alpha 0.5) drifting slowly ACROSS THE LOWER SCREEN behind/below the island underside \u2014 they must read as clouds the island floats above.\n3. SHOOTING STARS: at deep night (V.daylight < 0.25) every 6-14 s spawn one shooting star: a bright white 2px streak with a fading tail that crosses 140-220 px of upper sky over 0.7 s, plus 2-3 twinkle stars that pulse alpha near it.\n4. RAINY VARIANT: when V.weather === 'RAIN' tint the distant isles darker and skip shooting stars.\n5. drawBackdrop draws ALL of this (isles, clouds-below, stars) in screen space, BEFORE the world. Regular draw() does nothing (or only tiny finishing sparkle). update drives positions/state.\n6. Zero exceptions if V absent. __probe returns { isles, clouds, stars } counts.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+      "spec": "Create a NEW ES-module worker_sky.js \u2014 the SKY COMES ALIVE (backdrop). worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nSPECIAL HOOK: also attach drawBackdrop(ctx, now) \u2014 the client calls it each frame BEFORE the island is drawn, in screen space (no camera transform). This is where distant scenery belongs.\n\nBEHAVIOR \u2014 window.GuildSky = { isles: [], clouds: [], stars: [], nextStar: 0 } with update/draw/__probe:\n1. DISTANT SKY ISLES: 2 small floating island silhouettes (dark hazy blue #1e293b tops, darker undersides, tiny pixel trees, a hairline waterfall thread beneath one) drifting slowly right-to-left at DIFFERENT parallax speeds (8 and 14 px/min) in the upper third of the screen, wrapping around. Vary their y slightly with a slow sine bob.\n2. CLOUDS BELOW: 4 soft cloud puffs (layered #cbd5e1/#94a3b8 rounded blobs, alpha 0.5) drifting slowly ACROSS THE LOWER SCREEN behind/below the island underside \u2014 they must read as clouds the island floats above.\n3. SHOOTING STARS: at deep night (V.daylight < 0.25) every 6-14 s spawn one shooting star: a bright white 2px streak with a fading tail that crosses 140-220 px of upper sky over 0.7 s, plus 2-3 twinkle stars that pulse alpha near it.\n4. RAINY VARIANT: when V.weather === 'RAIN' tint the distant isles darker and skip shooting stars.\n5. drawBackdrop draws ALL of this (isles, clouds-below, stars) in screen space, BEFORE the world. Regular draw() does nothing (or only tiny finishing sparkle). update drives positions/state.\n6. Zero exceptions if V absent. __probe returns { isles, clouds, stars } counts.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "updated_at": "2026-10-14T08:06:46Z"
     },
     {
       "id": "T64",
