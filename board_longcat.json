@@ -2,7 +2,7 @@
   "window": {
     "model": "meituan/longcat-2.5-preview:free",
     "status": "open",
-    "checked_at": "2026-10-13T18:20:52Z",
+    "checked_at": "2026-10-14T07:38:52Z",
     "note": "worker #4 'longcat' \u2014 1M-ctx big brain; workstream = personalities + island-as-repo + visitor purpose (user green-lights Oct 13)."
   },
   "tasks": [

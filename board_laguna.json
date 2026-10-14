@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-14T05:15:52Z",
+    "checked_at": "2026-10-14T07:50:51Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -226,6 +226,20 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-14",
       "updated_at": "2026-10-14T05:18:25Z"
+    },
+    {
+      "id": "T61",
+      "title": "living world - night campfire circle (fresh module)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_campfirecircle.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_campfirecircle.js /opt/data/cache/scratch/worker_campfirecircle_check.mjs && node --check /opt/data/cache/scratch/worker_campfirecircle_check.mjs && grep -q 'window.Guild' tasks_out/worker_campfirecircle.js && head -1 tasks_out/worker_campfirecircle.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "At nightfall, 2-3 workers drift to the campfire, sit in a circle, and trade short one-liner 'story' bubbles drawn from their real journal/history (use allTasks + the personality voices: missingno glitchy trickster, step5 aloof poet, laguna eager rookie, longcat serene philosopher). A log occasionally crackles with a spark FX; the fire flickers brighter as a story lands. At dawn they wander back to work. Fresh module worker_campfirecircle.js. Pattern: read tasks_out/worker_visitor.js first and copy its module conventions. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue and allTasks. Output only the new file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside.",
+      "updated_at": "2026-10-14T07:09:43Z"
     }
   ]
 }

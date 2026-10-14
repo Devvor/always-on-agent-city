@@ -49,9 +49,32 @@ board and flag it in the status. Never seed a task touching anything outside
 tasks_out/.
 
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
-1. T51 PLAYABILITY - SHOOTING-STAR WISH: every 3-5 min a shooting star streaks across the sky; if the visitor presses E while it passes, they make a wish - a small 2s gold ceremony (star dust falls, tiny REP +1 via window.GuildPurpose if present) and the campfire flares brighter for 10s. Turns idle sky-gazing into play. Rationale: playability + spectacle compounding, zero new state. Fresh module worker_wishes.js.
-2. T52 LIVING WORLD - ARRIVAL PIGEON: whenever the live board shows a NEW pending quest (pending count rises between polls), a pixel pigeon flies across the sky to the quest board and pins a parchment 'NEW QUEST' notice (quest id, fades after 60s), with a soft horn cue (cue('alert') in try/catch). The island reacts to the real repo. Rationale: living world + self-documentation from board data. Fresh module worker_arrivals.js.
+
+1. T61 LIVING WORLD - NIGHT CAMPFIRE CIRCLE: at night, 2-3 workers drift to the campfire and trade one-liner story bubbles flavored by their personality voices, drawn from real journal/history; spark FX, brighter flicker on a good story. Rationale: living world - idle workers gathering and telling their REAL story is living-world x self-documentation in one cheap module.
+2. T62 SPECTACLE - LEVEL-UP CEREMONY: bell toll + gold flash + confetti + a temporary museum plaque naming the leveled-up worker. Rationale: spectacle - level-ups already happen but nothing makes you stop and watch; ceremony compounds the museum + cues.
 ## Seeded (foreman, 2026-10-13)
+- Run 10 (2026-10-14, foreman): both boards at 0 pending, both windows open, no tail breakers. Seeded to missingno -
+  T59 pond fishing (RE-ROUTED from laguna after its failure, spec unchanged, attempts reset) + T62 level-up ceremony
+  (foreman proposal); to laguna - T61 night campfire circle (foreman proposal, simple living-world genre). step5 NOT
+  seeded - window dies ~Oct 16. Spot-audit clean: T57 worker_snackrun.js + T60 worker_market.js node --check OK,
+  diffs match titles; both export window.Guild* globals. T57 + T60 + T58 ready to wire.
+- Run 9 (2026-10-14, foreman): Queue was empty - proposed T59 pond fishing, T60 stall market
+  chalkboard and seeded BOTH to laguna (window open, breaker cleared; missingno window CLOSED -
+  not seeded; step5 not seeded, dies ~Oct 16). Spot-audit clean: T58 worker_fauna.js + T57
+  worker_snackrun.js node --check OK, diffs match titles.
+- Run 8 (2026-10-14, foreman): restocked (both boards were at 0 pending). Seeded to missingno - T55 quest
+  acceptance ritual, T57 snack order+delivery (foreman proposal); to laguna - T56 weather moods (from Queue),
+  T58 courtyard pigeons (foreman proposal, deliberately the simple-FX job: laguna trails 2 consecutive failures
+  T52/T54, one more trips the breaker, so it got its strongest genre). step5 NOT seeded - window dies ~Oct 16.
+  Queue now empty; replenish next run. Spot-audit clean: T53 worker_tips.js + T50 worker_carver.js node --check OK.
+- Run 7 (2026-10-14, foreman): seeded to missingno - T53 visitor tips; to laguna - T54 guild
+  parade (both from Queue; both windows open, no tail breakers: missingno 0 consecutive,
+  laguna 1 trailing failure T52 - under the breaker). Queue replenished with foreman
+  proposals T55 quest acceptance ritual, T56 weather moods.
+- Run 6 (2026-10-13 ~23Z): seeded to missingno - T51 shooting-star wishes; to
+  laguna - T52 arrival pigeon (both from Queue; both windows open, no tail
+  breakers: missingno 0 consecutive, laguna 0 since T50 done). Queue was empty
+  so replenished with foreman proposals T53 visitor tips, T54 guild parade.
 - Run 5 (2026-10-14 ~21Z): seeded to missingno - T48 scroll run (RE-ROUTED from
   laguna after its failure; spec unchanged, attempts reset), T49 snack stall;
   to laguna - T50 plaque carver (laguna tail breaker cleared: only 1 trailing

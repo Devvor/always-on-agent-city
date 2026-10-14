@@ -2098,6 +2098,14 @@ function renderGameScene(now) {
     ctx.translate(Math.sin(now * 0.123) * amp, Math.cos(now * 0.171) * amp);
   }
   drawSky(now);
+  for (var bk in window) {
+    if (bk.indexOf('Guild') === 0) {
+      var bm = window[bk];
+      if (bm && typeof bm.drawBackdrop === 'function' && V.gameState === 'play') {
+        try { bm.drawBackdrop(ctx, now); } catch (e) {}
+      }
+    }
+  }
   ctx.save();
   const cam = V.camera || { x: 0, y: 0, zoom: 1 };
   ctx.translate(c.width / 2, c.height / 2);

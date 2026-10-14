@@ -81,11 +81,37 @@ class OfficeHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         return
 
+    def handle_modules(self):
+        try:
+            import glob
+            base = os.path.dirname(os.path.abspath(self.html_path))
+            files = sorted(
+                os.path.basename(p)
+                for p in glob.glob(os.path.join(base, "worker_*.js"))
+                if os.path.basename(p) not in ("worker_office.js", "worker_office_sound.js")
+            )
+            body = json.dumps(files).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception:
+            self.send_response(500)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            body = b'{"error":"modules listing failed"}'
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
     def do_GET(self):
         try:
             parsed = urlsplit(self.path)
             if parsed.path == "/api/board":
                 self.handle_board()
+            elif parsed.path == "/api/modules":
+                self.handle_modules()
             elif parsed.path == "/":
                 self.handle_root()
             elif parsed.path.endswith(".js") or parsed.path.endswith(".html"):
@@ -307,7 +333,7 @@ def main():
         setattr(OfficeHandler, attr, step_log)
     OfficeHandler.html_path = os.path.join(script_dir, "worker_office.html")
 
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), OfficeHandler)
+    server = ThreadingHTTPServer(("0.0.0.0", args.port), OfficeHandler)
 
     print(f"worker office serving on 127.0.0.1:{args.port}", flush=True)
 

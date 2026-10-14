@@ -107,3 +107,160 @@ Node.js v26.7.0
 2026-10-13 16:47:31 L4 attempt 2 verify rc 0 out tail: VERIFY-OK
 
 2026-10-13 16:47:31 L4 DONE on attempt 2
+2026-10-13 18:56:53 T48 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 18:57:52 T48 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/t48_check.mjs:1
+# worker_scrollrun.js — SCROLL RUN fetch quest plugin
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 18:58:51 T48 attempt 3 verify rc 1 out tail: 
+2026-10-13 18:58:51 T48 FAILED no output
+2026-10-13 20:47:53 T50 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 20:48:58 T50 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-13 20:48:58 T50 DONE on attempt 2
+2026-10-13 22:58:51 T52 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-13 22:59:31 T52 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/t52_check.mjs:1
+# tasks_out/guild_arrivals.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 23:00:11 T52 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/t52_check.mjs:1
+# tasks_out/guild_arrivals.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-13 23:00:11 T52 FAILED /opt/data/cache/scratch/t52_check.mjs:1
+# tasks_out/guild_arrivals.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 00:45:58 T54 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/parade.js_check.mjs:1
+# tasks_out/guild_parade.py
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 00:47:10 T54 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/parade.js_check.mjs:1
+# tasks_out/guild_parade.py
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 00:51:10 T54 attempt 3 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 00:51:10 T54 FAILED model call failed: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 03:00:51 T56 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 03:01:40 T56 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/t56_check.mjs:1
+# tasks_out/guild_moods.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 03:02:37 T56 attempt 3 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 03:02:37 T56 DONE on attempt 3
+2026-10-14 03:26:53 T58 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 03:28:10 T58 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 03:28:10 T58 DONE on attempt 2
+2026-10-14 04:53:01 T59 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/t59_check.mjs:1
+# tasks_out/worker_fishing.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 04:54:03 T59 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/t59_check.mjs:1
+# tasks_out/worker_fishing.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 04:55:10 T59 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/t59_check.mjs:1
+# tasks_out/worker_fishing.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 04:55:10 T59 FAILED /opt/data/cache/scratch/t59_check.mjs:1
+# tasks_out/worker_fishing.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 05:17:08 T60 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/t60_check.mjs:1
+# tasks_out/worker_market.py
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 05:18:25 T60 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 05:18:25 T60 DONE on attempt 2
+2026-10-14 07:06:51 T61 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 07:08:30 T61 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/worker_campfirecircle_check.mjs:1
+# worker_campfirecircle.js — a fresh module in the style of worker_visitor.js / worker_office.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 07:09:43 T61 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/worker_campfirecircle_check.mjs:1
+# worker_campfirecircle.js — a fresh module in the style of worker_visitor.js / worker_office.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 07:09:43 T61 FAILED /opt/data/cache/scratch/worker_campfirecircle_check.mjs:1
+# worker_campfirecircle.js — a fresh module in the style of worker_visitor.js / worker_office.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
