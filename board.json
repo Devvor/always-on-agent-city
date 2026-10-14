@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T16:48:41Z",
+    "checked_at": "2026-10-14T17:10:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -991,6 +991,81 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_fishmarket.js /opt/data/cache/scratch/T87_check.mjs && node --check /opt/data/cache/scratch/T87_check.mjs && head -1 tasks_out/worker_fishmarket.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFishMarket' /opt/data/cache/scratch/T87_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - FISH MARKET STALL - window.GuildFishMarket = { gx: -0.5, gy: 5.2, sold: 0 } with update/draw/__probe (probe returns { sold }):\n1. STALL PROP in the SW market row at tile (-0.5, 5.2) (clamp on-island; keep 2+ tiles clear of the map poster (0.2,5.4) and the snack stall): a wooden stall with a striped awning, a hanging fish glyph, and a small chalk price sign ('FISH: 5 GC'), pixel fillRect style, gold #d4af37 trim.\n2. TRADE: when window.GuildFishing exists and its __probe().catches > your stored lastCatches, offer a trade: while window.GuildVisitor is within 1.6 tiles and presses 'e', sell ONE fish for +5 GC: sold++, a gold '+5 GC' float above the visitor, cue('done') in try/catch, decrement is NOT possible (Fishing owns its catches) - instead track sold vs delivered so each catch pays at most once per stall visit.\n3. DEMAND FLAVOR: each sale draws a tiny coin hop from the visitor to the stall; the price sign flickers gold for 2s after a sale.\n4. Zero exceptions if GuildFishing/V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "updated_at": "2026-10-14T16:49:45Z"
+    },
+    {
+      "id": "T88",
+      "title": "SPECTACLE - waterfall rainbows (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_rainbows.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_rainbows.js /opt/data/cache/scratch/T88_check.mjs && node --check /opt/data/cache/scratch/T88_check.mjs && head -1 tasks_out/worker_rainbows.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildRainbows' /opt/data/cache/scratch/T88_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - WATERFALL RAINBOWS - window.GuildRainbows = { gx: 3.0, gy: 9.0, active: false } with update/draw/__probe (probe returns { active }):\n1. LOCATION: the south-rim waterfall mist zone (near the existing falls prop; keep 2+ tiles clear of the fishing hut/pond props).\n2. RAINBOW: when V.daylight > 0.65 and weather is not 'storm', draw a faint 3-band arc over the mist using the existing palette at low alpha (white / gold / blue bands, alpha 0.10-0.18) - it must read as a whisper, not neon.\n3. DRIFT: the arc's x-offset sways slowly with V.weather wind (sin over time), and band alpha breathes gently; degrades to plain mist sparkle when daylight is low.\n4. PERFORMANCE: precompute the arc once per frame, no allocations in the draw loop.\n5. Zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "created_at": "2026-10-14T17:08:49Z",
+      "updated_at": "2026-10-14T17:11:59Z"
+    },
+    {
+      "id": "T89",
+      "title": "DISTRICT/PLAYABILITY - owl courier of the NE roost (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_owlcourier.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_owlcourier.js /opt/data/cache/scratch/T89_check.mjs && node --check /opt/data/cache/scratch/T89_check.mjs && head -1 tasks_out/worker_owlcourier.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildOwlCourier' /opt/data/cache/scratch/T89_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - OWL COURIER - window.GuildOwlCourier = { gx: -2.5, gy: -5.0, state: 'perched' } with update/draw/__probe (probe returns { state, deliveries }):\n1. ROOST PROP in the NE aviary zone (-4..-1, -6..-4): a carved perch post with a round owl (big eyes, brown/gold pixel body), 2+ tiles clear of the existing roost structures.\n2. SEND: when window.GuildVisitor is within 1.5 tiles and presses 'e' and state is 'perched', the visitor hands over a message token: state 'flying', the owl lifts off and flies (smooth lerp) to a random WORKING worker from V.workers (prefer one with an active task).\n3. DELIVER: on arrival, a tiny scroll bubble pops above that worker for 3s ('!'), cue('done') in try/catch, deliveries++, then the owl flies home and returns to 'perched'.\n4. COOLDOWN: 10s between sends; a small feather puff marks takeoff and landing.\n5. Zero exceptions if V/iso/GuildVisitor absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "created_at": "2026-10-14T17:08:49Z",
+      "updated_at": "2026-10-14T17:08:49Z"
+    },
+    {
+      "id": "T90",
+      "title": "SELF-DOCUMENTATION - guild timeline mural in the west wing (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_mural.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_mural.js /opt/data/cache/scratch/T90_check.mjs && node --check /opt/data/cache/scratch/T90_check.mjs && head -1 tasks_out/worker_mural.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildMural' /opt/data/cache/scratch/T90_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nCOLOR BUDGET: no new accent colors - use the existing palette (gold #d4af37, blue, red, green, white) with alpha/size variation.\nBEHAVIOR - GUILD TIMELINE MURAL - window.GuildMural = { gx: -5.0, gy: 3.5 } with update/draw/__probe (probe returns { done, pending, failed }):\n1. MURAL WALL in the west museum wing (-6..-4, 2..5), 2+ tiles clear of the existing museum pedestals: a stone wall panel with a painted timeline - one small tick mark per quest in V.allTasks, laid out left-to-right in chunks, colored by status (gold done, amber pending, red failed).\n2. LIVE COUNTS: painted tallies at the bottom ('DONE n / FAIL m') re-derive from V.allTasks each frame (cheap length checks; only repaint strings when counts change).\n3. GUIDED LABEL: when window.GuildVisitor is within 1.8 tiles, fitText a caption above the mural: 'THE GUILD RECORD - every tick is a real quest'.\n4. Recompute nothing per tick mark per frame - aggregate counts once, draw ticks from the cached array.\n5. Zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "created_at": "2026-10-14T17:08:49Z",
+      "updated_at": "2026-10-14T17:08:49Z"
+    },
+    {
+      "id": "T92",
+      "title": "PLAYABILITY/ECONOMY - wish seeds in the east garden (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_wishseeds.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_wishseeds.js /opt/data/cache/scratch/T92_check.mjs && node --check /opt/data/cache/scratch/T92_check.mjs && head -1 tasks_out/worker_wishseeds.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildWishSeeds' /opt/data/cache/scratch/T92_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nCOLOR BUDGET: no new accent colors - use the existing palette (gold #d4af37, blue, red, green, white) with alpha/size variation.\nBEHAVIOR - WISH SEEDS - window.GuildWishSeeds = { gx: 5.0, gy: 1.5, flowers: [] } with update/draw/__probe (probe returns { flowers: flowers.length }):\n1. PLOT in the east garden zone (4..6, 0..3), 2+ tiles clear of existing garden props: a small tilled soil patch with a wooden 'PLANT A WISH - 2 GC' sign.\n2. PLANT: when window.GuildVisitor is within 1.5 tiles and presses 'e' (and window.GuildEconomy or equivalent coin purse allows), spend 2 GC (try/catch; if no economy API, still plant but mark 'free wish'), push a flower { gx, gy (random within the plot), planted: now }.\n3. GROW: each flower grows over ~90s (sprout -> bud -> bloom, tinted from the existing palette, seeded per-plant); cap 12 live flowers - the oldest fades out when a 13th is planted.\n4. BLOOM MOMENT: when a flower blooms, a gentle sparkle ring + cue('done') in try/catch, and the nearest idle worker shows a brief happy hop (via a drawn arrow/heart above them only - do not mutate other modules' state).\n5. Zero exceptions if V/iso/GuildVisitor absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "created_at": "2026-10-14T17:08:49Z",
+      "updated_at": "2026-10-14T17:08:49Z"
+    },
+    {
+      "id": "T93",
+      "title": "SPECTACLE/SELF-DOC - the guild bell (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_guildbell.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_guildbell.js /opt/data/cache/scratch/T93_check.mjs && node --check /opt/data/cache/scratch/T93_check.mjs && head -1 tasks_out/worker_guildbell.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBell' /opt/data/cache/scratch/T93_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nCOLOR BUDGET: no new accent colors - use the existing palette (gold #d4af37, blue, red, green, white) with alpha/size variation.\nBEHAVIOR - THE GUILD BELL - window.GuildBell = { gx: -1.5, gy: -2.5, rings: 0 } with update/draw/__probe (probe returns { rings }):\n1. BELL TOWER in the W-near-hearth edge, 2+ tiles clear of the campfire and every existing prop: a slim wooden frame with a hanging gold bell (pixel fillRect style).\n2. RING ON SHIP: track the count of done quests in V.allTasks; when it INCREASES, the bell swings (rotation ease-out) for 3s, cue('done') plays once in try/catch, rings++, and a banner floats above the tower for 4s: fitText('QUEST SHIPPED - ' + the newest done quest's id or title fragment).\n3. The banner uses existing palette colors only; multiple rapid rings queue instead of stacking banners.\n4. Zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "created_at": "2026-10-14T17:08:49Z",
+      "updated_at": "2026-10-14T17:08:49Z"
     }
   ],
   "projects": [
