@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-14T03:22:52Z",
+    "checked_at": "2026-10-14T05:15:52Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -194,6 +194,38 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-14",
       "updated_at": "2026-10-14T03:28:10Z"
+    },
+    {
+      "id": "T59",
+      "title": "P4: playability/economy - pond fishing (fresh module)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_fishing.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_fishing.js /opt/data/cache/scratch/t59_check.mjs && node --check /opt/data/cache/scratch/t59_check.mjs && grep -q 'window.GuildFishing' tasks_out/worker_fishing.js && head -1 tasks_out/worker_fishing.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.GuildTips {coins} (optional), window.cue(name) optional (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - POND FISHING - window.GuildFishing = { casting: null, catches: [], best: null } with update/draw/__probe (probe returns { phase: casting ? casting.phase : 'idle', catches: catches.length }):\n1. POND: reuse the firefly grove pond position if window.GuildFireflies and its grove exist (its gx/gy), else anchor at the island's north-east corner derived from V.growthStep floor math (core 4x4 plus one ring per growth step, max 8), inset 1 tile. Draw a small wooden DOCK plank extending over the pond (brown #6b4a2f, gold #d4af37 trim), prop layer, no collision.\n2. CAST: when the visitor is within 1.6 tiles of the pond and presses 'f'/'F' (one-shot keydown flag like the visitor module) while not casting: casting = { phase: 'wait', t0: now, dur: random 3000-8000 }. Draw a bobber (small red-white 3px circle) floating on the pond with a gentle sin bob and a thin line to the visitor.\n3. BITE: at t0+dur phase = 'bite' for 1.2s - the bobber dips and ripples (expanding light-blue rings, like L4). If the visitor presses 'f' during 'bite': catch - catches.push({ t: now, size: random 0.5-1 }), a gold '+1 FISH' float above the visitor, cue('done') in try/catch, and if window.GuildTips exists with numeric coins, increment it by 1 defensively (fish sell for 1 coin). casting = null. If the visitor misses the bite window, the bobber escapes (small splash, casting = null, no penalty).\n4. HUD: while casting or within 2 tiles of the pond, draw a tiny clipped stat line 'FISH: N  BEST: M cm' (10px monospace, gold on dark plate, fitText, clipped) above the dock. Best = largest size x 40 rounded. Zero exceptions if V, iso or GuildVisitor are absent.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T04:55:10Z"
+    },
+    {
+      "id": "T60",
+      "title": "P4: economy - stall market chalkboard (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_market.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_market.js /opt/data/cache/scratch/t60_check.mjs && node --check /opt/data/cache/scratch/t60_check.mjs && grep -q 'window.GuildMarket' tasks_out/worker_market.js && head -1 tasks_out/worker_market.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.GuildEconomy (optional; has purses array, minted total), window.GuildSnackRun (optional; has phase), window.cue(name) optional (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - STALL MARKET CHALKBOARD - window.GuildMarket = { price: 2, buys: [], demandLine: [] } with update/draw/__probe (probe returns { price, buys: buys.length }):\n1. CHALKBOARD PROP: a small standing slate board next to the snack stall (stall tile around gx -0.6, gy 4.4 - place at gx -0.2, gy 4.6, clamp on-island via V.growthStep floor math the same way the client does, clear of the quest board at (-1.6,4.2) and the arcade sign at (0.8,4.5)). Pixel fillRect: dark slate #2b2b2b with a thin wood frame, chalk-white text. Never write to any other module's state.\n2. DEMAND TRACKING: every update, detect snack purchases by diffing window.GuildEconomy?.purses if present (a worker whose purse count DROPS by 1 = a buy) OR window.GuildSnackRun phase transitions into 'held' (one buy each). Track buys in a rolling 5-minute window (prune older). NEVER double-count: persist last purse snapshot between frames.\n3. PRICE DRIFT: base snack price 2 GC. Each buy in the window raises price by 1 (max 6); every 90s with zero buys lowers it by 1 (min 1). Price changes animate: the new number flashes gold for 1s.\n4. DRAW: on the chalkboard, clipped, fitText discipline: 'SNACKS' title, big price 'N GC', a tiny demand line 'buys(5m): N' and a mood word - N >= 4 'BUSY!', 1-3 'steady', 0 'quiet...' (chalk-white 9px, gold flash on change). If a visitor stands within 1.6 tiles, add a hint '[E-board next door] buy a snack'. Zero exceptions when V, iso or GuildEconomy are absent (board still draws with base price).",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T05:18:25Z"
     }
   ]
 }
