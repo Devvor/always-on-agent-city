@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-14T02:56:51Z",
+    "checked_at": "2026-10-14T03:22:52Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -182,8 +182,8 @@
     {
       "id": "T58",
       "title": "P4: living world - courtyard pigeons (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_fauna.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -192,7 +192,8 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_fauna.js /opt/data/cache/scratch/t58_check.mjs && node --check /opt/data/cache/scratch/t58_check.mjs && grep -q 'window.GuildFauna' tasks_out/worker_fauna.js && head -1 tasks_out/worker_fauna.js | grep -qv '^worker_' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - COURTYARD PIGEONS - window.GuildFauna = { birds: [], coos: [] } with update/draw/__probe (probe returns { birds: birds.length }):\n1. SPAWN: maintain 3 pigeons - small grey birds (5px body #9ca3af, darker #6b7280 head, 1px orange beak) that peck and hop near the open ground around the wishing well / tiny garden area (south-center of the island; pick a fixed 4x4 tile patch, defend with typeof guards if iso/V absent). Each bird: { x, y, vx, vy, state: 'peck'|'hop'|'air', t }.\n2. BEHAVIOR: mostly peck (head bob) or hop 1 tile every few seconds, staying inside their patch. Every ~10s one bird flies a short loop (2s) and resettles. Tiny 3px ellipse shadows beneath them.\n3. SCATTER: when window.GuildVisitor moves within 1.2 tiles of a bird (pixel distance via iso of visitor gx/gy), that bird flutters: rises ~20px with a 0.5s wing flap (2 alternating wing pixels) and resettles 2-3 tiles away, then resumes pecking. cue('pop') in try/catch, at most once per 3s.\n4. Draw in the world layer under worker bubbles; never write to V.workerStates or any other module's state. Zero exceptions when V, iso or GuildVisitor are absent (birds just idle). NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-14"
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T03:28:10Z"
     }
   ]
 }
