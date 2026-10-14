@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T18:37:40Z",
+    "checked_at": "2026-10-14T20:47:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1066,6 +1066,62 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nCOLOR BUDGET: no new accent colors - use the existing palette (gold #d4af37, blue, red, green, white) with alpha/size variation.\nBEHAVIOR - THE GUILD BELL - window.GuildBell = { gx: -1.5, gy: -2.5, rings: 0 } with update/draw/__probe (probe returns { rings }):\n1. BELL TOWER in the W-near-hearth edge, 2+ tiles clear of the campfire and every existing prop: a slim wooden frame with a hanging gold bell (pixel fillRect style).\n2. RING ON SHIP: track the count of done quests in V.allTasks; when it INCREASES, the bell swings (rotation ease-out) for 3s, cue('done') plays once in try/catch, rings++, and a banner floats above the tower for 4s: fitText('QUEST SHIPPED - ' + the newest done quest's id or title fragment).\n3. The banner uses existing palette colors only; multiple rapid rings queue instead of stacking banners.\n4. Zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "created_at": "2026-10-14T17:08:49Z",
       "updated_at": "2026-10-14T18:38:32Z"
+    },
+    {
+      "id": "T95",
+      "title": "SELF-DOC - statue plaque whispers (SE heroes plaza)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_statuewhisper.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_statuewhisper.js /opt/data/cache/scratch/T95_check.mjs && node --check /opt/data/cache/scratch/T95_check.mjs && head -1 tasks_out/worker_statuewhisper.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildStatueWhisper' /opt/data/cache/scratch/T95_check.mjs && echo VERIFY-OK",
+      "spec": "In the SE heroes' plaza, add 2 small hero statues (use existing accent colors only: green/gold/red/blue/white - no new colors). When the visitor stands within 1.5 tiles of a statue, a parchment whisper-bubble appears above it showing the quest id + one-line story pulled from a real entry in V.allTasks (rotate through done quests every few seconds). Add a soft chime cue on first whisper per statue per visit.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "updated_at": "2026-10-14T19:29:12Z"
+    },
+    {
+      "id": "T96",
+      "title": "LIVING WORLD/SELF-DOC - market crowd murmur (SW market row)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_murmur.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_murmur.js /opt/data/cache/scratch/T96_check.mjs && node --check /opt/data/cache/scratch/T96_check.mjs && head -1 tasks_out/worker_murmur.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildMurmur' /opt/data/cache/scratch/T96_check.mjs && echo VERIFY-OK",
+      "spec": "In the SW market row, 3 idle villager figures stroll slowly between the market props and murmur short speech bubbles about the guild's real recent activity: each murmur references a real quest id + short status word from V.allTasks (e.g. 'T89 shipped clean', 'T95 in the works'), picked from live data, refreshed every ~8s. Villagers pause near props, never overlap them.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "updated_at": "2026-10-14T19:58:16Z"
+    },
+    {
+      "id": "T98",
+      "title": "PLAYABILITY - ringable guild bell (visitor ceremony)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_bellring.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_bellring.js /opt/data/cache/scratch/T98_check.mjs && node --check /opt/data/cache/scratch/T98_check.mjs && head -1 tasks_out/worker_bellring.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBellRing' /opt/data/cache/scratch/T98_check.mjs && echo VERIFY-OK",
+      "spec": "At the existing bell tower, let the VISITOR ring the bell: when within 2 tiles and pressing E, the bell swings visibly (a few frames of tilt), plays a 2-note ceremonial chime via cue(), and a small gold 'DONG' label floats up. Ringable at most once every 5s. Also show a tiny hint label 'E: ring' when the visitor is in range.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "updated_at": "2026-10-14T20:26:54Z"
+    },
+    {
+      "id": "T99",
+      "title": "LIVING WORLD - museum night guard (W wing)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_nightguard.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_nightguard.js /opt/data/cache/scratch/T99_check.mjs && node --check /opt/data/cache/scratch/T99_check.mjs && head -1 tasks_out/worker_nightguard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildNightGuard' /opt/data/cache/scratch/T99_check.mjs && echo VERIFY-OK",
+      "spec": "In the W museum wing, add a lantern-carrying guard who patrols the wing only when V.daylight < 0.35 (night): walks a slow rectangular route around the museum pedestals, lantern glow (existing gold color) faintly lighting nearby tiles, and an occasional 'all quiet' bubble. By day the guard sleeps on a bench beside the wing.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "updated_at": "2026-10-14T20:52:59Z"
     }
   ],
   "projects": [
