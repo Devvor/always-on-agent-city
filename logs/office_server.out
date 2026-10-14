@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/opt/data/missingno-worker/tasks_out/worker_office_server.py", line 361, in <module>
+    main()
+    ~~~~^^
+  File "/opt/data/missingno-worker/tasks_out/worker_office_server.py", line 336, in main
+    server = ThreadingHTTPServer(("100.123.50.36", args.port), OfficeHandler)
+  File "/usr/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 99] Cannot assign requested address
+Traceback (most recent call last):
+  File "/opt/data/missingno-worker/tasks_out/worker_office_server.py", line 361, in <module>
+    main()
+    ~~~~^^
+  File "/opt/data/missingno-worker/tasks_out/worker_office_server.py", line 336, in main
+    server = ThreadingHTTPServer(("100.123.50.36", args.port), OfficeHandler)
+  File "/usr/lib/python3.13/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/http/server.py", line 136, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.13/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 99] Cannot assign requested address

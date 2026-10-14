@@ -376,3 +376,45 @@ Node.js v26.7.0
 2026-10-14 09:31:41 T69 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-14 09:31:41 T69 DONE on attempt 1
+2026-10-14 11:17:48 T71 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_marketrow.js': No such file or directory
+
+2026-10-14 11:18:26 T71 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_marketrow.js': No such file or directory
+
+2026-10-14 11:19:15 T71 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_marketrow.js': No such file or directory
+
+2026-10-14 11:19:15 T71 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_marketrow.js': No such file or directory
+
+2026-10-14 11:40:37 T72 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_roost.js': No such file or directory
+
+2026-10-14 11:41:28 T72 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_roost.js': No such file or directory
+
+2026-10-14 11:45:06 T72 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_roost.js': No such file or directory
+
+2026-10-14 11:45:06 T72 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_roost.js': No such file or directory
+
+2026-10-14 12:06:39 T74 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_dividends.js': No such file or directory
+
+2026-10-14 12:07:33 T74 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_dividends.js': No such file or directory
+
+2026-10-14 12:08:08 T74 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_dividends.js': No such file or directory
+
+2026-10-14 12:08:08 T74 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_dividends.js': No such file or directory
+
+2026-10-14 12:29:45 T75 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_bughunt.js': No such file or directory
+
+2026-10-14 12:30:29 T75 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_bughunt.js': No such file or directory
+
+2026-10-14 12:31:22 T75 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_bughunt.js': No such file or directory
+
+2026-10-14 12:31:22 T75 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_bughunt.js': No such file or directory
+
+2026-10-14 13:13:24 T76 attempt 1 verify rc 1 out tail: 
+2026-10-14 13:14:27 T76 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 13:14:27 T76 DONE on attempt 2
+2026-10-14 13:35:50 T77 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 13:35:50 T77 DONE on attempt 1
+2026-10-14 13:57:29 T78 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 13:57:29 T78 DONE on attempt 1

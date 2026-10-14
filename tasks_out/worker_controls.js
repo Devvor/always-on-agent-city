@@ -98,7 +98,7 @@ function draw(ctx) {
 
   const cardW = 340;
   const cardH = 150;
-  const x = Math.round((cw - cardW) * 0.5);
+  const x = Math.round(cw - cardW - 14);   // bottom-RIGHT corner: never over the market row or hearth
   const y = Math.round(ch - cardH - 18);
   const alpha = clamp(opacity, 0, 1);
 

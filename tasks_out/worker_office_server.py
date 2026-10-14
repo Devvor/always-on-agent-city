@@ -333,7 +333,7 @@ def main():
         setattr(OfficeHandler, attr, step_log)
     OfficeHandler.html_path = os.path.join(script_dir, "worker_office.html")
 
-    server = ThreadingHTTPServer(("0.0.0.0", args.port), OfficeHandler)
+    server = ThreadingHTTPServer(("100.123.50.36", args.port), OfficeHandler)
 
     print(f"worker office serving on 127.0.0.1:{args.port}", flush=True)
 

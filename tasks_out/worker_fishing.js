@@ -1,5 +1,5 @@
-const DOCK_GX = 2;
-const DOCK_GY = 1;
+const DOCK_GX = 5;
+const DOCK_GY = 5.5;
 
 let pressed = new Set();
 let prevPressed = new Set();

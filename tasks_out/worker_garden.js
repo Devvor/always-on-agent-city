@@ -73,15 +73,8 @@ function readTile(p) {
 }
 
 function computeAnchor(Vv) {
-  const w = root();
-  const m = w && w.GuildMuseum;
-  if (m && Array.isArray(m.pedestals) && m.pedestals.length) {
-    const t = readTile(m.pedestals[0]);
-    if (t) return { gx: t.gx + 1.5, gy: t.gy + 1.0 };
-  }
-  const gs = Vv && isFinite(Vv.growthStep) ? Math.floor(Number(Vv.growthStep)) : 0;
-  const minC = -2 - gs;
-  return { gx: minC + 1, gy: minC + 1 };
+  // Pinned to the EAST GARDEN district per LAYOUT.md (init-order bug stranded it at -9,-9).
+  return { gx: 6, gy: 1 };
 }
 
 function ensurePlots() {

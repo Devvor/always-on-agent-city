@@ -1,9 +1,9 @@
-const BOARD_GX = -0.2;
-const BOARD_GY = 4.6;
-const STALL_GX = -0.6;
-const STALL_GY = 4.4;
+const BOARD_GX = 2.0;
+const BOARD_GY = 6.5;
+const STALL_GX = 2.5;
+const STALL_GY = 6.0;
 const QUEST_BOARD = { gx: -1.6, gy: 4.2 };
-const ARCADE_SIGN = { gx: 0.8, gy: 4.5 };
+const ARCADE_SIGN = { gx: 4.5, gy: 6.0 };
 const WINDOW_BUY = 1.6;
 const BASE_PRICE = 2;
 const MAX_PRICE = 6;
