@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-13T22:57:51Z",
+    "checked_at": "2026-10-14T00:43:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -596,6 +596,22 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_wishes.js /opt/data/cache/scratch/t51_check.mjs && node --check /opt/data/cache/scratch/t51_check.mjs && grep -q \"window.GuildWishes\" /opt/data/cache/scratch/t51_check.mjs && head -1 tasks_out/worker_wishes.js | grep -qv '^worker_' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - SHOOTING-STAR WISH - window.GuildWishes = { stars: [], nextAt: 0, wish: null } with update/draw/__probe (probe returns { stars: stars.length, wish: !!wish }):\n1. Every 3-5 min (random within that window) spawn a shooting star: a bright 3px gold-white pixel streaking diagonally across the SKY area over ~2.5s (from upper-left off-canvas toward the island), with a fading trail of 6-8 dimmer pixels behind it. Draw in the sky layer, behind the top HUD.\n2. WISH: while a star is visible, if window.GuildVisitor presses 'e' (one-shot key flag like the visitor module) and no wish is active, make a wish: wish = { t0: now } and a 2s gold ceremony - 10 tiny star-dust particles fall from the streak point toward the visitor, a small '+1 REP' gold text floats up from the visitor, and if window.GuildPurpose exists with a numeric rep, increment it by 1 (defensively, in try/catch). Also cue('grow') in try/catch.\n3. CAMPFIRE FLARE: on a wish, the campfire flares brighter for 10s - a simple 10s warm radial glow pulse near the campfire area (south-center of the island). Never write to other modules' state except the guarded GuildPurpose rep bump.\n4. Zero exceptions when GuildVisitor or V is absent; stars still spawn (idle sky-gazing stays alive).",
       "updated_at": "2026-10-13T22:59:04Z"
+    },
+    {
+      "id": "T53",
+      "title": "P4: economy - visitor tips (fresh module, coins flow to workers)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_tips.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tips.js /opt/data/cache/scratch/tips.js_check.mjs && node --check /opt/data/cache/scratch/tips.js_check.mjs && grep -q 'window.GuildTips' /opt/data/cache/scratch/tips.js_check.mjs && head -1 tasks_out/worker_tips.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - VISITOR TIPS - window.GuildTips = { coins: 0, tips: [], lastScore: 0, floats: [] } with update/draw/__probe (probe returns { coins, tips: tips.length }):\n1. EARN: diff window.GuildMinigame (optional) score between your own polls: every +1 score grants the visitor +1 coin (coins++), a small gold '+1 GC' float above the visitor (1.2s rise + fade) and cue('grow') in try/catch. If GuildMinigame is absent, coins simply never grow.\n2. TIP: when window.GuildVisitor is within 1.5 tiles of a worker (nearest by pixel distance from V.workerStates x/y) and presses 't'/'T' (one-shot keydown flag like the visitor module) and coins >= 1: coins--, add {workerIndex, t: now} to tips. If window.GuildEconomy exists with a numeric purses array, increment purses[i] by 1 defensively in try/catch; else keep your own per-worker counters. Show a gold '+1 GC' float over the worker (2s) and cue('done') in try/catch.\n3. HUD: a tiny clipped coin counter bottom-right above the ticker: coin glyph (#facc15 4px circle) + 'x N' in 10px monospace. fitText discipline, everything clipped, never overlaps the chat box.\n4. Never write to V.workerStates or any worker position - overlays only. Zero exceptions when GuildVisitor, GuildMinigame or GuildEconomy are absent. NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T00:44:31Z"
     }
   ],
   "projects": [
