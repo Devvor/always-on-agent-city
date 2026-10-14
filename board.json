@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T17:10:40Z",
+    "checked_at": "2026-10-14T17:32:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1010,8 +1010,8 @@
     {
       "id": "T89",
       "title": "DISTRICT/PLAYABILITY - owl courier of the NE roost (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_owlcourier.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1020,7 +1020,7 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_owlcourier.js /opt/data/cache/scratch/T89_check.mjs && node --check /opt/data/cache/scratch/T89_check.mjs && head -1 tasks_out/worker_owlcourier.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildOwlCourier' /opt/data/cache/scratch/T89_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - OWL COURIER - window.GuildOwlCourier = { gx: -2.5, gy: -5.0, state: 'perched' } with update/draw/__probe (probe returns { state, deliveries }):\n1. ROOST PROP in the NE aviary zone (-4..-1, -6..-4): a carved perch post with a round owl (big eyes, brown/gold pixel body), 2+ tiles clear of the existing roost structures.\n2. SEND: when window.GuildVisitor is within 1.5 tiles and presses 'e' and state is 'perched', the visitor hands over a message token: state 'flying', the owl lifts off and flies (smooth lerp) to a random WORKING worker from V.workers (prefer one with an active task).\n3. DELIVER: on arrival, a tiny scroll bubble pops above that worker for 3s ('!'), cue('done') in try/catch, deliveries++, then the owl flies home and returns to 'perched'.\n4. COOLDOWN: 10s between sends; a small feather puff marks takeoff and landing.\n5. Zero exceptions if V/iso/GuildVisitor absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "created_at": "2026-10-14T17:08:49Z",
-      "updated_at": "2026-10-14T17:08:49Z"
+      "updated_at": "2026-10-14T17:33:50Z"
     },
     {
       "id": "T90",
