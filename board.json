@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T08:05:50Z",
+    "checked_at": "2026-10-14T08:26:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -690,15 +690,16 @@
     {
       "id": "T64",
       "title": "spectacle - crystal grove in the empty NW corner (glow, sparkles)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_crystal.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_crystal.js /opt/data/cache/scratch/buildout_check.mjs && node --check /opt/data/cache/scratch/buildout_check.mjs && head -1 tasks_out/worker_crystal.js | grep -qv '^worker_' && grep -q \"window.GuildCrystal\" /opt/data/cache/scratch/buildout_check.mjs && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module worker_crystal.js \u2014 a GLOWING CRYSTAL GROVE filling the island's empty northwest area (world coords gx around -6..-4, gy around -4..-1 \u2014 use iso() to project, clamp on-island using V.growthStep ring bounds like worker_museum.js does). worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR \u2014 window.GuildCrystal = { crystals: [], sparkles: [] } with update/draw/__probe:\n1. FIVE CRYSTAL CLUSTERS at slightly varied positions, each 3-5 shards: tall cyan #67e8f9 shards with darker #0891b2 outline and a violet #a78bfa accent shard among them, drawn as iso-projected pixel polygons with white tip highlights. Each cluster pulses a soft radial glow (radial gradient alpha 0.10-0.22 sine, 2-4 s per-cluster offset phases).\n2. SPARKLES: 6-10 tiny white/gold plus-shaped sparkles that twinkle in and out around the grove, brighter and more frequent at night (V.daylight < 0.35).\n3. NIGHT SING: at deep night the crystals' glow intensifies (alpha up to 0.3) and a faint 1px ground-light halo spreads beneath them.\n4. RAIN: during V.weather === 'RAIN' a random crystal occasionally drips a 1px cyan droplet.\n5. Never cover worker desks or paths (keep to the NW area). Zero exceptions if V/iso absent.\n__probe returns { crystals, sparkles } counts.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+      "spec": "Create a NEW ES-module worker_crystal.js \u2014 a GLOWING CRYSTAL GROVE filling the island's empty northwest area (world coords gx around -6..-4, gy around -4..-1 \u2014 use iso() to project, clamp on-island using V.growthStep ring bounds like worker_museum.js does). worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR \u2014 window.GuildCrystal = { crystals: [], sparkles: [] } with update/draw/__probe:\n1. FIVE CRYSTAL CLUSTERS at slightly varied positions, each 3-5 shards: tall cyan #67e8f9 shards with darker #0891b2 outline and a violet #a78bfa accent shard among them, drawn as iso-projected pixel polygons with white tip highlights. Each cluster pulses a soft radial glow (radial gradient alpha 0.10-0.22 sine, 2-4 s per-cluster offset phases).\n2. SPARKLES: 6-10 tiny white/gold plus-shaped sparkles that twinkle in and out around the grove, brighter and more frequent at night (V.daylight < 0.35).\n3. NIGHT SING: at deep night the crystals' glow intensifies (alpha up to 0.3) and a faint 1px ground-light halo spreads beneath them.\n4. RAIN: during V.weather === 'RAIN' a random crystal occasionally drips a 1px cyan droplet.\n5. Never cover worker desks or paths (keep to the NW area). Zero exceptions if V/iso absent.\n__probe returns { crystals, sparkles } counts.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "updated_at": "2026-10-14T08:27:41Z"
     },
     {
       "id": "T65",
