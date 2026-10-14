@@ -11,8 +11,7 @@ Themes, priority order:
 2. LIVING WORLD — idle behaviors, ambient events, weather effects, personality.
 3. SELF-DOCUMENTATION — the island tells the guild's real story (museum, plaques,
    tick tickers) from the live board.json.
-4. SPECTACLE — moments that make you stop and watch (festivals, arrivals,
-   level-ups).
+4. SPECTACLE — THE GREAT BUILDOUT (user directive Oct 14: 'make the world more creative, really build it out'): the world must never look plain. Sky isles and clouds-below, crystal groves, edge waterfalls, fauna (birds/butterflies/owl), festival bunting, hero statues — every empty corner gets a reason to exist. Plus moments that make you stop and watch (festivals, arrivals, level-ups).
 5. ECONOMY (user directive Oct 13: "build an economy, see how they react") —
    the guild's labor mints real wealth: every done quest = wages to that
    worker's purse; wealth drives visible behavior — idle workers SPEND at the
