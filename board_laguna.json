@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-13T20:43:53Z",
+    "checked_at": "2026-10-14T02:56:51Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -132,6 +132,67 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-14",
       "updated_at": "2026-10-13T20:48:58Z"
+    },
+    {
+      "id": "T52",
+      "title": "P4: living world - arrival pigeon (fresh module, reacts to real board)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_arrivals.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_arrivals.js /opt/data/cache/scratch/t52_check.mjs && node --check /opt/data/cache/scratch/t52_check.mjs && grep -q \"window.GuildArrivals\" /opt/data/cache/scratch/t52_check.mjs && head -1 tasks_out/worker_arrivals.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - ARRIVAL PIGEON - window.GuildArrivals = { lastPending: -1, pigeon: null, notice: null } with update/draw/__probe (probe returns { pigeon: !!pigeon, notice: !!notice, lastPending }):\n1. Track the pending count from V.allTasks (status === 'pending', defensively; missing array = 0). On first update set lastPending = current count (never false-fire on page load). When the count RISES between polls, launch a pigeon: pigeon = { t0: now, dur: 6000, questId } - a small grey pixel pigeon (body ellipse, flapping 2-frame wing, tiny beak) flies from off-screen left across the sky toward the quest board tile (window.GuildQuestBoard ? its gx/gy : (-1.6, 4.2)) over the flight, carrying a tiny parchment rect.\n2. On landing (flight end): pin the notice - notice = { t0: now, questId } and draw a small parchment 'NEW QUEST <id>' pinned paper rect on the quest board prop (pale #e8e6df paper, dark text 8px, slight bob), fading out over 60s then cleared. cue('alert') in try/catch at launch (soft horn).\n3. Only one pigeon/notice at a time; if the count rises again while one is out, update the pending quest id silently and skip the new flight.\n4. The island reacts to the REAL repo: everything derives from V.allTasks diffs between your update calls, never localStorage. Zero exceptions when V or allTasks are absent.",
+      "updated_at": "2026-10-13T23:00:11Z"
+    },
+    {
+      "id": "T54",
+      "title": "P4: spectacle - guild parade (fresh module, every 10 shipped)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_parade.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_parade.js /opt/data/cache/scratch/parade.js_check.mjs && node --check /opt/data/cache/scratch/parade.js_check.mjs && grep -q 'window.GuildParade' /opt/data/cache/scratch/parade.js_check.mjs && head -1 tasks_out/worker_parade.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - GUILD PARADE - window.GuildParade = { lastDone: 0, parade: null } with update/draw/__probe (probe returns { parade: !!parade }):\n1. Count total done quests from V.allTasks (status === 'done', defensively; missing array = 0). On first update set lastDone = current count (never false-fire on page load). When the count crosses UP into a new multiple of 10, start a parade { t0: now, dur: 12000, done: count }.\n2. During the parade, every worker in V.workers (use their current V.workerStates[i].x/y projected positions) marches toward the campfire area (south-center of the island) in an orderly single-file line: compute a parade formation offset per worker (staggered behind the leader along a path) and draw each worker as a GHOST overlay (re-draw their sprite with 0.65 alpha at the parade position with a marching bob via sin) - NEVER move or write the real workers' positions. A pixel GUILD BANNER (pole + dark red cloth with gold emblem, swaying) leads the line.\n3. FX: about 20 confetti particles (small multi-color falling squares, gentle sway) over the campfire area for the parade duration, plus a gold label 'GUILD PARADE - N SHIPPED' (10px, #d4af37, clipped, fitText) top-center of the sky.\n4. cue('levelup') at parade start and cue('done') at the 6s midpoint, both try/catch. One parade at a time; when dur elapses, parade = null. Zero exceptions when V.workers or workerStates are missing. NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T00:51:10Z"
+    },
+    {
+      "id": "T56",
+      "title": "P4: living world - weather moods (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_moods.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_moods.js /opt/data/cache/scratch/t56_check.mjs && node --check /opt/data/cache/scratch/t56_check.mjs && grep -q 'window.GuildMoods' tasks_out/worker_moods.js && head -1 tasks_out/worker_moods.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - WEATHER MOODS - window.GuildMoods = { nextAt: 0, bubble: null } with update/draw/__probe (probe returns { bubble: !!bubble, nextIn: max(0, nextAt - now) }):\n1. Do NOT depend on window.GuildPersonality or any other module. Define your own plain templates keyed by worker index mod 4: index 0 (glitchy trickster): rain grumbles like 'my pixels are WET', content hums like 'heh. sky patch notes.'; index 1 (aloof poet): rain 'the sky writes in grey ink', hum 'a clear note. fine.'; index 2 (eager rookie): rain 'rain! does the board rust??', hum 'great weather for quests!'; index 3 (serene philosopher): rain 'water returns to water', hum 'the island breathes.'\n2. TIMER: when V.weather indicates rain, every ~20s (random 18-24s) pick a random worker whose state is idle/resting (skip working ones) and show a 4s thought-bubble above them with a rain grumble. During clear weather (and especially when V.daylight < 0.3, night), every ~40s (random 35-48s) show a contented hum bubble instead.\n3. DRAW: one bubble at a time - a small rounded white bubble with 2px tail pointing at the worker, text in 10px monospace, fitText-wrapped to max 90px width, alpha fade in/out 0.4s. Everything clipped; never overlaps the top HUD or the chat box (draw below them).\n4. Overlays only - never write to V.workerStates or positions. Zero exceptions when V or V.weather is absent. NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T03:02:37Z"
+    },
+    {
+      "id": "T58",
+      "title": "P4: living world - courtyard pigeons (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_fauna.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_fauna.js /opt/data/cache/scratch/t58_check.mjs && node --check /opt/data/cache/scratch/t58_check.mjs && grep -q 'window.GuildFauna' tasks_out/worker_fauna.js && head -1 tasks_out/worker_fauna.js | grep -qv '^worker_' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - COURTYARD PIGEONS - window.GuildFauna = { birds: [], coos: [] } with update/draw/__probe (probe returns { birds: birds.length }):\n1. SPAWN: maintain 3 pigeons - small grey birds (5px body #9ca3af, darker #6b7280 head, 1px orange beak) that peck and hop near the open ground around the wishing well / tiny garden area (south-center of the island; pick a fixed 4x4 tile patch, defend with typeof guards if iso/V absent). Each bird: { x, y, vx, vy, state: 'peck'|'hop'|'air', t }.\n2. BEHAVIOR: mostly peck (head bob) or hop 1 tile every few seconds, staying inside their patch. Every ~10s one bird flies a short loop (2s) and resettles. Tiny 3px ellipse shadows beneath them.\n3. SCATTER: when window.GuildVisitor moves within 1.2 tiles of a bird (pixel distance via iso of visitor gx/gy), that bird flutters: rises ~20px with a 0.5s wing flap (2 alternating wing pixels) and resettles 2-3 tiles away, then resumes pecking. cue('pop') in try/catch, at most once per 3s.\n4. Draw in the world layer under worker bubbles; never write to V.workerStates or any other module's state. Zero exceptions when V, iso or GuildVisitor are absent (birds just idle). NEVER contain literal triple-backtick characters.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-14"
     }
   ]
 }
