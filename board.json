@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T08:47:50Z",
+    "checked_at": "2026-10-14T09:09:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -718,15 +718,42 @@
     {
       "id": "T68",
       "title": "spectacle - hero statues plaza in the empty SE corner",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_statues.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_statues.js /opt/data/cache/scratch/buildout_check.mjs && node --check /opt/data/cache/scratch/buildout_check.mjs && head -1 tasks_out/worker_statues.js | grep -qv '^worker_' && grep -q \"window.GuildStatues\" /opt/data/cache/scratch/buildout_check.mjs && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module worker_statues.js \u2014 a HEROES' PLAZA of golden worker statues in the island's empty southeast corner (world coords gx around 4..6, gy around -3..-1 \u2014 project via iso(), clamp on-island using V.growthStep ring bounds). worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR \u2014 window.GuildStatues = { statues: [] } with update/draw/__probe:\n1. FOUR PLINTHS in a diamond layout: square stone bases (#475569 top, #334155 side, 14x10 px) with a dark ground shadow.\n2. STATUES: a small pixel bust (8x10 px) ON each plinth in each worker's color \u2014 missingno gold #d4af37, step5 violet #8b5cf6, laguna emerald #10b981, longcat amber #f59e0b \u2014 with a lighter 1px face highlight and a subtle 45-degree shine stripe that sweeps across each statue every 5 s (a 2px white alpha-0.25 band moving across).\n3. NAME PLAQUES: tiny dark plates with fitText names ('missingno', 'step5', 'laguna', 'longcat') below each plinth, gold text.\n4. GLEAM ON GLORY: watch each worker's done-quest count from V.workers[i].tasks (status 'done'); when one rises, that statue bursts a 1.2 s golden sparkle ring and emits a faint rising glow.\n5. Zero exceptions if V/iso/workers absent. __probe returns { statues, lastGleam } .\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+      "spec": "Create a NEW ES-module worker_statues.js \u2014 a HEROES' PLAZA of golden worker statues in the island's empty southeast corner (world coords gx around 4..6, gy around -3..-1 \u2014 project via iso(), clamp on-island using V.growthStep ring bounds). worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR \u2014 window.GuildStatues = { statues: [] } with update/draw/__probe:\n1. FOUR PLINTHS in a diamond layout: square stone bases (#475569 top, #334155 side, 14x10 px) with a dark ground shadow.\n2. STATUES: a small pixel bust (8x10 px) ON each plinth in each worker's color \u2014 missingno gold #d4af37, step5 violet #8b5cf6, laguna emerald #10b981, longcat amber #f59e0b \u2014 with a lighter 1px face highlight and a subtle 45-degree shine stripe that sweeps across each statue every 5 s (a 2px white alpha-0.25 band moving across).\n3. NAME PLAQUES: tiny dark plates with fitText names ('missingno', 'step5', 'laguna', 'longcat') below each plinth, gold text.\n4. GLEAM ON GLORY: watch each worker's done-quest count from V.workers[i].tasks (status 'done'); when one rises, that statue bursts a 1.2 s golden sparkle ring and emits a faint rising glow.\n5. Zero exceptions if V/iso/workers absent. __probe returns { statues, lastGleam } .\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "updated_at": "2026-10-14T09:10:41Z"
+    },
+    {
+      "id": "T69",
+      "title": "playability - buried treasure hunt with dig spots (visitor earns coins)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_treasure.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_treasure.js /opt/data/cache/scratch/treasure_check.mjs && node --check /opt/data/cache/scratch/treasure_check.mjs && head -1 tasks_out/worker_treasure.js | grep -qv '^worker_' && grep -q \"window.GuildTreasure\" /opt/data/cache/scratch/treasure_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module worker_treasure.js - a BURIED TREASURE HUNT across the island. worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.visitor position if present, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR - window.GuildTreasure = { spots: [], found: 0 } with update/draw/__probe:\n1. FIVE DIG SPOTS scattered at fixed grid coords across the island (spread across floor rings, not clustered), each drawn as a small dirt mound (#78350f dithered, 10x6 px) with a faint glinting speck that twinkles every ~2 s so sharp-eyed visitors can spot them.\n2. DIG: when the visitor (window.GuildVisitor position if exposed, else nearest-visitor heuristic from V.gameState) stands within ~1 tile and presses E (keydown 'e'/'E'), the mound bursts: shovel-thud dirt particles + gold sparkle + one coin flies up and arcs toward the bottom-right HUD; window.cue('coin') if available. Each spot digs ONCE (dug flag, mound becomes a hole with a wooden X marker).\n3. PROGRESS CHIP: a small parchment chip bottom-right with fitText text like 'Treasure 2/5', gold #d4af37 border; hidden until the first dig.\n4. ALL FOUND: when 5/5, a one-time 2 s golden firework puff over the last hole plus a cue; the chip reads 'Treasure 5/5 - rich!'.\n5. Zero exceptions if V/iso/visitor absent. __probe returns { spots, found } .\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+    },
+    {
+      "id": "T70",
+      "title": "living world - worker daydream bubbles flavored by personality voice (self-documentation)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_daydream.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_daydream.js /opt/data/cache/scratch/daydream_check.mjs && node --check /opt/data/cache/scratch/daydream_check.mjs && head -1 tasks_out/worker_daydream.js | grep -qv '^worker_' && grep -q \"window.GuildDaydream\" /opt/data/cache/scratch/daydream_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module worker_daydream.js - IDLE DAYDREAM BUBBLES for the workers, living-world x self-documentation in one module. worker_visitor.js (injected) is your PATTERN (self-installing ES module, no imports, no top-level DOM, typeof guards, window-global state, update(now)/draw(ctx) hooks, __probe). worker_office.js (injected) is REFERENCE ONLY for pixel style (dithering, outline strokes, palette). Contract: window.V (V.gameState, V.workerStates, V.workers, V.allTasks history if present, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy), fitText, window.cue optional. The client render loop auto-discovers your window.Guild* global and calls update(now)/draw(ctx) each frame in state 'play', guarded per-module.\n\nBEHAVIOR - window.GuildDaydream = { active: null } with update/draw/__probe:\n1. DAYDREAM PICKS: every ~20 s (with jitter), one IDLE (non-walking, non-sleeping) worker starts a daydream lasting ~6 s: a white thought bubble above their head (cloud shape, 3 trailing dots toward the head) with one short line of fitText inside.\n2. VOICE: the line is flavored by personality - missingno = glitchy trickster (occasionally renders with 1-frame character-swap glitch), step5 = aloof poet (wistful), laguna = eager rookie (excited), longcat = serene philosopher (calm). Lines reference REAL board state when available: the worker's pending quest titles from V.workers[i].tasks or V.allTasks (e.g. thinking about their next build), else generic guild musings.\n3. NEW-QUEST SPARK: when a worker's quest list gains a pending item, that worker gets a one-time eager daydream within ~5 s (sparkle + cue('idea') if available).\n4. Never overlaps the journal/talk bubbles: check for an existing active bubble on that worker and skip if occupied. Zero exceptions if V/iso/workers absent. __probe returns { active }.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
     }
   ],
   "projects": [
