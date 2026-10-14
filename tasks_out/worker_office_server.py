@@ -81,15 +81,32 @@ class OfficeHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         return
 
+    _syntax_cache = {}
+
     def handle_modules(self):
         try:
             import glob
+            import subprocess
             base = os.path.dirname(os.path.abspath(self.html_path))
-            files = sorted(
-                os.path.basename(p)
-                for p in glob.glob(os.path.join(base, "worker_*.js"))
-                if os.path.basename(p) not in ("worker_office.js", "worker_office_sound.js")
-            )
+            files = []
+            for p in sorted(glob.glob(os.path.join(base, "worker_*.js"))):
+                name = os.path.basename(p)
+                if name in ("worker_office.js", "worker_office_sound.js"):
+                    continue
+                # only serve modules that parse: failed-task residue must not
+                # reach the page. Cache the node --check result by mtime.
+                mtime = os.path.getmtime(p)
+                cached = OfficeHandler._syntax_cache.get(name)
+                if cached and cached[0] == mtime:
+                    ok = cached[1]
+                else:
+                    r = subprocess.run(
+                        ["node", "--check", p],
+                        capture_output=True, timeout=15)
+                    ok = r.returncode == 0
+                    OfficeHandler._syntax_cache[name] = (mtime, ok)
+                if ok:
+                    files.append(name)
             body = json.dumps(files).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -333,7 +350,7 @@ def main():
         setattr(OfficeHandler, attr, step_log)
     OfficeHandler.html_path = os.path.join(script_dir, "worker_office.html")
 
-    server = ThreadingHTTPServer(("100.123.50.36", args.port), OfficeHandler)
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), OfficeHandler)
 
     print(f"worker office serving on 127.0.0.1:{args.port}", flush=True)
 
