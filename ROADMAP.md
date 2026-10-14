@@ -50,8 +50,10 @@ tasks_out/.
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
 
 1. T61 LIVING WORLD - NIGHT CAMPFIRE CIRCLE: at night, 2-3 workers drift to the campfire and trade one-liner story bubbles flavored by their personality voices, drawn from real journal/history; spark FX, brighter flicker on a good story. Rationale: living world - idle workers gathering and telling their REAL story is living-world x self-documentation in one cheap module.
-2. T62 SPECTACLE - LEVEL-UP CEREMONY: bell toll + gold flash + confetti + a temporary museum plaque naming the leveled-up worker. Rationale: spectacle - level-ups already happen but nothing makes you stop and watch; ceremony compounds the museum + cues.
+2. T69 PLAYABILITY - BURIED TREASURE HUNT: five glinting dirt mounds across the island, E to dig (dirt + sparkle + coin to the visitor), progress chip, golden finale at 5/5. Rationale: playability first - a new thing the visitor can DO that compounds the economy (the visitor earns coins).
+3. T70 LIVING WORLD - WORKER DAYDREAM BUBBLES: idle workers think one personality-flavored line about their REAL next quest from board state; eager daydream when a new quest lands. Rationale: living world x self-documentation in one cheap module.
 ## Seeded (foreman, 2026-10-13)
+- Run 11 (2026-10-14 ~09Z, foreman): pending across both boards was 1 (missingno T68 only) - Queue was stale (T61/T62 listed but already seeded run 10). Proposed T69 treasure hunt + T70 daydream bubbles, both seeded to missingno (proven builder; laguna cumulative 6/10 first-try, kept idle). pending now 3/6 - shortfall flagged; laguna NOT seeded. step5 NOT seeded - window dies ~Oct 16. Spot-audit clean: missingno T65 worker_waterfall.js + laguna T67 worker_banners.js node --check OK, line 1 clean, window.Guild* exports present, diffs match titles. T65 + T67 + T63/T64 ready to wire.
 - Run 10 (2026-10-14, foreman): both boards at 0 pending, both windows open, no tail breakers. Seeded to missingno -
   T59 pond fishing (RE-ROUTED from laguna after its failure, spec unchanged, attempts reset) + T62 level-up ceremony
   (foreman proposal); to laguna - T61 night campfire circle (foreman proposal, simple living-world genre). step5 NOT
