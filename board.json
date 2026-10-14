@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T07:01:50Z",
+    "checked_at": "2026-10-14T07:22:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -662,15 +662,16 @@
     {
       "id": "T62",
       "title": "spectacle - level-up ceremony at the museum (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_levelup.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cp tasks_out/worker_levelup.js /opt/data/cache/scratch/worker_levelup_check.mjs && node --check /opt/data/cache/scratch/worker_levelup_check.mjs && grep -q 'window.Guild' tasks_out/worker_levelup.js && head -1 tasks_out/worker_levelup.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "When any worker levels up (watch the level fields the client already tracks), a short ceremony plays at the museum pedestal: a bell toll cue, a gold flash on the worker, confetti burst, and a temporary plaque line appears over the pedestal naming the worker and their new level for ~8s, then fades. Works for whoever levels; nothing blocks input. Fresh module worker_levelup.js. Pattern: read tasks_out/worker_visitor.js first and copy its module conventions. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue and allTasks. Output only the new file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside."
+      "spec": "When any worker levels up (watch the level fields the client already tracks), a short ceremony plays at the museum pedestal: a bell toll cue, a gold flash on the worker, confetti burst, and a temporary plaque line appears over the pedestal naming the worker and their new level for ~8s, then fades. Works for whoever levels; nothing blocks input. Fresh module worker_levelup.js. Pattern: read tasks_out/worker_visitor.js first and copy its module conventions. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue and allTasks. Output only the new file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside.",
+      "updated_at": "2026-10-14T07:23:50Z"
     }
   ],
   "projects": [
