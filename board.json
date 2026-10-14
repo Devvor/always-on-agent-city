@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T15:02:50Z",
+    "checked_at": "2026-10-14T15:24:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -920,6 +920,73 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-14",
       "updated_at": "2026-10-14T15:03:38Z"
+    },
+    {
+      "id": "T82",
+      "title": "SPECTACLE - crystal-shrine offering (fresh module)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_shrine.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_shrine.js /opt/data/cache/scratch/T82_check.mjs && node --check /opt/data/cache/scratch/T82_check.mjs && head -1 tasks_out/worker_shrine.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildShrine' /opt/data/cache/scratch/T82_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - CRYSTAL-SHRINE OFFERING - window.GuildShrine = { gx: -5.0, gy: -2.5, lastOffer: 0, buff: null, coins: 0 } with update/draw/__probe (probe returns { coins, buff: !!buff }):\n1. SHRINE PROP in the NW crystal grove at tile (-5.0, -2.5) (clamp on-island with V.growthStep floor math; keep 2+ tiles clear of the museum wing and any existing prop): a small stone plinth with 3 glowing crystal shards on top (pale blue #93c5fd pixels, gentle pulse), pixel fillRect style, gold #d4af37 trim.\n2. OFFERING: when window.GuildVisitor is within 1.6 tiles and presses 'e'/'E' (one-shot keydown flag) and now - lastOffer > 20000: lastOffer = now, coins++, buff = { t0: now, dur: 60000 }, a gold coin pixel arcs from the visitor to the shrine (0.6s), then a soft blue luck-buff halo rings the shrine and cue('grow') fires in try/catch.\n3. LUCK BUFF: while buff is active, any gold XP/coin FX elsewhere on the island draws a small extra sparkle; a tiny 'LUCK' label floats above the visitor for the first 3s of the buff.\n4. Zero exceptions if V/iso/GuildVisitor absent.\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "updated_at": "2026-10-14T15:25:22Z"
+    },
+    {
+      "id": "T83",
+      "title": "PLAYABILITY - guild map poster (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_mapposter.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_mapposter.js /opt/data/cache/scratch/T83_check.mjs && node --check /opt/data/cache/scratch/T83_check.mjs && head -1 tasks_out/worker_mapposter.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildMapPoster' /opt/data/cache/scratch/T83_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - GUILD MAP POSTER - window.GuildMapPoster = { gx: 0.2, gy: 5.4, lastNear: 0 } with update/draw/__probe (probe returns { near: bool }):\n1. POSTER PROP: a parchment poster on two posts near the island's south entrance (tile gx 0.2, gy 5.4, clamp on-island; keep 2+ tiles clear of the quest board (-1.6,4.2), the arcade sign (0.8,4.5) and the market row): pale #e8e6df parchment rect with a tiny drawn mini-map - a diamond island outline with 4-5 labeled zone dots (grove NW, aviary NE, market SW, plaza SE, falls S rim) as 2px dots, dark ink lines, pixel fillRect style, gold #d4af37 frame.\n2. INTERACTION: when window.GuildVisitor is within 1.6 tiles, draw a hint '[E] VIEW MAP' (10px gold, clipped). E (one-shot key flag) toggles a zoomed map panel center-canvas (dark parchment #1c1a16, gold border, ~320x240px, fully clipped, fitText discipline): a larger diamond island outline, each zone dot labeled ('CRYSTAL GROVE', 'AVIARY', 'MARKET ROW', 'HEROES PLAZA', 'FALLS + FISHING', 'HEARTH'), a pulsing dot at the visitor's current tile position, and a blinking 'YOU ARE HERE' label.\n3. Close on E again; panel never spills (clip + ellipsize).\n4. Zero exceptions if V/iso/GuildVisitor absent.\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+    },
+    {
+      "id": "T84",
+      "title": "PLAYABILITY/ECONOMY - pond fishing (fresh module) [re-routed from laguna T59]",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_fishing.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_fishing.js /opt/data/cache/scratch/T84_check.mjs && node --check /opt/data/cache/scratch/T84_check.mjs && head -1 tasks_out/worker_fishing.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFishing' /opt/data/cache/scratch/T84_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client calls your hooks every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.GuildTips {coins} (optional), window.cue(name) optional (try/catch).\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - POND FISHING - window.GuildFishing = { casting: null, catches: [], best: null } with update/draw/__probe (probe returns { phase: casting ? casting.phase : 'idle', catches: catches.length }):\n1. POND: reuse the firefly grove pond position if window.GuildFireflies and its grove exist (its gx/gy), else anchor at the island's north-east corner derived from V.growthStep floor math (core 4x4 plus one ring per growth step, max 8), inset 1 tile. Draw a small wooden DOCK plank extending over the pond (brown #6b4a2f, gold #d4af37 trim), prop layer, no collision.\n2. CAST: when the visitor is within 1.6 tiles of the pond and presses 'f'/'F' (one-shot keydown flag like the visitor module) while not casting: casting = { phase: 'wait', t0: now, dur: random 3000-8000 }. Draw a bobber (small red-white 3px circle) floating on the pond with a gentle sin bob and a thin line to the visitor.\n3. BITE: at t0+dur phase = 'bite' for 1.2s - the bobber dips and ripples (expanding light-blue rings, like L4). If the visitor presses 'f' during 'bite': catch - catches.push({ t: now, size: random 0.5-1 }), a gold '+1 FISH' float above the visitor, cue('done') in try/catch, and if window.GuildTips exists with numeric coins, increment it by 1 defensively (fish sell for 1 coin). casting = null. If the visitor misses the bite window, the bobber escapes (small splash, casting = null, no penalty).\n4. HUD: while casting or within 2 tiles of the pond, draw a tiny clipped stat line 'FISH: N  BEST: M cm' (10px monospace, gold on dark plate, fitText, clipped) above the dock. Best = largest size x 40 rounded. Zero exceptions if V, iso or GuildVisitor are absent.",
+      "note": "re-routed from laguna T59 after its failure there; spec unchanged, attempts reset"
+    },
+    {
+      "id": "T85",
+      "title": "ECONOMY - treasury payroll ceremony (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_payroll.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_payroll.js /opt/data/cache/scratch/T85_check.mjs && node --check /opt/data/cache/scratch/T85_check.mjs && head -1 tasks_out/worker_payroll.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildPayroll' /opt/data/cache/scratch/T85_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - TREASURY PAYROLL CEREMONY - window.GuildPayroll = { lastMinted: -1, ceremony: null, nextAt: 0 } with update/draw/__probe (probe returns { ceremony: !!ceremony, lastMinted }):\n1. TRACK: read window.GuildEconomy?.minted (defensively, missing = 0). On first update set lastMinted = current value (never false-fire on page load). When minted crosses UP into a new multiple of 50 GC, start a ceremony { t0: now, dur: 8000, amount: current }.\n2. During the ceremony at the treasury/vault area (window.GuildEconomy vault is near tile ~2.5,0.5 - project iso(2.5, 0.5), clamp on-island): a brief gold 'PAYROLL!' banner (10px, clipped), a slow coin-rain of about 16 small gold #facc15 2px coins falling from sky height over the plaza with gentle sway, and a warm glow pulse on the vault; cue('levelup') at start in try/catch.\n3. Idle flavor: when no ceremony and an IDLE worker stands within 2 tiles of the vault, draw a tiny thought bubble above them every ~45s with one payroll quirk line (e.g. 'skimming my cut... joking', 'the pile grows') - fitText, 3s, one at a time.\n4. Zero exceptions if GuildEconomy or V absent.\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
+    },
+    {
+      "id": "T87",
+      "title": "PLAYABILITY/ECONOMY - fish market stall (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_fishmarket.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_fishmarket.js /opt/data/cache/scratch/T87_check.mjs && node --check /opt/data/cache/scratch/T87_check.mjs && head -1 tasks_out/worker_fishmarket.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFishMarket' /opt/data/cache/scratch/T87_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - FISH MARKET STALL - window.GuildFishMarket = { gx: -0.5, gy: 5.2, sold: 0 } with update/draw/__probe (probe returns { sold }):\n1. STALL PROP in the SW market row at tile (-0.5, 5.2) (clamp on-island; keep 2+ tiles clear of the map poster (0.2,5.4) and the snack stall): a wooden stall with a striped awning, a hanging fish glyph, and a small chalk price sign ('FISH: 5 GC'), pixel fillRect style, gold #d4af37 trim.\n2. TRADE: when window.GuildFishing exists and its __probe().catches > your stored lastCatches, offer a trade: while window.GuildVisitor is within 1.6 tiles and presses 'e', sell ONE fish for +5 GC: sold++, a gold '+5 GC' float above the visitor, cue('done') in try/catch, decrement is NOT possible (Fishing owns its catches) - instead track sold vs delivered so each catch pays at most once per stall visit.\n3. DEMAND FLAVOR: each sale draws a tiny coin hop from the visitor to the stall; the price sign flickers gold for 2s after a sale.\n4. Zero exceptions if GuildFishing/V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence."
     }
   ],
   "projects": [
