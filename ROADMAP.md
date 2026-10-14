@@ -12,7 +12,15 @@ Themes, priority order:
 3. SELF-DOCUMENTATION — the island tells the guild's real story (museum, plaques,
    tick tickers) from the live board.json.
 4. SPECTACLE — THE GREAT BUILDOUT (user directive Oct 14: 'make the world more creative, really build it out'): the world must never look plain. Sky isles and clouds-below, crystal groves, edge waterfalls, fauna (birds/butterflies/owl), festival bunting, hero statues — every empty corner gets a reason to exist. Plus moments that make you stop and watch (festivals, arrivals, level-ups).
-5. ECONOMY (user directive Oct 13: "build an economy, see how they react") —
+5. DISTRICTS (user directive Oct 14: "everything is centred, no one can see anything — distribute"):
+   the island is 20x20 tiles and the content must use it. Anchor new content to ZONES, not the center:
+   NW (-6..-4, -4..-1) = crystal grove/mystic quarter; NE (-4..-1, -6..-4) = aviary/bird roosts;
+   SW (-1..2, 4..6) = market row + treasury plaza; SE (4..6, -3..-1) = heroes' plaza (statues);
+   S rim (2..4, south edge) = waterfall + fishing; W (-6..-4, 2..5) = museum wing; E (4..6, 0..3) =
+   garden + wishes. The campfire/forge zone stays the social hearth, but NEW props must claim a zone
+   and stand apart. If a quest's visual can share a zone with an existing one, offset it 2+ tiles
+   from any existing prop.
+6. ECONOMY (user directive Oct 13: "build an economy, see how they react") —
    the guild's labor mints real wealth: every done quest = wages to that
    worker's purse; wealth drives visible behavior — idle workers SPEND at the
    stall (snack in hand, happiness), broke workers look wistful, prices move

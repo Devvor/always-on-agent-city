@@ -264,3 +264,45 @@ SyntaxError: Invalid or unexpected token
 
 Node.js v26.7.0
 
+2026-10-14 08:15:51 T66 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 08:17:17 T66 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/buildout_check.mjs:1
+# worker_aviary.js — LIVING FAUNA in the sky and garden
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 08:18:30 T66 attempt 3 verify rc 1 out tail: /opt/data/cache/scratch/buildout_check.mjs:1
+# worker_aviary.js — LIVING FAUNA in the sky and garden
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 08:18:30 T66 FAILED /opt/data/cache/scratch/buildout_check.mjs:1
+# worker_aviary.js — LIVING FAUNA in the sky and garden
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 08:42:52 T67 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 08:43:43 T67 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/buildout_check.mjs:1
+# worker_banners.js — FESTIVAL BUNTING strung between the island's buildings
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 08:44:48 T67 attempt 3 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 08:44:48 T67 DONE on attempt 3
+2026-10-14 09:05:50 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
