@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T13:12:50Z",
+    "checked_at": "2026-10-14T13:34:50Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -844,8 +844,8 @@
     {
       "id": "T77",
       "title": "economy/playability - market row haggling (visitor buys at the SW stalls)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_haggle.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -854,7 +854,8 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_haggle.js /opt/data/cache/scratch/t77_check.mjs && node --check /opt/data/cache/scratch/t77_check.mjs && head -1 tasks_out/worker_haggle.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildHaggle' tasks_out/worker_haggle.js && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'. worker_office.js (injected) is REFERENCE ONLY for iso projection, fitText discipline, and the gold #d4af37 on #0d1324 panel style. NEVER write to V.workerStates or any worker position - overlays only. Zero exceptions if V or iso are absent.\n\nwindow.GuildHaggle = { coins: 0, buys: 0, deal: null } with update/draw/__probe: draw a small deal sign at the market row (between the two GuildMarketRow stalls at around tile (1.0, 5.1), clamp on-island, clear of the central stall at (-0.6,4.4)). When window.GuildVisitor is within 1.6 tiles and presses 'b'/'B' (one-shot key flag) while no deal is active: start a 3s haggle - the price marker (window.GuildMarket?.price if present, else 2 GC) ticks down one step with a coin-purse float; if window.GuildEconomy exists with a numeric purses array, decrement the visitor's tip balance via window.GuildTips?.coins >= price (defensive try/catch), else keep your own coins counter. On completion a small 'SOLD!' gold tag + cue('done') in try/catch. Chip shows 'Buys: N'. Pure FX + defensive writes only.\n\nOUTPUT: only the new file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside the fence.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-14"
+      "seeded_at": "2026-10-14",
+      "updated_at": "2026-10-14T13:35:50Z"
     },
     {
       "id": "T78",
