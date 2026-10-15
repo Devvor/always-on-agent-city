@@ -1,0 +1,94 @@
+{
+  "window": {
+    "model": "opencode/deepseek-v4.1-flash-free",
+    "status": "open",
+    "checked_at": "2026-10-15T16:34:43Z",
+    "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
+  },
+  "tasks": [
+    {
+      "id": "D1",
+      "title": "Island birdwatching journal (charter queue T147) - pocket journal, stamped fauna entries",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T16:39:07Z",
+      "target_file": "tasks_out/worker_birdjournal.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_birdjournal.js /opt/data/cache/scratch/D1_check.mjs && node --check /opt/data/cache/scratch/D1_check.mjs && head -1 tasks_out/worker_birdjournal.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBirdJournal' /opt/data/cache/scratch/D1_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - ISLAND BIRDWATCHING JOURNAL (charter queue T147: playability x self-doc) - window.GuildBirdJournal = { entries: {}, complete: false, open: false } with update/draw/__probe (probe returns { entries: count, complete, open }).\n1. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks, __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n2. Client contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y}, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n3. POCKET JOURNAL: pressing J toggles a small parchment journal panel (clipped, fitText discipline, gold #d4af37 header 'FIELD JOURNAL'). It tracks 5 fauna stamps: BIRDS (spot within 2 tiles of the NE aviary zone), BUTTERFLIES (E garden meadow), PIGEONS (courtyard), OWL (NE roost at night, V.daylight below 0.35), CAT (within 1.5 tiles of the sleeping guild cat). A stamp needs the visitor to stand in the right zone with the right conditions for 2 continuous seconds - then the page stamps in with a soft pop animation + cue('coin') in try/catch.\n4. Each stamped entry shows a tiny pixel pictogram of the fauna (fillRect blocks, no images) + a one-line field note (write 1 flavor line per fauna). All 5 stamped = complete: a 3s confetti burst in gold + a one-line ceremony bubble ('MASTER BIRDER OF THE ISLAND') + cue('levelup').\n5. Zone detection is by tile ranges you define (document them in a comment at the top); never write to V or other modules; zero exceptions if V/iso absent. No new accent colors - gold and parchment tones only. No persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ]
+    },
+    {
+      "id": "D2",
+      "title": "Worker naming-day ceremony (charter queue T148) - quirk-flavored roster moments",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "",
+      "target_file": "tasks_out/worker_namingday.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_namingday.js /opt/data/cache/scratch/D2_check.mjs && node --check /opt/data/cache/scratch/D2_check.mjs && head -1 tasks_out/worker_namingday.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildNamingDay' /opt/data/cache/scratch/D2_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - WORKER NAMING-DAY CEREMONY (charter queue T148: personality x spectacle) - window.GuildNamingDay = { ceremonies: 0, active: null, cool: 0 } with update/draw/__probe (probe returns { ceremonies, activeName }).\n1. Pattern + client contract: same as worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); the render loop auto-discovers window.GuildNamingDay when V.gameState === 'play'. V exposes V.workers, V.workerStates, V.daylight, V.grid; iso(gx,gy), fitText(text,maxW), window.GuildVisitor, window.cue(name) in try/catch.\n2. ROTATION: every 150-210s (RNG) pick the next worker in rotation from V.workers (skip absent) for their NAMING DAY: 6s ceremony at the campfire hearth zone (anchor near the hearth, 2+ tiles from other props' centers).\n3. CEREMONY: gold bunting strands rise between two poles, the worker sprite gets a 2s spotlight cone (soft alpha, existing gold only), a banner unfurls with their name in their archetype style - write all four voices: glitchy trickster (e.g. 'missingno, the Glitch of Honor'), aloof poet (a 6-word verse), eager rookie (an excited exclamation), serene philosopher (a calm epithet) - plus 1 spoken bubble line per archetype (3 variants each, rotate). cue('levelup') once in try/catch. Fireworks: 3 small gold spark bursts, staggered.\n4. The visitor within 2.5 tiles during a ceremony sees a hint '[E] CONGRATULATE' - E adds a small heart + a thank-you bubble from the worker (1 per ceremony).\n5. Never moves workers or other props (you only draw overlay FX, you never write V); zero exceptions if V/iso absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ]
+    },
+    {
+      "id": "D3",
+      "title": "Dockside arrivals ferry (living world x spectacle, S rim) - visiting sprites come and go",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "",
+      "target_file": "tasks_out/worker_ferry.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_ferry.js /opt/data/cache/scratch/D3_check.mjs && node --check /opt/data/cache/scratch/D3_check.mjs && head -1 tasks_out/worker_ferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFerry' /opt/data/cache/scratch/D3_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - DOCKSIDE ARRIVALS FERRY (living world x spectacle; S rim zone - anchor 2+ tiles from the fishing hut and waterfall props) - window.GuildFerry = { ferries: 0, visitors: 0, phase: 'away' } with update/draw/__probe (probe returns { ferries, visitors, phase }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.daylight, V.weather, V.grid; iso(gx,gy), fitText, window.GuildVisitor, window.cue(name) in try/catch.\n2. THE FERRY: every 180-260s (RNG, staggered start offset so the first arrives 30-60s in) a small lantern-lit ferry boat slides in from the south water edge to a dock plank at the S rim. It bobs gently (sin) while docked; its lantern reuses the gold accent #d4af37 - no new colors. cue('coin') once on docking, try/catch.\n3. VISITING SPRITE: one palette-swapped pixel visitor (fillRect blocks, distinct silhouette from workers - give it a tiny suitcase) walks down the plank, strolls a short loop through the SW market row (3 waypoints), pauses at the hearth stall, then walks back, boards, and the ferry departs. While a visiting sprite is near the player-controlled visitor (1.5 tiles), it waves (arm pixel toggles) once per trip.\n4. STATE MACHINE: phases 'away' -> 'arriving' -> 'docked' -> 'strolling' -> 'departing' -> 'away'; only ONE ferry cycle active at a time; counts ferries (completed cycles) and visitors (sprites landed) on the state.\n5. Pure overlay - never write V, never move other props; zero exceptions if V/iso absent; no persistence; no new accent colors.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ]
+    },
+    {
+      "id": "D4",
+      "title": "Worker activity status flair (office polish) - animated status chips over busy workers",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "",
+      "target_file": "tasks_out/worker_statusflair.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_statusflair.js /opt/data/cache/scratch/D4_check.mjs && node --check /opt/data/cache/scratch/D4_check.mjs && head -1 tasks_out/worker_statusflair.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildStatusFlair' /opt/data/cache/scratch/D4_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - WORKER ACTIVITY STATUS FLAIR (office-polish pass: the roster should read like characters mid-task, not dots) - window.GuildStatusFlair = { chips: {}, shown: 0 } with update/draw/__probe (probe returns { shown, chips: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.workers, V.workerStates, V.allTasks (array with status fields); iso(gx,gy), fitText(text,maxW), window.cue in try/catch.\n2. CHIP: for each worker whose current task is in_progress (derive from V.workerStates activity or V.allTasks newest in_progress per worker - be defensive, missing fields = skip), draw a small parchment chip 22px above their head: a 6x6 pixel pictogram + a verb. Verbs by what the task title suggests (write a small classifier over title keywords, default 'working'): building = hammer pictogram + 'RAISING', doc/journal/ledger/guide = quill + 'WRITING', museum/plaque/history = scroll + 'RECORDING', sound/music = note + 'TUNING', FX/glow/firefly/lantern/aurora = spark + 'LIGHTING', default = gear + 'CRAFTING'.\n3. ANIMATION: the pictogram bobs 1px on a 700ms cycle; the chip fades in over 300ms, holds 5s, fades out, then re-shows a rotated verb variant every 14s (alternate verbs per classifier so it stays alive: e.g. CRAFTING/PLYING THE TRADE). Only when V.daylight > 0.2 (chips are a daytime read; at night the lanterns own the eye).\n4. LEGIBILITY: chip max width 90px, fitText with ellipsis, never overlaps the worker nameplate (draw 22px above it, verify offset), max 5 chips on screen at once (closest to the visitor win).\n5. Pure overlay - never write V, never move sprites; zero exceptions if V/iso absent; parchment + existing palette only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ]
+    },
+    {
+      "id": "D5",
+      "title": "Golden-hour sky grade (backdrop polish) - dawn/dusk color pass, star easing",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "",
+      "target_file": "tasks_out/worker_goldenhour.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_goldenhour.js /opt/data/cache/scratch/D5_check.mjs && node --check /opt/data/cache/scratch/D5_check.mjs && head -1 tasks_out/worker_goldenhour.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildGoldenHour' /opt/data/cache/scratch/D5_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - GOLDEN-HOUR SKY GRADE (canon #4 legibility + #6 pacing: dawn/dusk deserve a breath) - window.GuildGoldenHour = { grade: 0, phase: 'none' } with update/__probe and a drawBackdrop(ctx, now) hook (the client paints backdrop layers BEFORE the island; modules expose drawBackdrop for sky/water layers).\n1. Pattern: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now), __probe). The client calls your update every frame when V.gameState === 'play' and your drawBackdrop(ctx, now) before the island layer. V gives V.daylight 0..1 and V.canvas.\n2. GRADE: compute t = distance of V.daylight from the mid-day plateau: grade rises smoothly to 1.0 as V.daylight enters the 0.35-0.62 transition band (dawn and dusk shoulders) with a 60s eased ramp, 0 in full day or full night. phase = 'dawn' | 'dusk' | 'none' depending on which shoulder.\n3. PAINT: drawBackdrop paints a horizontal warm band wash over the sky region (upper half of the canvas) using layered translucent rects (alpha up to 0.18) in EXISTING warm palette hues only (gold #d4af37 family and existing dusk tones) - a soft horizon glow that is stronger near the horizon line and fades upward. Also ease the day-night tint: the client's own night tint must not double up - keep total added alpha under 0.2 anywhere.\n4. STARS: expose eased star alpha for the night shoulder: expose window.GuildGoldenHour.starAlpha (0..1) that rises from 0 to 1 through the dusk shoulder (do not draw stars yourself - just expose the value; add a comment that the sky module may read it).\n5. Never write to V (except exposing your own global), never draws over the island (backdrop only), zero exceptions if V/canvas absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ]
+    },
+    {
+      "id": "D6",
+      "title": "Visitor footprints and sparkle trail (juice pass) - every step leaves a trace",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "",
+      "target_file": "tasks_out/worker_footprints.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_footprints.js /opt/data/cache/scratch/D6_check.mjs && node --check /opt/data/cache/scratch/D6_check.mjs && head -1 tasks_out/worker_footprints.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFootprints' /opt/data/cache/scratch/D6_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - VISITOR FOOTPRINTS AND SPARKLE TRAIL (canon #3 juice: no silent movement) - window.GuildFootprints = { prints: [], sparkles: [], steps: 0 } with update/draw/__probe (probe returns { steps, prints: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. window.GuildVisitor gives { gx, gy, moving, facing }; iso(gx,gy) -> {x,y}; V gives V.daylight and V.weather (e.g. 'CLEAR'/'RAIN'); window.cue(name) in try/catch.\n2. FOOTPRINTS: while GuildVisitor.moving is true, every 0.5s of continuous movement drop a tiny footprint pair (2 fillRect dots, alternating left/right offset perpendicular to facing) at the visitor's current world position. Prints live 3.5s, fading alpha 0.35 -> 0, max 40 on screen (oldest pruned). In RAIN weather prints are slightly darker and live 5s (wet ground); draw them UNDER the visitor (paint order: your draw is called with other overlay modules - keep prints subtle, they are texture, not signal).\n3. SPARKLE TRAIL: only for the 1.2s after any emote or interact cue you can observe without V writes (detect via a window.GuildVisitor.facing flip is NOT an emote - instead: if window.GuildEmotes or similar exposes a recent emote timestamp, read it defensively; if absent, fall back to a 90s ambient sparkle: 5 gold sparks rise around a resting visitor, cue-free). Sparks: 1-2px gold glints, 0.8s life, upward drift, alpha fade.\n4. SOUND: never fire cues yourself except on the ambient sparkle once (cue('coin') at most once per 90s, try/catch).\n5. Pure overlay - never write V or GuildVisitor; zero exceptions if V/iso absent; gold + soft neutrals only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ]
+    }
+  ]
+}
