@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T14:14:40Z",
+    "checked_at": "2026-10-15T14:35:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1675,8 +1675,8 @@
     {
       "id": "T137",
       "title": "PLAYABILITY/ECONOMY - pond feeding sink + wish scales (S rim)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_pondfeed.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1686,7 +1686,7 @@
       "spec": "BEHAVIOR - POND FEEDING SINK - window.GuildPondFeed = { gx: 3.6, gy: 4.8, food: 0, fed: 0, scales: [] } with update/draw/__probe (probe returns { fed, scales: scales.length }):\n1. FEED BARREL PROP: small barrel + scoop at S-rim pond edge (3.6, 4.8), 2+ tiles clear of the tide pools and driftwood nook. Hint '[E] BUY FOOD (1 GC)' when the visitor is within 1.6 tiles.\n2. SINK: E buys a scoop: if window.GuildEconomy exists and its visitor-coins field (probe it defensively - look for a coins/wallet/visitor field >= 1; if absent or < 1, show 'need coins' float and skip), decrement 1, food = 1, gold '-1 GC' float, cue('grow') in try/catch. Coins leave the visitor - this is an economy SINK.\n3. FEED: with food = 1, walking within 1.2 tiles of the water edge scatters it: 5-7 goldfish (tiny orange-gold 3px fish) rise from below with gentle ripple rings over 2 s, food = 0, fed += 1.\n4. WISH SCALE: every fed scatter has a 30% chance to gift a 'wish scale' - a tiny shimmering scale that floats to the visitor and is kept (scales cap 9, drawn as a small silver glint counter chip near the pond: 'scales: N').\n5. Pure prop/FX; never writes to other modules' state except the defensive coin spend.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T13:46:51Z"
+      "updated_at": "2026-10-15T14:36:34Z"
     },
     {
       "id": "T97",
