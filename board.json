@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T03:44:41Z",
+    "checked_at": "2026-10-15T04:05:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1274,8 +1274,8 @@
       "updated_at": "2026-10-15T03:45:34Z"
     },
     {
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
@@ -1284,7 +1284,8 @@
       "title": "SPECTACLE - lily pads + jumping frog on the S-rim pond (offset from fishing hut)",
       "target_file": "tasks_out/worker_lilypads.js",
       "verify_cmd": "cp tasks_out/worker_lilypads.js /opt/data/cache/scratch/T113_check.mjs && node --check /opt/data/cache/scratch/T113_check.mjs && grep -q 'window.GuildLilyPads' tasks_out/worker_lilypads.js && [ -s tasks_out/worker_lilypads.js ] && ! head -1 tasks_out/worker_lilypads.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Cluster 3-4 lily pads on the pond surface away from the fishing spot (2+ tiles), with a tiny green frog that hops between pads on a random timer (small arc + ripple ring, occasionally a croak cue via the sound contract if available). Export window.GuildLilyPads, additive draw, existing greens only. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildLilyPads on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_lilypads.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+      "spec": "Cluster 3-4 lily pads on the pond surface away from the fishing spot (2+ tiles), with a tiny green frog that hops between pads on a random timer (small arc + ripple ring, occasionally a croak cue via the sound contract if available). Export window.GuildLilyPads, additive draw, existing greens only. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildLilyPads on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_lilypads.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it.",
+      "updated_at": "2026-10-15T04:06:15Z"
     },
     {
       "id": "T108",
