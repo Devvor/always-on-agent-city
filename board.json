@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-14T20:47:40Z",
+    "checked_at": "2026-10-15T00:11:48Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1122,6 +1122,86 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_nightguard.js /opt/data/cache/scratch/T99_check.mjs && node --check /opt/data/cache/scratch/T99_check.mjs && head -1 tasks_out/worker_nightguard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildNightGuard' /opt/data/cache/scratch/T99_check.mjs && echo VERIFY-OK",
       "spec": "In the W museum wing, add a lantern-carrying guard who patrols the wing only when V.daylight < 0.35 (night): walks a slow rectangular route around the museum pedestals, lantern glow (existing gold color) faintly lighting nearby tiles, and an occasional 'all quiet' bubble. By day the guard sleeps on a bench beside the wing.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
       "updated_at": "2026-10-14T20:52:59Z"
+    },
+    {
+      "id": "T100",
+      "title": "PLAYABILITY/ECONOMY - fountain wish toss (SW treasury plaza)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_wishtoss.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_wishtoss.js /opt/data/cache/scratch/T100_check.mjs && node --check /opt/data/cache/scratch/worker_wishtoss.js_check.mjs && head -1 tasks_out/worker_wishtoss.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildWishToss' /opt/data/cache/scratch/worker_wishtoss.js_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === \"play\".\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - FOUNTAIN WISH TOSS - window.GuildWishToss = { gx: -0.4, gy: 4.9, wishes: [], lastToss: 0 } with update/draw/__probe:\n1. Draw a small round coin fountain at the SW treasury plaza tile (-0.4, 4.9) (stone basin #55524e with gold #d4af37 rim, animated water shimmer 2-frame, a few coin glints), clear of the quest board (-1.6,4.2), arcade sign (0.8,4.5) and snack stall.\n2. When the visitor is within 1.5 tiles and presses e/E (one-shot key flag, 1s cooldown), the visitor tosses a coin: a small gold arc particle flies from the visitor into the basin with a splash ring, a tiny wish label (short whimsical line picked from a pool, e.g. \"may the queue run dry\", \"gold for every merge\") floats up over the water and fades over 2.5s. Show a \"[E] toss a wish\" hint when in range (10px gold, clipped).\n3. Cap wishes at 4 on screen; each toss cue(\"done\") in try/catch; increment a probe-visible wishCount.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; never write to V or worker positions; zero exceptions if V/iso absent. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-14T21:37:28Z"
+    },
+    {
+      "id": "T101",
+      "title": "SELF-DOC - guild census board (live roster)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_census.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_census.js /opt/data/cache/scratch/T101_check.mjs && node --check /opt/data/cache/scratch/worker_census.js_check.mjs && head -1 tasks_out/worker_census.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildCensus' /opt/data/cache/scratch/worker_census.js_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === \"play\".\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - GUILD CENSUS BOARD - window.GuildCensus = { gx: -2.9, gy: -0.2, open: false } with update/draw/__probe:\n1. Draw a small painted census board prop near the entrance side at tile (-2.9, -0.2) (wood frame #6b4a2f, pale roster sheet #e8e6df, gold trim), 2+ tiles from the museum pedestals and archives lectern.\n2. The board ALWAYS shows a live headcount line at its top (drawn on the sheet, 8px): \"<n> OF <m> WORKERS ON DUTY\" derived from V.workers and V.workerStates.\n3. When the visitor is within 1.6 tiles and presses e/E (one-shot flag), open a parchment panel (gold border, clipped, fitText everywhere) listing each REAL worker: name, one-word archetype (glitcher/poet/rookie/sage by name substring), current state (working/idle/napping from V.workerStates with /IDLE|NAP/i tests), and done-count from their tasks. Row status dot: green working, dim idle.\n4. Panel closes on E again; hint \"[E] census\" when in range. Zero exceptions when V.workers is empty.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; never write to V or worker positions; zero exceptions if V/iso absent. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-14T22:00:12Z"
+    },
+    {
+      "id": "T102",
+      "title": "SPECTACLE - drifting sky-isles below the cloud line",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_skyisles.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_skyisles.js /opt/data/cache/scratch/T102_check.mjs && node --check /opt/data/cache/scratch/worker_skyisles.js_check.mjs && head -1 tasks_out/worker_skyisles.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildSkyIsles' /opt/data/cache/scratch/worker_skyisles.js_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === \"play\".\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - DRIFTING SKY-ISLES - window.GuildSkyIsles = { isles: [], t0: 0 } with update/draw/__probe:\n1. Maintain 3 tiny floating isles in the SKY layer behind the island (screen-space, never on tiles): each a small pixel islet (2-layer: green cap, rock keel 3-4px, 1 tiny pine or crystal on top) drifting slowly left-to-right on its own sin-bob, wrapping around the canvas.\n2. Depth: draw them at 3 parallax speeds and sizes (near = 14px wide, mid 10px, far 6px with lower alpha), behind the main island but in front of the stars; during RAIN they drift faster and dim slightly.\n3. Once per isle per ~45s a tiny spark glints on its crown. No interaction, no collision, pure FX.\n4. This extends the Great Buildout: empty sky gets a reason to exist.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; never write to V or worker positions; zero exceptions if V/iso absent. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-14T23:28:57Z"
+    },
+    {
+      "id": "T103",
+      "title": "LIVING WORLD - garden weather vane (E wing)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_vane.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_vane.js /opt/data/cache/scratch/T103_check.mjs && node --check /opt/data/cache/scratch/worker_vane.js_check.mjs && head -1 tasks_out/worker_vane.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildVane' /opt/data/cache/scratch/worker_vane.js_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === \"play\".\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - WEATHER VANE - window.GuildVane = { gx: 5.2, gy: 1.8, dir: 0 } with update/draw/__probe:\n1. Draw a small wrought-iron weather vane in the E garden at tile (5.2, 1.8) (post #3a342f, arrow + rooster-ish pixel finial in gold #d4af37), 2+ tiles from the wish seeds and pond.\n2. The arrow direction eases (lerp over ~2s) toward the wind: wind = sin(dayPhase) + weather factor; RAIN pins it gusty (fast small oscillation), snow calm, CLEAR gentle sweep.\n3. A tiny creak cue(\"alert\") at most once per 20s when the direction changes sharply, in try/catch. A faint 6px shadow ellipse under the post.\n4. Pure prop/FX; zero exceptions if V absent.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; never write to V or worker positions; zero exceptions if V/iso absent. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-14T23:51:33Z"
+    },
+    {
+      "id": "T105",
+      "title": "PLAYABILITY/PERSONALITY - pigeon post station (NE, visitor letters)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_pigeonpost.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_pigeonpost.js /opt/data/cache/scratch/T105_check.mjs && node --check /opt/data/cache/scratch/T105_check.mjs && head -1 tasks_out/worker_pigeonpost.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildPigeonPost' /opt/data/cache/scratch/T105_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === \"play\".\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - PIGEON POST - window.GuildPigeonPost = { gx: 6.0, gy: -2.2, letter: null, replies: [], nextReply: 0 } with update/draw/__probe:\n1. Draw a tiny pigeon-post station at the NE roost edge tile (6.0, -2.2) (small perch pole + letter slot box, wood #6b4a2f with gold #d4af37 trim), 2+ tiles from the roost itself and crystal grove props.\n2. When the visitor is within 1.5 tiles and presses e/E (one-shot flag, 3s cooldown) with no letter in flight, a grey pigeon (like the courtyard pigeons) lifts off carrying a tiny parchment and flies across the island to a random WORKING worker; when it lands, that worker shows a 4s reply speech bubble in their archetype voice (glitchy trickster / aloof poet / eager rookie / serene philosopher by name substring) thanking the guild visitor, and a small feather floats down.\n3. One letter in flight at a time; hint \"[E] send a letter\" when in range; cue(\"done\") in try/catch on landing.\n4. Pure FX + bubbles; never move workers or write V. Zero exceptions when V.workers is empty.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; never write to V or worker positions; zero exceptions if V/iso absent. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T00:12:48Z"
     }
   ],
   "projects": [
