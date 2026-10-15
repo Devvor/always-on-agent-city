@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T11:46:42Z",
+    "checked_at": "2026-10-15T12:07:42Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1580,8 +1580,8 @@
       "title": "PLAYABILITY/SPECTACLE - firefly jar minigame (catch at night, glow till dawn)",
       "target_file": "tasks_out/worker_firejar2.js",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\nCOLOR DISCIPLINE: use only the existing accent palette (gold #d4af37, green, red, blue, white) - no new accent colors.\nZONE RULE: offset your prop 2+ tiles from any existing prop in its zone; never write to V or worker positions; zero exceptions if V/iso absent.\nBEHAVIOR - FIREFLY JAR - window.GuildFirejar = { caught: 0, jar: false, released: false } with update/draw/__probe (probe returns { caught, jar }):\n1. Anchor near the firefly grove (window.GuildFireflies?.grove gx/gy if present, else NE corner inset from V.growthStep floor math). Draw a small glass JAR prop on the ground (pale translucent #e8e6df outline, gold lid), 2+ tiles from the grove center and any existing NE prop.\n2. CATCH: when window.GuildVisitor is within 1.5 tiles at night (V.daylight < 0.35) and presses 'e' (one-shot keydown flag), caught++ (cap 5), a tiny warm dot flies from the swarm into the jar with a 0.6s arc, cue('grow') in try/catch. Show a hint '[E] CATCH' in range at night.\n3. GLOW: for each caught firefly the visitor sprite gets a gentle warm halo (alpha 0.05 each, max 0.25) - drawn as FX around iso(GuildVisitor.gx, GuildVisitor.gy), never modifying the visitor.\n4. RELEASE: at dawn (daylight rises above 0.5) all fireflies fly out of the jar over 2s and caught resets to 0 with a small sparkle.\n5. Zero exceptions if GuildFireflies/GuildVisitor absent.",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
@@ -1589,7 +1589,7 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_firejar2.js /opt/data/cache/scratch/T131_check.mjs && node --check /opt/data/cache/scratch/T131_check.mjs && head -1 tasks_out/worker_firejar2.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.Guild' /opt/data/cache/scratch/T131_check.mjs && echo VERIFY-OK",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T11:42:31Z"
+      "updated_at": "2026-10-15T12:08:39Z"
     },
     {
       "id": "T132",
