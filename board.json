@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T14:35:40Z",
+    "checked_at": "2026-10-15T14:56:41Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1691,8 +1691,8 @@
     {
       "id": "T97",
       "title": "LIVING WORLD/SPECTACLE - crystal grove chimes (NW grove; re-routed from laguna)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_crystalchime.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1702,7 +1702,7 @@
       "spec": "BEHAVIOR - CRYSTAL CHIMES - window.GuildCrystalChime = { crystals: [], lastNightGlint: 0 } with update/draw/__probe (probe returns { crystals: crystals.length, lastChime: <ms since last chime or -1> }):\n1. THREE CRYSTALS in the NW grove around tiles (-5.4, -2.2), (-4.2, -3.4), (-6.0, -1.0) (clamp on-island via V.growthStep floor math; 2+ tiles clear of the existing crystal shrine, the crystalbloom blooms and any other NW prop): small pixel crystal clusters in EXISTING accent colors only (one gold #d4af37, one white, one blue) with a faint facet glint.\n2. WALK-PAST CHIME: when the visitor passes within 1.5 tiles of a crystal and has not triggered it in the last 4 s: cue('pop') (try/catch, pitch feel via a small visual size pulse), the crystal glints once (a 4-6px white sparkle cross fading over 0.6 s), and a tiny music-note glyph floats up and fades.\n3. NIGHT GLINT: at night (V.daylight < 0.3) each crystal glints softly on its own every 12-18 s (staggered timers), no sound.\n4. Pure FX/prop layer, no collision.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T13:46:51Z"
+      "updated_at": "2026-10-15T14:58:57Z"
     },
     {
       "id": "T104",
