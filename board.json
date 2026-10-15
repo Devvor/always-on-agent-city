@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T13:32:42Z",
+    "checked_at": "2026-10-15T13:53:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1354,7 +1354,7 @@
     {
       "id": "T119",
       "title": "LIVING WORLD/PLAYABILITY - night-market greeter NPC (lantern arc Q2, SW market row) (fresh module)",
-      "status": "failed",
+      "status": "done",
       "attempts": 1,
       "target_file": "tasks_out/worker_lanterngreeter.js",
       "include_files": [
@@ -1365,7 +1365,8 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - LIVING WORLD/PLAYABILITY - night-market greeter NPC (lantern arc Q2, SW market row) - window.GuildLanternGreeter = {{ ... }} with update/draw/__probe:\nA small lantern-bearer NPC who appears at dusk (V.daylight crossing below 0.6) on the SW market row (around gx 1.5..3, gy 4..6, offset 2+ tiles from the night-market stalls). They carry a tiny glowing lantern (gold halo, 2px light radius), walk a slow fixed loop down the row, pause 3s at each stall, and when the visitor comes within 2 tiles they face the visitor and raise the lantern with an inviting bob plus a one-line speech bubble inviting them down the row (rotate 3 flavor lines). At dawn they walk off and fade. __probe returns { active, visitorNear }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse the existing gold accent (#d4af37) for lantern light - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T05:59:33Z"
+      "updated_at": "2026-10-15T13:54:34Z",
+      "note": "foreman reset 2026-10-15: genuine failure (no file), arc Q2 retry"
     },
     {
       "id": "T120",
@@ -1654,6 +1655,86 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
       "updated_at": "2026-10-15T13:33:27Z"
+    },
+    {
+      "id": "T136",
+      "title": "PLAYABILITY/SELF-DOC - letter-writing desk + worker replies (W wing)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_letters.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_letters.js /opt/data/cache/scratch/T136_check.mjs && node --check /opt/data/cache/scratch/T136_check.mjs && head -1 tasks_out/worker_letters.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildLetters' /opt/data/cache/scratch/T136_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - LETTER-WRITING DESK - window.GuildLetters = { gx: -4.6, gy: 3.4, open: false, letters: [], replies: [] } with update/draw/__probe (probe returns { letters: letters.length, replies: replies.length, open }):\n1. DESK PROP: a small writing desk at W-wing tile (-4.6, 3.4), 2+ tiles clear of the museum curator cart and pedestals: wooden desk (#6b4a2f, gold trim), an ink pot, a parchment sheet with a quill that bobs while the visitor is in range.\n2. WRITE: when the visitor is within 1.6 tiles, hint '[E] WRITE A NOTE' (10px gold, clipped). E toggles open: draw a parchment panel (clipped, fitText discipline) with a one-line input the visitor fills via a hidden DOM input focused on open (blur/cleanup on close, never preventDefault elsewhere) - typed text becomes a pinned letter { t0, text, from: 'visitor' } (cap 12, oldest pruned), drawn as small parchment notes on a board above the desk.\n3. REPLIES: every 45-75 s (RNG), an idle worker (pick one whose V.workerStates position is not moving for 2+ updates; if all busy, skip) strolls toward the desk, reads the newest visitor letter, and posts a one-line reply in their archetype voice: index 0 glitchy trickster (e.g. 'read it. filed it under chaos.'), 1 aloof poet, 2 eager rookie, 3 serene philosopher - write 3 variants each; replies appear as smaller violet-ink notes under the letter, cap 12.\n4. Never blocks other modules; panel closes on E again or walking 3+ tiles away.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T13:46:51Z"
+    },
+    {
+      "id": "T137",
+      "title": "PLAYABILITY/ECONOMY - pond feeding sink + wish scales (S rim)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_pondfeed.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_pondfeed.js /opt/data/cache/scratch/T137_check.mjs && node --check /opt/data/cache/scratch/T137_check.mjs && head -1 tasks_out/worker_pondfeed.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildPondFeed' /opt/data/cache/scratch/T137_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - POND FEEDING SINK - window.GuildPondFeed = { gx: 3.6, gy: 4.8, food: 0, fed: 0, scales: [] } with update/draw/__probe (probe returns { fed, scales: scales.length }):\n1. FEED BARREL PROP: small barrel + scoop at S-rim pond edge (3.6, 4.8), 2+ tiles clear of the tide pools and driftwood nook. Hint '[E] BUY FOOD (1 GC)' when the visitor is within 1.6 tiles.\n2. SINK: E buys a scoop: if window.GuildEconomy exists and its visitor-coins field (probe it defensively - look for a coins/wallet/visitor field >= 1; if absent or < 1, show 'need coins' float and skip), decrement 1, food = 1, gold '-1 GC' float, cue('grow') in try/catch. Coins leave the visitor - this is an economy SINK.\n3. FEED: with food = 1, walking within 1.2 tiles of the water edge scatters it: 5-7 goldfish (tiny orange-gold 3px fish) rise from below with gentle ripple rings over 2 s, food = 0, fed += 1.\n4. WISH SCALE: every fed scatter has a 30% chance to gift a 'wish scale' - a tiny shimmering scale that floats to the visitor and is kept (scales cap 9, drawn as a small silver glint counter chip near the pond: 'scales: N').\n5. Pure prop/FX; never writes to other modules' state except the defensive coin spend.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T13:46:51Z"
+    },
+    {
+      "id": "T97",
+      "title": "LIVING WORLD/SPECTACLE - crystal grove chimes (NW grove; re-routed from laguna)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_crystalchime.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_crystalchime.js /opt/data/cache/scratch/T97_check.mjs && node --check /opt/data/cache/scratch/T97_check.mjs && head -1 tasks_out/worker_crystalchime.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildCrystalChime' /opt/data/cache/scratch/T97_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - CRYSTAL CHIMES - window.GuildCrystalChime = { crystals: [], lastNightGlint: 0 } with update/draw/__probe (probe returns { crystals: crystals.length, lastChime: <ms since last chime or -1> }):\n1. THREE CRYSTALS in the NW grove around tiles (-5.4, -2.2), (-4.2, -3.4), (-6.0, -1.0) (clamp on-island via V.growthStep floor math; 2+ tiles clear of the existing crystal shrine, the crystalbloom blooms and any other NW prop): small pixel crystal clusters in EXISTING accent colors only (one gold #d4af37, one white, one blue) with a faint facet glint.\n2. WALK-PAST CHIME: when the visitor passes within 1.5 tiles of a crystal and has not triggered it in the last 4 s: cue('pop') (try/catch, pitch feel via a small visual size pulse), the crystal glints once (a 4-6px white sparkle cross fading over 0.6 s), and a tiny music-note glyph floats up and fades.\n3. NIGHT GLINT: at night (V.daylight < 0.3) each crystal glints softly on its own every 12-18 s (staggered timers), no sound.\n4. Pure FX/prop layer, no collision.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T13:46:51Z"
+    },
+    {
+      "id": "T104",
+      "title": "LIVING WORLD - pond mist wisps at dusk (S rim, simple FX; re-routed from laguna)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_mist.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_mist.js /opt/data/cache/scratch/T104_check.mjs && node --check /opt/data/cache/scratch/T104_check.mjs && head -1 tasks_out/worker_mist.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildMist' /opt/data/cache/scratch/T104_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - POND MIST - window.GuildMist = { wisps: [] } with update/draw/__probe (probe returns { wisps: wisps.length }):\n1. When V.daylight is between 0.2 and 0.45 (dusk) OR V.weather is RAIN, spawn a slow mist wisp every 2-4 s over the S-rim waterfall/pond area (world coords near gx 2..4, south edge; project with iso, clamp on-canvas, 2+ tiles clear of the tide pools). Cap 8 wisps.\n2. Each wisp: a soft translucent pale ellipse (alpha 0.10-0.16, white - no new colors) drifting sideways ~6px/s with gentle sin-bob, life 6-9 s, fade in/out; drawn behind workers.\n3. When weather clears and daylight leaves the band, existing wisps fade out and no new ones spawn.\n4. Pure FX layer, no collision.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T13:46:51Z"
+    },
+    {
+      "id": "T138",
+      "title": "SPECTACLE/SELF-DOC - hero statue victory glow (SE plaza)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_statueglow.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_statueglow.js /opt/data/cache/scratch/T138_check.mjs && node --check /opt/data/cache/scratch/T138_check.mjs && head -1 tasks_out/worker_statueglow.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildStatueGlow' /opt/data/cache/scratch/T138_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - STATUE VICTORY GLOW - window.GuildStatueGlow = { lastDone: 0, glow: null, inspects: 0 } with update/draw/__probe (probe returns { glowing: !!glow, inspects }):\n1. SEED: count done quests from V.allTasks (status 'done', defensively; missing = 0); on first update set lastDone = current (never false-fire on load). Anchor at the SE heroes' plaza statue (window.GuildStatues if it exposes a gx/gy via its state, else tile (4.8, -2.0) clamped on-island, 2+ tiles clear of other SE props).\n2. VICTORY GLOW: when the done count RISES, glow = { t0, dur: 6000, id: <the newest done task id> } - a warm gold halo (alpha pulse 0.25 -> 0, existing gold only) blooms around the statue base, a 3-4 spark column rises, cue('levelup') in try/catch once. If window.GuildStatueGlow sees its own glow active and a new done lands, replace the glow (latest wins).\n3. INSPECT: when the visitor is within 1.8 tiles, hint '[E] HERO TALE'; E opens a small parchment card (clipped, fitText) listing the last 3 done task ids + titles from V.allTasks newest first, gold header 'HEROES OF THE GUILD', closes on E or walking away. inspects counts opens.\n4. Never moves the statue or other modules; no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T13:46:51Z"
     }
   ],
   "projects": [
