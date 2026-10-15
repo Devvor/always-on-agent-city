@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T00:11:48Z",
+    "checked_at": "2026-10-15T01:36:43Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1202,6 +1202,85 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
       "updated_at": "2026-10-15T00:12:48Z"
+    },
+    {
+      "status": "done",
+      "attempts": 1,
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "id": "T110",
+      "title": "SELF-DOC - HUD text discipline helper: clamp + ellipsize ledger ticker and quest-log lines, full text on hover or E (fresh module)",
+      "target_file": "tasks_out/worker_hudtext.js",
+      "verify_cmd": "cp tasks_out/worker_hudtext.js /opt/data/cache/scratch/T110_check.mjs && node --check /opt/data/cache/scratch/T110_check.mjs && grep -q 'window.GuildHudText' tasks_out/worker_hudtext.js && [ -s tasks_out/worker_hudtext.js ] && ! head -1 tasks_out/worker_hudtext.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "DIRECTOR HIGH 2026-10-14T22:36Z: HUD ledger ticker lines and quest-log entries truncate mid-word. Build a fresh text-discipline helper: export window.GuildHudText with a fit(el, maxChars) that clamps any text node to the panel width, appends a true ellipsis (never mid-word if avoidable), and reveals the FULL text on hover or E keypress in a small parchment tooltip that auto-dismisses. Include a sweep() that finds ledger + quest-log line elements by class and applies fit. No new accent colors - reuse existing palette. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildHudText on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_hudtext.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it.",
+      "updated_at": "2026-10-15T01:38:38Z"
+    },
+    {
+      "status": "pending",
+      "attempts": 0,
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "id": "T111",
+      "title": "LIVING WORLD/SPECTACLE - ambient idle breathing pass: rain streaks + puddle shimmer in RAIN, gentle worker bob/sway when idle, firefly drift at night (fresh module)",
+      "target_file": "tasks_out/worker_breathe.js",
+      "verify_cmd": "cp tasks_out/worker_breathe.js /opt/data/cache/scratch/T111_check.mjs && node --check /opt/data/cache/scratch/T111_check.mjs && grep -q 'window.GuildBreathe' tasks_out/worker_breathe.js && [ -s tasks_out/worker_breathe.js ] && ! head -1 tasks_out/worker_breathe.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "DIRECTOR MED 2026-10-14T22:36Z: the live shot is static while weather reads RAIN - the world must breathe. Export window.GuildBreathe: during RAIN render thin diagonal rain streaks + a subtle shimmer on existing puddle tiles (coordinate with window.GuildPuddles if present, never fight it); idle workers get a 1-2px bob/sway sine loop; at night spawn a few drifting fireflies near the grove/garden (offset 2+ tiles from any existing prop). Respect the existing color budget - whites/soft greens only. All FX additive draw calls, no DOM edits. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildBreathe on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_breathe.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+    },
+    {
+      "status": "pending",
+      "attempts": 0,
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "id": "T106",
+      "title": "SPECTACLE/LIVING WORLD - dusk glow-fish leaping the S-rim waterfall (tiny gold arcs + splash)",
+      "target_file": "tasks_out/worker_glowfish.js",
+      "verify_cmd": "cp tasks_out/worker_glowfish.js /opt/data/cache/scratch/T106_check.mjs && node --check /opt/data/cache/scratch/T106_check.mjs && grep -q 'window.GuildGlowFish' tasks_out/worker_glowfish.js && [ -s tasks_out/worker_glowfish.js ] && ! head -1 tasks_out/worker_glowfish.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "Occasionally at dusk, tiny gold fish arc over the existing S-rim waterfall: a small parabolic leap with a splash puff on re-entry, rare (a few per dusk window), reusing the existing gold accent only. Export window.GuildGlowFish, draw additively, no DOM edits, offset from the fishing hut. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildGlowFish on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_glowfish.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+    },
+    {
+      "status": "pending",
+      "attempts": 0,
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "id": "T107",
+      "title": "SELF-DOC - walking history tour: bronze ring of marker stones, each tied to one real guild milestone date from board history (readable with E)",
+      "target_file": "tasks_out/worker_stonestour.js",
+      "verify_cmd": "cp tasks_out/worker_stonestour.js /opt/data/cache/scratch/T107_check.mjs && node --check /opt/data/cache/scratch/T107_check.mjs && grep -q 'window.GuildStoneTour' tasks_out/worker_stonestour.js && [ -s tasks_out/worker_stonestour.js ] && ! head -1 tasks_out/worker_stonestour.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "Build window.GuildStoneTour: a ring of small bronze marker stones spread AROUND the island rim (not the center), each bound to one real milestone from V.allTasks history (first done, first economy quest, first spectacle, latest done, etc). Standing near a stone + E opens a one-line parchment note with the date + quest title. A subtle chevron points to the next unread stone. Bronze = existing palette, no new accents, 2+ tiles from existing props. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildStoneTour on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_stonestour.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+    },
+    {
+      "status": "pending",
+      "attempts": 0,
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "id": "T112",
+      "title": "PLAYABILITY/LIVING WORLD - story bench in the W museum wing: visitor sits (E), an idle worker sits beside and shares one real line of guild history",
+      "target_file": "tasks_out/worker_storybench.js",
+      "verify_cmd": "cp tasks_out/worker_storybench.js /opt/data/cache/scratch/T112_check.mjs && node --check /opt/data/cache/scratch/T112_check.mjs && grep -q 'window.GuildStoryBench' tasks_out/worker_storybench.js && [ -s tasks_out/worker_storybench.js ] && ! head -1 tasks_out/worker_storybench.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "Add a small wooden bench prop in the W museum wing zone, offset 2+ tiles from pedestals. Visitor stands near + E to sit; an idle worker then walks over, sits, and a bubble shows one real line drawn from V.allTasks history flavored by that worker's personality voice. E again to stand. Export window.GuildStoryBench, offset 2+ tiles from existing props, existing palette only. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildStoryBench on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_storybench.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+    },
+    {
+      "status": "pending",
+      "attempts": 0,
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "id": "T113",
+      "title": "SPECTACLE - lily pads + jumping frog on the S-rim pond (offset from fishing hut)",
+      "target_file": "tasks_out/worker_lilypads.js",
+      "verify_cmd": "cp tasks_out/worker_lilypads.js /opt/data/cache/scratch/T113_check.mjs && node --check /opt/data/cache/scratch/T113_check.mjs && grep -q 'window.GuildLilyPads' tasks_out/worker_lilypads.js && [ -s tasks_out/worker_lilypads.js ] && ! head -1 tasks_out/worker_lilypads.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "Cluster 3-4 lily pads on the pond surface away from the fishing spot (2+ tiles), with a tiny green frog that hops between pads on a random timer (small arc + ripple ring, occasionally a croak cue via the sound contract if available). Export window.GuildLilyPads, additive draw, existing greens only. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildLilyPads on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_lilypads.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
     }
   ],
   "projects": [
