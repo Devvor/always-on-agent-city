@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T14:56:41Z",
+    "checked_at": "2026-10-15T15:19:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1707,8 +1707,8 @@
     {
       "id": "T104",
       "title": "LIVING WORLD - pond mist wisps at dusk (S rim, simple FX; re-routed from laguna)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_mist.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1718,7 +1718,7 @@
       "spec": "BEHAVIOR - POND MIST - window.GuildMist = { wisps: [] } with update/draw/__probe (probe returns { wisps: wisps.length }):\n1. When V.daylight is between 0.2 and 0.45 (dusk) OR V.weather is RAIN, spawn a slow mist wisp every 2-4 s over the S-rim waterfall/pond area (world coords near gx 2..4, south edge; project with iso, clamp on-canvas, 2+ tiles clear of the tide pools). Cap 8 wisps.\n2. Each wisp: a soft translucent pale ellipse (alpha 0.10-0.16, white - no new colors) drifting sideways ~6px/s with gentle sin-bob, life 6-9 s, fade in/out; drawn behind workers.\n3. When weather clears and daylight leaves the band, existing wisps fade out and no new ones spawn.\n4. Pure FX layer, no collision.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T13:46:51Z"
+      "updated_at": "2026-10-15T15:20:15Z"
     },
     {
       "id": "T138",
