@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T19:34:40Z",
+    "checked_at": "2026-10-15T19:55:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1893,15 +1893,86 @@
     {
       "id": "T154",
       "title": "N-EDGE STARGAZING POST - a small telescope platform on the N edge where the visitor presses E to get one line of real guild lore pulled from live board state (playability x self-doc)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_stargazing.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cp tasks_out/worker_stargazing.js /opt/data/cache/scratch/T154_check.mjs && node --check /opt/data/cache/scratch/T154_check.mjs && grep -qi 'window.GuildStargazing' tasks_out/worker_stargazing.js && head -1 tasks_out/worker_stargazing.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
-      "spec": "T154: N-EDGE STARGAZING POST.\nZONE: N edge, 2+ tiles from the cairn trail and watchtower. A tripod telescope prop; E cycles 5-6 lore lines composed from real live data (top worker, quests shipped, current streak) via window.V/window.allTasks; text drawn with window.fitText, gold accent only.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildStargazing, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+      "spec": "T154: N-EDGE STARGAZING POST.\nZONE: N edge, 2+ tiles from the cairn trail and watchtower. A tripod telescope prop; E cycles 5-6 lore lines composed from real live data (top worker, quests shipped, current streak) via window.V/window.allTasks; text drawn with window.fitText, gold accent only.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildStargazing, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block.",
+      "updated_at": "2026-10-15T19:56:49Z"
+    },
+    {
+      "id": "T155",
+      "title": "FESTIVAL MEMORY BOOK - a scrapbook page in the W museum wing that auto-collects one snapshot entry per completed festival/arc moment (lantern finale, level-ups, naming days) from real event history (self-doc x playability)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-15T19:53:46Z",
+      "target_file": "tasks_out/worker_memorybook.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_memorybook.js /opt/data/cache/scratch/MEMORYBOOK_check.mjs && node --check /opt/data/cache/scratch/MEMORYBOOK_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_memorybook.js && head -1 tasks_out/tasks_out/worker_memorybook.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "T155: FESTIVAL MEMORY BOOK.\nZONE: W museum wing, 2+ tiles from the curator cart and rotating plinth. An open scrapbook prop; page shows a scrolling list of one entry per notable past event (quest milestones, festival/arc completions, level-up ceremonies) composed from window.allTasks history and any Guild* ceremony globals present; entries timestamped, gold accents, fitText; E near it flips pages. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildMemoryBook, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "T156",
+      "title": "TREASURY VAULT COUNTER GLINT - the vault coin pile grows a brief glint/spark animation every time real payroll mints land (reads treasury from window.V) (economy x spectacle)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-15T19:53:46Z",
+      "target_file": "tasks_out/worker_vaultglint.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_vaultglint.js /opt/data/cache/scratch/VAULTGLINT_check.mjs && node --check /opt/data/cache/scratch/VAULTGLINT_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_vaultglint.js && head -1 tasks_out/tasks_out/worker_vaultglint.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "T156: TREASURY VAULT COUNTER GLINT.\nZONE: SW treasury plaza, 2+ tiles from the coin press and fountain. Watch the live treasury value on window.V (or the Guild ledger global); when it increases, emit a short rising glint/spark burst over the coin pile (gold only, no new colors) and a soft cue. No glint on decreases. Probe-friendly. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildVaultGlint, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "T157",
+      "title": "MARKET BUSKER - an NPC musician on the SW market row who plays a day-time tune loop; the visitor can tip coins with E nearby and tips flow to the busker's purse (economy x playability x living world)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-15T19:53:46Z",
+      "target_file": "tasks_out/worker_busker.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_busker.js /opt/data/cache/scratch/BUSKER_check.mjs && node --check /opt/data/cache/scratch/BUSKER_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_busker.js && head -1 tasks_out/tasks_out/worker_busker.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "T157: MARKET BUSKER.\nZONE: SW market row, offset 2+ tiles from the snack-stall annex, price board and coin press. An NPC busker prop with a simple instrument; during daylight they sway to an idle tune loop (visual bob only, WebAudio optional via window.cue); when the visitor stands near and presses E, coins fly from the visitor to the busker (tip counter on a small fitText sign) and the busker bows. Broke-hour behavior: busker sits at night. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildBusker, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "T158",
+      "title": "GARDEN PET FOX - a small tame fox that wanders the E garden, can be petted with E (hearts + cue), and briefly follows the visitor before returning to its den (playability x living world)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-15T19:53:46Z",
+      "target_file": "tasks_out/worker_petfox.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_petfox.js /opt/data/cache/scratch/PETFOX_check.mjs && node --check /opt/data/cache/scratch/PETFOX_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_petfox.js && head -1 tasks_out/tasks_out/worker_petfox.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "T158: GARDEN PET FOX.\nZONE: E garden, offset 2+ tiles from the butterfly meadow and weather vane; a small den prop at the garden edge. The fox wanders a few tiles, sniffs, sits; E near it = hearts + cue + it follows the visitor for ~15s then trots home. Uses existing palette only. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildPetFox, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "T159",
+      "title": "RIM LANTERN BUOYS - floating lantern buoys bobbing on the water along the S rim, doubling as markers for the fishing derby and lighthouse (spectacle; gold glow only)",
+      "status": "pending",
+      "attempts": 0,
+      "updated_at": "2026-10-15T19:53:46Z",
+      "target_file": "tasks_out/worker_lanternbuoys.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_lanternbuoys.js /opt/data/cache/scratch/LANTERNBUOYS_check.mjs && node --check /opt/data/cache/scratch/LANTERNBUOYS_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_lanternbuoys.js && head -1 tasks_out/tasks_out/worker_lanternbuoys.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "T159: RIM LANTERN BUOYS.\nZONE: S rim waterline, spread between the waterfall, tide pools and lighthouse (2+ tiles apart). 4-5 small floating lantern buoys bob on a sine wave, glowing softly after dusk (gold only), gently drifting; they brighten briefly when the fishing derby is active if a Guild derby global is present. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLanternBuoys, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
     }
   ],
   "projects": [
