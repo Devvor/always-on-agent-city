@@ -789,3 +789,6 @@ Node.js v26.7.0
 2026-10-15 10:44:34 T127 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-15 10:44:34 T127 DONE on attempt 1
+2026-10-15 11:05:37 T128 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 11:05:37 T128 DONE on attempt 1

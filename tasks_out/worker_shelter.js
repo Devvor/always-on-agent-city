@@ -1,4 +1,4 @@
-const SPOT_TILES = [{ gx: -3.0, gy: 3.4 }, { gx: 3.0, gy: 3.4 }];
+const SPOT_TILES = [{ gx: -7.0, gy: 8.5 }, { gx: 7.0, gy: 8.5 }];   // GREAT RESIZE
 
 function root() { return (typeof window !== 'undefined') ? window : null; }
 function getV() { const w = root(); return w && w.V; }

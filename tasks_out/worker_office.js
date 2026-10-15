@@ -151,7 +151,7 @@ function lerpColor(a, b, t) {
 function rgbStr(c) { return 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')'; }
 function updateGrid() {
   const s = V.growthStep;
-  const scale = Math.min(1, 384 / ((2 + 2 * s) * 35));
+  const scale = Math.min(1, 640 / ((2 + 2 * s) * 35));   // GREAT RESIZE: wider allowance, tiles stay ~28px
   const c = V.canvas;
   V.grid = { originX: Math.round(c.width * 0.5), originY: Math.round(c.height * 0.42),
              tileW: 70 * scale, tileH: 35 * scale };
@@ -711,7 +711,7 @@ function normalizeBoard(data) {
     }
     for (let t = 0; t < nw.tasks.length; t++) if (nw.tasks[t].status === 'done') totalDone++;
   }
-  const newSteps = Math.min(8, Math.floor(totalDone / 2));
+  const newSteps = Math.min(22, Math.floor(totalDone / 2));   // GREAT RESIZE: cap 8 -> 22 => floor 48x48
   const newlyUnlocked = newSteps > V.growthStep;
   if (newlyUnlocked) {
     V.mapGlint = { active: true, t: 0, duration: 1.2, step: newSteps };
@@ -1891,7 +1891,7 @@ function drawProps(now) {
     { earned: V.totalDone >= 10, glyph: 'DD' },
     { earned: V.totalDone >= 15, glyph: '15' },
     { earned: failedCount === 0 && V.totalDone >= 10, glyph: 'FL' },
-    { earned: V.mapLevel === 9, glyph: 'MAX' },
+    { earned: V.mapLevel >= 23, glyph: 'MAX' },
     { earned: guildsWithTwo >= 2, glyph: 'FG' }
   ];
   ctx.save();

@@ -286,7 +286,7 @@ function draw(ctx) {
 }
 
 if (typeof window !== 'undefined') {
-  if (!window.GuildMapPoster) window.GuildMapPoster = { gx: -1, gy: -6, lastNear: 0 };   // N district per LAYOUT.md
+  if (!window.GuildMapPoster) window.GuildMapPoster = { gx: -3, gy: -15, lastNear: 0 };   // GREAT RESIZE: N district
   window.GuildMapPoster.update = update;
   window.GuildMapPoster.draw = draw;
   window.GuildMapPoster.__probe = function () { return { near: !!nearState }; };

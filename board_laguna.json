@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-15T10:42:41Z",
+    "checked_at": "2026-10-15T11:03:40Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [

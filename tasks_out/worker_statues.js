@@ -1,6 +1,6 @@
 const NAMES = ['missingno', 'step5', 'laguna', 'longcat'];
 const COLORS = ['#d4af37', '#8b5cf6', '#10b981', '#f59e0b'];
-const RAW_POSITIONS = [{ gx: 5, gy: -3 }, { gx: 4, gy: -2 }, { gx: 6, gy: -2 }, { gx: 5, gy: -1 }];
+const RAW_POSITIONS = [{ gx: 12, gy: -7 }, { gx: 10, gy: -5 }, { gx: 14, gy: -5 }, { gx: 12, gy: -3 }];   // GREAT RESIZE
 
 function root() { return (typeof window !== 'undefined') ? window : null; }
 function getV() { const w = root(); return w && w.V; }

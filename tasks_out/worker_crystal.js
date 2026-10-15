@@ -27,12 +27,12 @@ let lastTime = null;
 const droplets = [];
 
 const BASE_CENTERS = [
-  [-5.8, -4.0],
-  [-4.7, -3.7],
-  [-4.0, -2.9],
-  [-5.2, -2.1],
-  [-4.3, -1.4]
-];
+  [-15, -10.4],
+  [-12.2, -9.6],
+  [-10.4, -7.5],
+  [-13.5, -5.5],
+  [-11.2, -3.6]
+];   // GREAT RESIZE
 
 function buildClusters() {
   const out = [];

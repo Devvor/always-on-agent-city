@@ -52,7 +52,7 @@ function ensurePosts(S, Vv) {
   }
   const posts = [];
   const sx = 1.5, sy = 1.5;
-  const ex = 5, ey = -2;
+  const ex = 12, ey = -5;   // GREAT RESIZE: path now reaches heroes' plaza
   let tc = 0.42;
   for (let i = 0; i < 5; i++) {
     let t = tc;

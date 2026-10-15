@@ -65,8 +65,8 @@ function isWalkableTile(gx, gy, Vv) {
 
 function candidateEdgeTiles(Vv) {
   const base = [
-    { gx: -5, gy: 4 }, { gx: -4, gy: 4 }, { gx: -3, gy: 4 }, { gx: -2, gy: 4 },
-    { gx: -5, gy: 5 }, { gx: -4, gy: 5 }, { gx: -3, gy: 5 }, { gx: -2, gy: 5 }
+    { gx: -13, gy: 10 }, { gx: -11.3, gy: 10 }, { gx: -9.6, gy: 10 }, { gx: -7.9, gy: 10 },
+    { gx: -13, gy: 11.6 }, { gx: -11.3, gy: 11.6 }, { gx: -9.6, gy: 11.6 }, { gx: -7.9, gy: 11.6 }
   ];
   const out = [];
   try {

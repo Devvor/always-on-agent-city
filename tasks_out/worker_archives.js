@@ -13,7 +13,7 @@ const ROW_H = 18;
 const LIST_PAD = 14;
 
 function createState() {
-  return { gx: -2.8, gy: 2.6, open: false, scroll: 0 };
+  return { gx: -7, gy: 7, open: false, scroll: 0 };   // GREAT RESIZE: on the museum route
 }
 
 function root() {

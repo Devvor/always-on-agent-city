@@ -142,7 +142,7 @@ function draw(ctx) {
     if (now - g.active.start >= duration) g.active = null;
   }
 
-  const stall = isoFn(2.5, 6.0);
+  const stall = isoFn(6.5, 14.0);
   const stallXRaw = (stall && isFinite(stall.x)) ? stall.x : 0;
   const stallYRaw = (stall && isFinite(stall.y)) ? stall.y : 0;
   const X = Math.round(stallXRaw);

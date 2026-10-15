@@ -74,7 +74,7 @@ function readTile(p) {
 
 function computeAnchor(Vv) {
   // Pinned to the EAST GARDEN district per LAYOUT.md (init-order bug stranded it at -9,-9).
-  return { gx: 6, gy: 1 };
+  return { gx: 15, gy: 3 };   // GREAT RESIZE: garden east district
 }
 
 function ensurePlots() {

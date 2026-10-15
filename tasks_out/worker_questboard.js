@@ -20,7 +20,7 @@ function getState() { const w = root(); return w && w.GuildQuestBoard; }
 function getVisitor() { const w = root(); return w && w.GuildVisitor; }
 
 function createState() {
-  return { gx: -1.6, gy: 4.2, open: false, scroll: 0, lastToggle: 0 };
+  return { gx: -4, gy: 10, open: false, scroll: 0, lastToggle: 0 };   // GREAT RESIZE
 }
 
 let pressed = new Set();
