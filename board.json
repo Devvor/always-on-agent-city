@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T04:48:40Z",
+    "checked_at": "2026-10-15T05:09:44Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1322,8 +1322,8 @@
     {
       "id": "T115",
       "title": "LIVING WORLD - campfire marshmallow roast (hearth, night)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_roast.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1333,7 +1333,7 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - LIVING WORLD - campfire marshmallow roast (hearth, night) - window.GuildRoast = { ... } with update/draw/__probe:\nAt night (V.daylight < 0.3) and not RAIN, the hearth campfire zone grows a cozy roast scene: draw 3 marshmallow sticks (thin brown line + white 3px cube) angled at the campfire area (near the guild cat / hearth, tile around (1.4, 3.2), 2+ tiles from the story bench and arcade sign). Each stick rotates slowly over the fire; every 8-14s one marshmallow toasts to a golden brown (color lerp) with a tiny 'toasty' sparkle and a soft pop via cue('pop') in try/catch. If the visitor stands within 2 tiles for 3+ seconds, ONE stick passes to them: draw a stick held at the visitor's hand and after 4s it toasts with a '+roasted' float and cue('done'). Sticks reset at dawn. __probe returns { active, roasted }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T04:00:00Z"
+      "updated_at": "2026-10-15T05:10:36Z"
     },
     {
       "id": "T116",
