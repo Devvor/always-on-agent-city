@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-15T17:32:44Z",
+    "checked_at": "2026-10-15T17:55:45Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -65,9 +65,9 @@
     {
       "id": "D5",
       "title": "Golden-hour sky grade (backdrop polish) - dawn/dusk color pass, star easing",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T17:58:45Z",
       "target_file": "tasks_out/worker_goldenhour.js",
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_goldenhour.js /opt/data/cache/scratch/D5_check.mjs && node --check /opt/data/cache/scratch/D5_check.mjs && head -1 tasks_out/worker_goldenhour.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildGoldenHour' /opt/data/cache/scratch/D5_check.mjs && echo VERIFY-OK",
       "spec": "BEHAVIOR - GOLDEN-HOUR SKY GRADE (canon #4 legibility + #6 pacing: dawn/dusk deserve a breath) - window.GuildGoldenHour = { grade: 0, phase: 'none' } with update/__probe and a drawBackdrop(ctx, now) hook (the client paints backdrop layers BEFORE the island; modules expose drawBackdrop for sky/water layers).\n1. Pattern: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now), __probe). The client calls your update every frame when V.gameState === 'play' and your drawBackdrop(ctx, now) before the island layer. V gives V.daylight 0..1 and V.canvas.\n2. GRADE: compute t = distance of V.daylight from the mid-day plateau: grade rises smoothly to 1.0 as V.daylight enters the 0.35-0.62 transition band (dawn and dusk shoulders) with a 60s eased ramp, 0 in full day or full night. phase = 'dawn' | 'dusk' | 'none' depending on which shoulder.\n3. PAINT: drawBackdrop paints a horizontal warm band wash over the sky region (upper half of the canvas) using layered translucent rects (alpha up to 0.18) in EXISTING warm palette hues only (gold #d4af37 family and existing dusk tones) - a soft horizon glow that is stronger near the horizon line and fades upward. Also ease the day-night tint: the client's own night tint must not double up - keep total added alpha under 0.2 anywhere.\n4. STARS: expose eased star alpha for the night shoulder: expose window.GuildGoldenHour.starAlpha (0..1) that rises from 0 to 1 through the dusk shoulder (do not draw stars yourself - just expose the value; add a comment that the sky module may read it).\n5. Never write to V (except exposing your own global), never draws over the island (backdrop only), zero exceptions if V/canvas absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
