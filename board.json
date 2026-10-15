@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T04:05:40Z",
+    "checked_at": "2026-10-15T04:26:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1290,8 +1290,8 @@
     {
       "id": "T108",
       "title": "SPECTACLE/PLAYABILITY - the night market (SW plaza, rain+night arc)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_nightmarket.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1301,7 +1301,7 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - SPECTACLE/PLAYABILITY - the night market (SW plaza, rain+night arc) - window.GuildNightMarket = { ... } with update/draw/__probe:\n1. GATE: the market exists ONLY when V.weather === 'RAIN' AND the local hour is night (19-5 via new Date().getHours()). When the gate opens, stalls RISE with a 1s glow-in animation (stall sprites scale/fade up from the floor); when it closes, they fold down over 1s. Outside the gate draw nothing.\n2. STALLS: two lantern-lit night-stall props on the SW market plaza (tiles around (-2.5, 4.8) and (-1.0, 5.2), pixel fillRect, wood #6b4a2f, awning striped, each under a warm lantern glow radial). Stall A sells SNACKS (5 GC), stall B sells a LUCK CHARM (12 GC). When the visitor stands within 1.6 tiles, show a clipped hint '[E] TRADE'; E on a stall spends GC via window.GuildEconomy visitor purse if present (subtract from it, defensively; else keep a local visitor coin count started at 20). A snack purchase floats a '+snack' label and a small steaming bun above the visitor; a charm purchase attaches a tiny persistent glowing charm pixel to the visitor sprite corner for the session (EXPRESSION: the purchase leaves a visible mark).\n3. SPECTACLE GUARD: the lantern-gold glow (warm gold #fbbf24) is used ONLY during market hours and only on the stalls - do not recolor any other module's props. Stalls sit 2+ tiles from the day market chalkboard and never run simultaneously with haggling prompts.\n4. CLOSING CEREMONY: when the gate closes (dawn or rain stops), one last bell ring via cue('alert') in try/catch, 8-12 lingering ember particles fade over 3s at each stall position.\n__probe returns { open, charm, spent }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T04:00:00Z"
+      "updated_at": "2026-10-15T04:27:49Z"
     },
     {
       "id": "T114",
