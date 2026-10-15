@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T13:53:40Z",
+    "checked_at": "2026-10-15T14:14:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1659,8 +1659,8 @@
     {
       "id": "T136",
       "title": "PLAYABILITY/SELF-DOC - letter-writing desk + worker replies (W wing)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_letters.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1670,7 +1670,7 @@
       "spec": "BEHAVIOR - LETTER-WRITING DESK - window.GuildLetters = { gx: -4.6, gy: 3.4, open: false, letters: [], replies: [] } with update/draw/__probe (probe returns { letters: letters.length, replies: replies.length, open }):\n1. DESK PROP: a small writing desk at W-wing tile (-4.6, 3.4), 2+ tiles clear of the museum curator cart and pedestals: wooden desk (#6b4a2f, gold trim), an ink pot, a parchment sheet with a quill that bobs while the visitor is in range.\n2. WRITE: when the visitor is within 1.6 tiles, hint '[E] WRITE A NOTE' (10px gold, clipped). E toggles open: draw a parchment panel (clipped, fitText discipline) with a one-line input the visitor fills via a hidden DOM input focused on open (blur/cleanup on close, never preventDefault elsewhere) - typed text becomes a pinned letter { t0, text, from: 'visitor' } (cap 12, oldest pruned), drawn as small parchment notes on a board above the desk.\n3. REPLIES: every 45-75 s (RNG), an idle worker (pick one whose V.workerStates position is not moving for 2+ updates; if all busy, skip) strolls toward the desk, reads the newest visitor letter, and posts a one-line reply in their archetype voice: index 0 glitchy trickster (e.g. 'read it. filed it under chaos.'), 1 aloof poet, 2 eager rookie, 3 serene philosopher - write 3 variants each; replies appear as smaller violet-ink notes under the letter, cap 12.\n4. Never blocks other modules; panel closes on E again or walking 3+ tiles away.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T13:46:51Z"
+      "updated_at": "2026-10-15T14:15:35Z"
     },
     {
       "id": "T137",
