@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-15T16:39:47Z",
+    "checked_at": "2026-10-15T17:07:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -37,9 +37,9 @@
     {
       "id": "D3",
       "title": "Dockside arrivals ferry (living world x spectacle, S rim) - visiting sprites come and go",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T17:11:41Z",
       "target_file": "tasks_out/worker_ferry.js",
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_ferry.js /opt/data/cache/scratch/D3_check.mjs && node --check /opt/data/cache/scratch/D3_check.mjs && head -1 tasks_out/worker_ferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFerry' /opt/data/cache/scratch/D3_check.mjs && echo VERIFY-OK",
       "spec": "BEHAVIOR - DOCKSIDE ARRIVALS FERRY (living world x spectacle; S rim zone - anchor 2+ tiles from the fishing hut and waterfall props) - window.GuildFerry = { ferries: 0, visitors: 0, phase: 'away' } with update/draw/__probe (probe returns { ferries, visitors, phase }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.daylight, V.weather, V.grid; iso(gx,gy), fitText, window.GuildVisitor, window.cue(name) in try/catch.\n2. THE FERRY: every 180-260s (RNG, staggered start offset so the first arrives 30-60s in) a small lantern-lit ferry boat slides in from the south water edge to a dock plank at the S rim. It bobs gently (sin) while docked; its lantern reuses the gold accent #d4af37 - no new colors. cue('coin') once on docking, try/catch.\n3. VISITING SPRITE: one palette-swapped pixel visitor (fillRect blocks, distinct silhouette from workers - give it a tiny suitcase) walks down the plank, strolls a short loop through the SW market row (3 waypoints), pauses at the hearth stall, then walks back, boards, and the ferry departs. While a visiting sprite is near the player-controlled visitor (1.5 tiles), it waves (arm pixel toggles) once per trip.\n4. STATE MACHINE: phases 'away' -> 'arriving' -> 'docked' -> 'strolling' -> 'departing' -> 'away'; only ONE ferry cycle active at a time; counts ferries (completed cycles) and visitors (sprites landed) on the state.\n5. Pure overlay - never write V, never move other props; zero exceptions if V/iso absent; no persistence; no new accent colors.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
