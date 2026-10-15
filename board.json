@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T08:56:58Z",
+    "checked_at": "2026-10-15T09:17:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1466,8 +1466,8 @@
     {
       "id": "T124",
       "title": "LIVING WORLD - cricket chorus after dusk from the E garden and S rim (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_crickets.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1477,7 +1477,7 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN'/'SNOW', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - LIVING WORLD - cricket chorus after dusk - window.GuildCrickets = { ... } with update/draw/__probe:\nAfter dusk (V.daylight < 0.3), a soft cricket-chirp pattern fires on a slow randomized loop (every 4..9s, 2-4 chirps) with positional flavor: chirps sourced from the E garden (gx 5..6, gy 0..2) and S rim (gx 2..4, south edge) via window.cue (try/catch; skip entirely if cue is absent). During rain, crickets fall silent (no chirps while V.weather === 'RAIN'). Occasionally draw 1-2 tiny 2px chirp flecks near the source points that blink once. Dawn silences everything. __probe returns { chirping, lastChime }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse existing palette accents only (gold #d4af37) - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T07:35:52Z"
+      "updated_at": "2026-10-15T09:18:39Z"
     },
     {
       "id": "T125",
