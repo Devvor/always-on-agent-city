@@ -84,22 +84,33 @@ foreman (seeding) -> workers (build) -> gates (verify) -> orchestrator (wiring +
      market zone.
 
 1. T160 GUILD PETTING ZOO LEDGER (proposed, not seeded) -
-3. T163 WISH SCALE DRIFT (proposed, not seeded) -
-   - RATIONALE: economy x playability - the S-rim wish scales (T137) slowly tip toward whichever
-     wish type the VISITOR actually makes most; a tiny needle move each game-day makes spending feel
-     consequential and gives the pond a mood you can read at a glance.
 4. T164 RIVALRY NOTICE BOARD (proposed, not seeded) -
    - RATIONALE: self-doc x personality - a small board in the heroes' plaza (SE) that posts one
      playful line per game-day pairing two workers (from real board.json history: fastest ship,
      longest retry streak), written in each worker's voice; keeps personality visible without new code paths.
    - RATIONALE: self-doc x playability - a small ledger plaque in the E garden listing every pettable creature (cat, fox, ...) with a pet-count
      that reads live from the pet globals; makes the island's living creatures part of its own record.
-2. T161 NIGHT-MARKET LANTERN FERRY (proposed, not seeded) -
-   - RATIONALE: spectacle x living world - a tiny lantern ferry that crosses the S-rim water after dusk carrying one passenger NPC, docking at the
-     buoy line; a moment to stop and watch that compounds with the buoy/lighthouse work.
+2. T165 N-EDGE FROST FERNS (proposed, not seeded) -
+   - RATIONALE: living world x spectacle - delicate frost-fern patterns that bloom on N-edge rocks
+     during SNOW weather and melt at dawn; keeps the N-edge seeding directive fed with zero new colors.
+3. T166 S-RIM MESSAGE-IN-A-BOTTLE (proposed, not seeded) -
+   - RATIONALE: playability x economy x self-doc - bottles wash ashore on the S rim at dawn containing
+     one real line of board.json history (a done quest, a funny failure); visitor can collect, read,
+     and toss one back for a coin. Empty-floor + S-rim directive in one small quest.
+1. T161 NIGHT-MARKET LANTERN FERRY (seeded to deepseek as D9, 2026-10-15)
 
 ## Seeded (foreman, 2026-10-15)
 
+- Run 30 (2026-10-15 ~23:59Z, foreman): converted Queue FIRST -> seeded T161 + T163 to deepseek
+  (window open, breaker clear: tail D1-D8 all done) as D9 lantern ferry (S rim) + D10 wish scale
+  drift (S rim) - both satisfy the MED finding "next 3 seeded props must claim S rim / N edge".
+  missingno NOT seeded: 5 consecutive failures (T155-T159) -> CIRCUIT BREAKER ACTIVE, flagged.
+  laguna NOT seeded: 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE. step5 closed.
+  Queue replenished with proposals T165 frost ferns (N edge) + T166 message-in-a-bottle (S rim).
+  Spot-audit clean: deepseek D8 worker_emotering.js + missingno T154 worker_stargazing.js +
+  laguna T91 worker_catnaps.js all node --check OK, window.Guild* refs present, line-1 clean.
+  Remaining unconverted findings are all orchestrator-side (hub-density reposition, T155 memorybook
+  relocation to W wing, HUD POI consolidation, label-overlap priority, accent retirement, sign clips).
 - Run 29 (2026-10-15 ~23:40Z, ORCHESTRATOR — SPREAD PASS, thedev directive 'everything is still clumped, spread everything out'): core client P1-P4 buildings moved from the 2x2 center clump (-2,0)/(0,-2)/(1,0)/(0,1) to the cardinal edges: P1 (-8,2.5) W, P2 (-7.5,-5) NW, P3 (7.5,0.5) E, P4 (-4.5,6) SW — all spots collision-checked >=2 tiles from every known zone prop. Core hearth satellites spread: banner -> (2,-4), bookshelf-stall -> (2.5,-2.5), forge -> (-2,2); campfire + monument + cat + coin pile STAY as the social hearth (charter-protected). Misplaced props moved to their spec-ordered zones: stargazing post -> N edge (0,-8), lighthouse -> S rim (4.5,7.5), guild bell pair -> (−4.5,−0.5), memorybook -> W wing (−7.5,4.5). COUPLING FIX: 5 modules carried hardcoded copies of the old core coords as avoid-lists (breathe/firejar2/lanternpath/murmur/namingday) — all updated. QA: BUILDINGS verified live at new coords via CDP, 41 center pixel-blocks lost their dark mass, all 11 files pass node --check, page renders healthy (129 Guild globals). Director: next pass should re-check the clump finding against the new layout. LESSON: modules copy core coordinates into avoid-lists — any future core position change MUST grep worker_*.js for stale copies.
 - Run 28 (2026-10-15 ~20Z, foreman): missingno was 1 pending (T154) -> seeded 5 to missingno (window open), converting the Queue FIRST: T155 festival memory book (W wing) + T156 treasury vault glint (SW), then foreman inventions T157 market busker (SW row, economy x living world), T158 garden pet fox (E garden, playability x living world), T159 rim lantern buoys (S rim, spectacle; gold glow only). Also seeded 2 craft-heavy polish quests to deepseek (window open): D7 derby podium ceremony (compounds with T149), D8 visitor emote reaction ring (juice pass). laguna NOT seeded: tail = 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE. step5 not seeded (dies ~Oct 16). DESIGN_FINDINGS unconverted remain orchestrator-side (HIGH central-hub density / MED hub label overlap / LOW sign clips). Spot-audit clean: missingno T153 worker_lighthouse.js node --check OK, 12 Guild/Lighthouse refs, line-1 clean, commit 271cf16 matches title; deepseek D6 worker_footprints.js node --check OK, GuildFootprints export, commit clean. Queue replenished with proposals T160 petting-zoo ledger + T161 night-market lantern ferry. Pending now 6 missingno + 2 deepseek.
 - Run 27 (2026-10-15 ~18Z, foreman): missingno was 0 pending -> seeded 6 to missingno (window open), converting the remaining MED finding first: T149 S-rim fishing derby (playability x economy; S rim is a priority zone per the MED 'empty floor ~35% / prioritize S rim + N edge' finding), T150 N-edge cairn trail (self-doc x spectacle, N edge priority), T151 market row price board (economy x self-doc), T152 worker dream bubbles (personality x living world), T153 S-rim lighthouse (spectacle), T154 N-edge stargazing post (playability x self-doc). Queue cleaned: T147/T148 were built as deepseek D1/D2 (done) - removed; proposed T155 festival memory book + T156 treasury glint. laguna NOT seeded: tail = 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE. step5 not seeded (dies ~Oct 16). deepseek D5/D6 pending (window open). DESIGN_FINDINGS unconverted: HIGH central-hub density (satellite stall built, original-stall removal is orchestrator-side) + MED hub label overlap + LOW clips/debug counter - all client/orchestrator-side, workers cannot edit worker_office.js. Spot-audit clean: missingno T146 worker_butterfly.js node --check OK, 4x window.Guild refs, line-1 clean, commit 058de6d matches title; deepseek D4 worker_statusflair.js OK (commit fb1d01f); laguna T91 worker_catnaps.js re-checked OK. Pending now 6 (all missingno) + 2 deepseek.

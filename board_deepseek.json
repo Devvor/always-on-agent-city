@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-15T22:43:45Z",
+    "checked_at": "2026-10-15T23:46:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -117,6 +117,32 @@
       ],
       "verify_cmd": "cp tasks_out/worker_emotering.js /opt/data/cache/scratch/EMOTERING_check.mjs && node --check /opt/data/cache/scratch/EMOTERING_check.mjs && grep -qi 'window.Guild' tasks_out/worker_emotering.js && head -1 tasks_out/worker_emotering.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
       "spec": "D8: VISITOR EMOTE REACTION RING (craft-heavy polish pass).\nZONE: follows the visitor (no fixed prop). Listen for the visitor's emote state (window.V / GuildVisitor / existing emote globals); on emote 1-4, draw a soft expanding ring FX at the visitor's feet (existing palette) and make workers within ~3 tiles face the visitor with one matching idle flourish for ~2s. Rate-limit to one ring per second. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildEmoteRing, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "D9",
+      "title": "Night-market lantern ferry (charter queue T161) - a tiny lantern ferry crosses the S-rim water after dusk carrying one passenger NPC, docking at the buoy line; a moment to stop and watch that compounds with the lighthouse + buoy work",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_lanternferry.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_lanternferry.js /opt/data/cache/scratch/FERRY_check.mjs && node --check /opt/data/cache/scratch/FERRY_check.mjs && grep -qi 'window.Guild' tasks_out/worker_lanternferry.js && head -1 tasks_out/worker_lanternferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D9: NIGHT-MARKET LANTERN FERRY (craft-heavy polish, spectacle x living world).\nZONE: S-rim water (south edge, roughly x 2..6, beyond the shoreline) - the lighthouse (worker_lighthouse.js, S rim ~4.5,7.5) and any rim lantern buoys are neighbors; keep 2+ tiles from every existing prop. After dusk (read the day-night state the same way worker_lighthouse.js or worker_nightmarket.js does), a tiny ferry with 2-3 hanging lanterns crosses the water slowly carrying ONE passenger NPC (silhouette + nameplate with window.fitText), shuttling between two dock points about 6 tiles apart with a gentle pause + bob at each end, then turns around. During the day the ferry is moored (still, lanterns unlit). Lantern glow uses the existing gold accent ONLY; water interaction is a soft wake ripple (existing palette). PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLanternFerry with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. No new accent colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "D10",
+      "title": "Wish scale drift (charter queue T163) - the S-rim wish scales slowly tip toward whichever wish type the visitor actually makes most, one needle move per game-day, giving the pond a readable mood",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_wishedrift.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_wishedrift.js /opt/data/cache/scratch/WISHDRIFT_check.mjs && node --check /opt/data/cache/scratch/WISHDRIFT_check.mjs && grep -qi 'window.Guild' tasks_out/worker_wishedrift.js && head -1 tasks_out/worker_wishedrift.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D10: WISH SCALE DRIFT (craft-heavy polish, economy x playability).\nZONE: S-rim pond at the wish scales (worker_wishbooth.js / worker_wishes.js territory, S rim) - offset 2+ tiles from any existing prop there. Build a small two-pan balance scale prop that reacts to REAL wish data: tally wish types the visitor has actually made (read the wish globals from the wish/lantern modules, e.g. window.GuildWishes or similar - inspect tasks_out/worker_wishes.js and worker_wishbooth.js first; fall back to counting window.allTasks wish-flavored entries if no live tally exists). Once per in-game day the needle drifts one small step toward the heavier wish type, with a tiny creak cue (window.cue, try/catch) and the pans visibly shifting. Keep drift bounded (max ~15 degrees either way) so it reads as mood, not judgment. Gold accent only; no new colors. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildWishDrift with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
     }
   ]
 }
