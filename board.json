@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T15:19:40Z",
+    "checked_at": "2026-10-15T15:40:41Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1723,8 +1723,8 @@
     {
       "id": "T138",
       "title": "SPECTACLE/SELF-DOC - hero statue victory glow (SE plaza)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_statueglow.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1734,7 +1734,7 @@
       "spec": "BEHAVIOR - STATUE VICTORY GLOW - window.GuildStatueGlow = { lastDone: 0, glow: null, inspects: 0 } with update/draw/__probe (probe returns { glowing: !!glow, inspects }):\n1. SEED: count done quests from V.allTasks (status 'done', defensively; missing = 0); on first update set lastDone = current (never false-fire on load). Anchor at the SE heroes' plaza statue (window.GuildStatues if it exposes a gx/gy via its state, else tile (4.8, -2.0) clamped on-island, 2+ tiles clear of other SE props).\n2. VICTORY GLOW: when the done count RISES, glow = { t0, dur: 6000, id: <the newest done task id> } - a warm gold halo (alpha pulse 0.25 -> 0, existing gold only) blooms around the statue base, a 3-4 spark column rises, cue('levelup') in try/catch once. If window.GuildStatueGlow sees its own glow active and a new done lands, replace the glow (latest wins).\n3. INSPECT: when the visitor is within 1.8 tiles, hint '[E] HERO TALE'; E opens a small parchment card (clipped, fitText) listing the last 3 done task ids + titles from V.allTasks newest first, gold header 'HEROES OF THE GUILD', closes on E or walking away. inspects counts opens.\n4. Never moves the statue or other modules; no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T13:46:51Z"
+      "updated_at": "2026-10-15T15:41:49Z"
     }
   ],
   "projects": [
