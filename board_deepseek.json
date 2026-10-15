@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-15T17:55:45Z",
+    "checked_at": "2026-10-15T18:19:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -79,9 +79,9 @@
     {
       "id": "D6",
       "title": "Visitor footprints and sparkle trail (juice pass) - every step leaves a trace",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T18:23:16Z",
       "target_file": "tasks_out/worker_footprints.js",
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_footprints.js /opt/data/cache/scratch/D6_check.mjs && node --check /opt/data/cache/scratch/D6_check.mjs && head -1 tasks_out/worker_footprints.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFootprints' /opt/data/cache/scratch/D6_check.mjs && echo VERIFY-OK",
       "spec": "BEHAVIOR - VISITOR FOOTPRINTS AND SPARKLE TRAIL (canon #3 juice: no silent movement) - window.GuildFootprints = { prints: [], sparkles: [], steps: 0 } with update/draw/__probe (probe returns { steps, prints: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. window.GuildVisitor gives { gx, gy, moving, facing }; iso(gx,gy) -> {x,y}; V gives V.daylight and V.weather (e.g. 'CLEAR'/'RAIN'); window.cue(name) in try/catch.\n2. FOOTPRINTS: while GuildVisitor.moving is true, every 0.5s of continuous movement drop a tiny footprint pair (2 fillRect dots, alternating left/right offset perpendicular to facing) at the visitor's current world position. Prints live 3.5s, fading alpha 0.35 -> 0, max 40 on screen (oldest pruned). In RAIN weather prints are slightly darker and live 5s (wet ground); draw them UNDER the visitor (paint order: your draw is called with other overlay modules - keep prints subtle, they are texture, not signal).\n3. SPARKLE TRAIL: only for the 1.2s after any emote or interact cue you can observe without V writes (detect via a window.GuildVisitor.facing flip is NOT an emote - instead: if window.GuildEmotes or similar exposes a recent emote timestamp, read it defensively; if absent, fall back to a 90s ambient sparkle: 5 gold sparks rise around a resting visitor, cue-free). Sparks: 1-2px gold glints, 0.8s life, upward drift, alpha fade.\n4. SOUND: never fire cues yourself except on the ambient sparkle once (cue('coin') at most once per 90s, try/catch).\n5. Pure overlay - never write V or GuildVisitor; zero exceptions if V/iso absent; gold + soft neutrals only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
