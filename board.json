@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T17:28:41Z",
+    "checked_at": "2026-10-15T17:49:42Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1815,9 +1815,10 @@
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
-      "status": "pending",
-      "attempts": 0,
-      "verify_cmd": "cp tasks_out/worker_butterfly.js /opt/data/cache/scratch/T146_check.mjs && node --check /opt/data/cache/scratch/T146_check.mjs && ! sed -n 1p tasks_out/worker_butterfly.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_butterfly.js && grep -q 'GuildButterfly' tasks_out/worker_butterfly.js && echo VERIFY-OK"
+      "status": "done",
+      "attempts": 1,
+      "verify_cmd": "cp tasks_out/worker_butterfly.js /opt/data/cache/scratch/T146_check.mjs && node --check /opt/data/cache/scratch/T146_check.mjs && ! sed -n 1p tasks_out/worker_butterfly.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_butterfly.js && grep -q 'GuildButterfly' tasks_out/worker_butterfly.js && echo VERIFY-OK",
+      "updated_at": "2026-10-15T17:50:16Z"
     }
   ],
   "projects": [
