@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T15:40:41Z",
+    "checked_at": "2026-10-15T16:02:41Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1735,6 +1735,85 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
       "updated_at": "2026-10-15T15:41:49Z"
+    },
+    {
+      "id": "T141",
+      "title": "NIGHT-MARKET MERCHANT MOODS - SW night-market stall merchants whose idle chatter bubbles react to REAL economy state (gloat after busy visitor-buy days, grumble after quiet ones) in archetype voices",
+      "target_file": "tasks_out/worker_merchants.js",
+      "spec": "Build worker_merchants.js: 2-3 merchant NPCs at the SW night-market stalls (zone SW -1..2,4..6, offset 2+ tiles from existing props). Each reads window V / allTasks economy data (recent visitor buys / GC minted per worker) and picks a mood: busy day = gloat bubble, quiet = grumble, idle = archetype-flavored chatter (missingno glitchy trickster, laguna eager rookie). Refresh mood every ~45s. Reuse existing gold accent only. PATTERN: follow tasks_out/worker_visitor.js. CONTRACT: the page exposes window V (game state), iso (projection helpers), fitText(), GuildVisitor, cue() and allTasks; attach your module to window under a Guild* namespace and clean up nothing on unload. Use existing accent colors only. DO NOT edit worker_office.js or worker_office.html. One target file per task. OUTPUT: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the block.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "status": "done",
+      "attempts": 1,
+      "verify_cmd": "cp tasks_out/worker_merchants.js /opt/data/cache/scratch/T141_check.mjs && node --check /opt/data/cache/scratch/T141_check.mjs && ! sed -n 1p tasks_out/worker_merchants.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_merchants.js && grep -q 'GuildMerchants' tasks_out/worker_merchants.js && echo VERIFY-OK",
+      "updated_at": "2026-10-15T16:03:16Z"
+    },
+    {
+      "id": "T142",
+      "title": "GUILD TIME CAPSULE - buried capsule at the W museum wing the visitor can E-open once per session, reciting the guild's oldest real board history (first done task, first failure, first worker) as a bard-style plaque",
+      "target_file": "tasks_out/worker_capsule.js",
+      "spec": "Build worker_capsule.js: a half-buried capsule prop in the W museum wing (-6..-4, 2..5), 2+ tiles from existing props. On E within 1 tile: read window allTasks / board history to find the OLDEST done task, first failure, and worker names; render a small bard-voice plaque panel with those real facts. Once per session (sessionStorage flag). Reuse existing colors. PATTERN: follow tasks_out/worker_visitor.js. CONTRACT: the page exposes window V (game state), iso (projection helpers), fitText(), GuildVisitor, cue() and allTasks; attach your module to window under a Guild* namespace and clean up nothing on unload. Use existing accent colors only. DO NOT edit worker_office.js or worker_office.html. One target file per task. OUTPUT: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the block.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "status": "pending",
+      "attempts": 0,
+      "verify_cmd": "cp tasks_out/worker_capsule.js /opt/data/cache/scratch/T142_check.mjs && node --check /opt/data/cache/scratch/T142_check.mjs && ! sed -n 1p tasks_out/worker_capsule.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_capsule.js && grep -q 'GuildCapsule' tasks_out/worker_capsule.js && echo VERIFY-OK"
+    },
+    {
+      "id": "T143",
+      "title": "LAMPLIGHTER DUSK ROUNDS - an NPC lamplighter who walks the island at dusk lighting lamp posts one by one (living world moment; reuses gold accent, no new colors)",
+      "target_file": "tasks_out/worker_lamplighter.js",
+      "spec": "Build worker_lamplighter.js: place 4-5 small lamp posts spaced across the island (one per district edge, each 2+ tiles from existing props, e.g. NE aviary path, SE plaza rim, S rim, W wing path). At dusk (use existing day-night state) a lamplighter NPC walks from lamp to lamp; each lamp lights with the existing warm gold glow as he arrives. At dawn all lamps go dark. No new accent colors. PATTERN: follow tasks_out/worker_visitor.js. CONTRACT: the page exposes window V (game state), iso (projection helpers), fitText(), GuildVisitor, cue() and allTasks; attach your module to window under a Guild* namespace and clean up nothing on unload. Use existing accent colors only. DO NOT edit worker_office.js or worker_office.html. One target file per task. OUTPUT: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the block.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "status": "pending",
+      "attempts": 0,
+      "verify_cmd": "cp tasks_out/worker_lamplighter.js /opt/data/cache/scratch/T143_check.mjs && node --check /opt/data/cache/scratch/T143_check.mjs && ! sed -n 1p tasks_out/worker_lamplighter.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_lamplighter.js && grep -q 'GuildLamplighter' tasks_out/worker_lamplighter.js && echo VERIFY-OK"
+    },
+    {
+      "id": "T144",
+      "title": "VISITOR SOUVENIR COIN PRESS - at the SW treasury plaza the visitor can E-press a souvenir coin engraved with the guild's REAL quest tally (done count + newest done title); one press per session",
+      "target_file": "tasks_out/worker_coinpress.js",
+      "spec": "Build worker_coinpress.js: a coin-press prop in the SW treasury plaza (-1..2, 4..6), 2+ tiles from the existing stall/annex. On E within 1 tile: read window allTasks, stamp a souvenir coin: real done-task count + the newest done task's short title, brief press animation + cue(), coin appears in a tiny visitor souvenir shelf. Once per session. Reuse gold accent only. PATTERN: follow tasks_out/worker_visitor.js. CONTRACT: the page exposes window V (game state), iso (projection helpers), fitText(), GuildVisitor, cue() and allTasks; attach your module to window under a Guild* namespace and clean up nothing on unload. Use existing accent colors only. DO NOT edit worker_office.js or worker_office.html. One target file per task. OUTPUT: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the block.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "status": "pending",
+      "attempts": 0,
+      "verify_cmd": "cp tasks_out/worker_coinpress.js /opt/data/cache/scratch/T144_check.mjs && node --check /opt/data/cache/scratch/T144_check.mjs && ! sed -n 1p tasks_out/worker_coinpress.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_coinpress.js && grep -q 'GuildCoinpress' tasks_out/worker_coinpress.js && echo VERIFY-OK"
+    },
+    {
+      "id": "T145",
+      "title": "N-RIM WATCHTOWER SIGNAL LANTERN - a small watchtower on the north rim whose lantern flashes a distinct blink pattern when a quest SHIPS (spectacle x self-doc: the rim announces guild wins)",
+      "target_file": "tasks_out/worker_watchtower.js",
+      "spec": "Build worker_watchtower.js: a small tower prop on the north rim around (-1..1, -6..-4), 2+ tiles from existing props. Watch window allTasks: when a task transitions to done (detect new done id vs a remembered set), the tower lantern flashes 3 gold blinks with cue() and a tiny banner 'SHIPPED: <title>'. Reuse gold accent only. PATTERN: follow tasks_out/worker_visitor.js. CONTRACT: the page exposes window V (game state), iso (projection helpers), fitText(), GuildVisitor, cue() and allTasks; attach your module to window under a Guild* namespace and clean up nothing on unload. Use existing accent colors only. DO NOT edit worker_office.js or worker_office.html. One target file per task. OUTPUT: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the block.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "status": "pending",
+      "attempts": 0,
+      "verify_cmd": "cp tasks_out/worker_watchtower.js /opt/data/cache/scratch/T145_check.mjs && node --check /opt/data/cache/scratch/T145_check.mjs && ! sed -n 1p tasks_out/worker_watchtower.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_watchtower.js && grep -q 'GuildWatchtower' tasks_out/worker_watchtower.js && echo VERIFY-OK"
+    },
+    {
+      "id": "T146",
+      "title": "BUTTERFLY MEADOW - a patch of wildflowers on the E garden edge where butterflies spawn and wander by day, fold wings at night (living world fauna, offsets the aviary birds)",
+      "target_file": "tasks_out/worker_butterfly.js",
+      "spec": "Build worker_butterfly.js: a flower patch on the E garden edge (4..6, 0..3), 2+ tiles from existing garden props. 4-6 butterflies wander the patch by day using existing day-night state; at night they settle and fold wings. Gentle flutter animation, no new colors. PATTERN: follow tasks_out/worker_visitor.js. CONTRACT: the page exposes window V (game state), iso (projection helpers), fitText(), GuildVisitor, cue() and allTasks; attach your module to window under a Guild* namespace and clean up nothing on unload. Use existing accent colors only. DO NOT edit worker_office.js or worker_office.html. One target file per task. OUTPUT: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the block.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "status": "pending",
+      "attempts": 0,
+      "verify_cmd": "cp tasks_out/worker_butterfly.js /opt/data/cache/scratch/T146_check.mjs && node --check /opt/data/cache/scratch/T146_check.mjs && ! sed -n 1p tasks_out/worker_butterfly.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_butterfly.js && grep -q 'GuildButterfly' tasks_out/worker_butterfly.js && echo VERIFY-OK"
     }
   ],
   "projects": [
