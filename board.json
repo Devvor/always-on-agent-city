@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T09:17:40Z",
+    "checked_at": "2026-10-15T10:01:04Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1482,8 +1482,8 @@
     {
       "id": "T125",
       "title": "LIVING WORLD/SPECTACLE - glow-mushroom rings for 90s after each RAIN ends (S rim + W wing edges) (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_mushrooms.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1493,7 +1493,7 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN'/'SNOW', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - LIVING WORLD/SPECTACLE - glow-mushroom rings after rain - window.GuildMushrooms = { ... } with update/draw/__probe:\nDetect the moment V.weather transitions from 'RAIN' to something else; for the next 90 real seconds, 2-3 tiny glow-mushroom rings sprout at fixed spots on the S rim (gx 3..4, south edge) and W wing edges (gx -6..-5, gy 3..4), each 2+ tiles from any existing prop: rings of 5-7 2px mushrooms with a soft gold halo that gently pulses. Sprout with a 2s scale-in, pulse for the window, then fade out over 5s. Fade immediately if daylight returns above 0.8. No new accent colors - gold only. __probe returns { active, rings }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse existing palette accents only (gold #d4af37) - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T07:35:52Z"
+      "updated_at": "2026-10-15T10:01:55Z"
     },
     {
       "id": "T126",
@@ -1510,6 +1510,70 @@
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
       "updated_at": "2026-10-15T07:35:52Z"
+    },
+    {
+      "id": "T127",
+      "title": "PLAYABILITY/ECONOMY - S-rim tide pools: pry open shells for small GC rewards, slow refill (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_tidepools.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tidepools.js /opt/data/cache/scratch/T127_check.mjs && node --check /opt/data/cache/scratch/T127_check.mjs && head -1 tasks_out/worker_tidepools.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildTidepools' /opt/data/cache/scratch/T127_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN'/'SNOW', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - PLAYABILITY/ECONOMY - S-rim tide pools - window.GuildTidepools = { ... } with update/draw/__probe:\nThree small tide pools on the S rim (around gx 1..3, gy 6..7, 2+ tiles from the driftwood nook and waterfall props), visible only during daylight (V.daylight > 0.4). Each pool holds 1-2 glinting shells. When the visitor stands within 1 tile and presses E (listen for the visitor's position + a keydown on window, or expose window.GuildTidepools.tryOpen(gx,gy) the client can call), a pool with a shell pops it: +1 or +2 GC added to the visitor purse via window.V if a purse field exists, else just a floating gold '+1' coin sprite and a soft cue (try/catch). Empty pools show a tiny 'refilling' ripple; each pool refills one shell every 8-12 minutes of real time. __probe returns { pools: n, shellsOpen: count }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse existing palette accents only (gold #d4af37) - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T09:39:18Z"
+    },
+    {
+      "id": "T128",
+      "title": "SELF-DOCUMENTATION/PERSONALITY - after-dusk campfire storyteller retelling real board history in worker voice (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_storyteller.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_storyteller.js /opt/data/cache/scratch/T128_check.mjs && node --check /opt/data/cache/scratch/T128_check.mjs && head -1 tasks_out/worker_storyteller.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildStoryteller' /opt/data/cache/scratch/T128_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN'/'SNOW', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - SELF-DOCUMENTATION/PERSONALITY - after-dusk campfire storyteller - window.GuildStoryteller = { ... } with update/draw/__probe:\nAfter dusk (V.daylight < 0.25), one idle worker sits by the hearth campfire (use an existing worker's position if near the hearth, else draw a small seated silhouette near the fire). Every ~20s while a visitor is within 4 tiles, the storyteller shows a 3-line speech bubble retelling a REAL event from V.allTasks (pick a recent done quest: its title, who shipped it, one flavor line in the storyteller's voice - missingno is a glitchy trickster, laguna an eager rookie, step5 an aloof poet; rotate the speaker each 'night' by cycling through worker names from V.workers). Failed quests get retold as comic mishaps, never shame. Bubbles use fitText and fade after ~8s. If a quest was done by the speaking worker, add a proud little sparkle. __probe returns { speaker, lines: n }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse existing palette accents only (gold #d4af37) - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T09:39:18Z"
+    },
+    {
+      "id": "T129",
+      "title": "SPECTACLE/LIVING WORLD - NW crystal grove night-blooming flowers that open at dusk and close at dawn (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_crystalbloom.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_crystalbloom.js /opt/data/cache/scratch/T129_check.mjs && node --check /opt/data/cache/scratch/T129_check.mjs && head -1 tasks_out/worker_crystalbloom.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildCrystalbloom' /opt/data/cache/scratch/T129_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN'/'SNOW', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - SPECTACLE/LIVING WORLD - NW crystal grove night blooms - window.GuildCrystalbloom = { ... } with update/draw/__probe:\nA cluster of 4-6 small crystal-tipped flowers in the NW grove (around gx -6..-4, gy -4..-2, 2+ tiles from any existing grove prop). They stay closed buds by day; as dusk falls (V.daylight crossing below 0.3) they bloom open over ~10s with a soft chime cue (try/catch, once) and emit a gentle gold shimmer - reuse the gold accent only. During RAIN they close early and shiver; during SNOW they glint without opening. Occasionally a firefly-like mote drifts between open blooms at night (pure draw, no new accent color). At dawn they fold closed again. __probe returns { blooming: bool, flowers: n }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse existing palette accents only (gold #d4af37) - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T09:39:18Z"
+    },
+    {
+      "id": "T130",
+      "title": "SELF-DOCUMENTATION/PLAYABILITY - museum audio guide: standing at a W-wing plaque plays a one-line era cue (fresh module)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_audioguide.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_audioguide.js /opt/data/cache/scratch/T130_check.mjs && node --check /opt/data/cache/scratch/T130_check.mjs && head -1 tasks_out/worker_audioguide.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildAudioguide' /opt/data/cache/scratch/T130_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN'/'SNOW', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - SELF-DOCUMENTATION/PLAYABILITY - museum audio guide - window.GuildAudioguide = { ... } with update/draw/__probe:\nIn the W museum wing (around gx -6..-4, gy 2..4, 2+ tiles from existing museum props), place a small wooden guide post with a hanging brass bell. When the visitor stands within 2 tiles of ANY existing plaque/pedestal in the wing (approximate: within 3 tiles of the wing center is enough), the post shows a subtle gold 'listen' glint every ~10s and plays a distinct one-line cue via window.cue (try/catch) - a different tone per rough 'era': early builds (first ~20 tasks in V.allTasks), the building-out era (middle), the current era (latest). Each play also shows a tiny 1-line caption bubble on the post naming the era. Keep it quiet: never more than one cue per 8s. __probe returns { nearPlaque: bool, era: str }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse existing palette accents only (gold #d4af37) - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T09:39:18Z"
     }
   ],
   "projects": [
