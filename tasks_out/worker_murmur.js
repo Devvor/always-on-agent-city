@@ -36,10 +36,10 @@ function tileRing(gx, gy) {
 // Existing props/buildings in the scene (grid tiles the villagers must never overlap).
 function propTiles() {
   return [
-    { gx: -2, gy: 0 }, { gx: 0, gy: -2 }, { gx: 1, gy: 0 }, { gx: 0, gy: 1 }, // buildings
+    { gx: -8, gy: 2.5 }, { gx: -7.5, gy: -5 }, { gx: 7.5, gy: 0.5 }, { gx: -4.5, gy: 6 }, // buildings
     { gx: 0, gy: -1 }, // campfire
-    { gx: 1, gy: -1 }, // bookshelf
-    { gx: -1, gy: 1 }, // forge
+    { gx: 2.5, gy: -2.5 }, // bookshelf
+    { gx: -2, gy: 2 }, // forge
     { gx: 1, gy: 0 },  // coin pile (same tile as P3)
     { gx: 1, gy: 1 },  // cat
     { gx: -1, gy: -1 }, { gx: 1, gy: -1 }, { gx: -1, gy: 1 }, { gx: 1, gy: 1 } // desks

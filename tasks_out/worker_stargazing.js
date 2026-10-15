@@ -1,4 +1,4 @@
-const ANCHOR = { gx: -2, gy: -2 };
+const ANCHOR = { gx: 0, gy: -8 };
 
 let pressedE = false;
 let prevPressedE = false;

@@ -18,8 +18,8 @@ const HEARTH = { gx: 0, gy: -1 };
 const MIN_PROP_TILES = 2;
 const ARCHETYPES = ['glitch', 'poet', 'rookie', 'philosopher'];
 const PROP_TILES = [
-  { gx: -2, gy: 0 }, { gx: 0, gy: -2 }, { gx: 1, gy: 0 }, { gx: 0, gy: 1 },
-  { gx: -1, gy: -1 }, { gx: 1, gy: -1 }, { gx: -1, gy: 1 }, { gx: 1, gy: 1 }
+  { gx: -8, gy: 2.5 }, { gx: -7.5, gy: -5 }, { gx: 7.5, gy: 0.5 }, { gx: -4.5, gy: 6 },
+  { gx: -1, gy: -1 }, { gx: 2.5, gy: -2.5 }, { gx: -2, gy: 2 }, { gx: 1, gy: 1 }
 ];
 const SPOKEN = {
   glitch: ['01101 \u2014 the name is real (probably)', 'ha! swapped the honor, kept the glitch', 'i am legal now. frightening.'],

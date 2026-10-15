@@ -70,8 +70,8 @@ function getGrove(Vv) {
 }
 
 const NE_PROPS = [
-  { gx: -2, gy: 0 }, { gx: 0, gy: -2 }, { gx: 1, gy: 0 }, { gx: 0, gy: 1 },
-  { gx: 1, gy: -1 }, { gx: 0, gy: -1 }, { gx: 1, gy: 0 }
+  { gx: -8, gy: 2.5 }, { gx: -7.5, gy: -5 }, { gx: 7.5, gy: 0.5 }, { gx: -4.5, gy: 6 },
+  { gx: 2.5, gy: -2.5 }, { gx: 0, gy: -1 }, { gx: 1, gy: 0 }
 ];
 
 function chooseAnchor(grove) {

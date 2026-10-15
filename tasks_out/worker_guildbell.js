@@ -26,8 +26,8 @@ function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 
 function createState() {
   return {
-    gx: -1.5,
-    gy: -2.5,
+    gx: -4.5,
+    gy: -0.5,
     rings: 0,
     lastDoneCount: null,
     seenDoneIds: new Set(),
@@ -42,8 +42,8 @@ function createState() {
 
 function normalizeState(s) {
   if (!s || typeof s !== 'object') return createState();
-  if (typeof s.gx !== 'number') s.gx = -1.5;
-  if (typeof s.gy !== 'number') s.gy = -2.5;
+  if (typeof s.gx !== 'number') s.gx = -4.5;
+  if (typeof s.gy !== 'number') s.gy = -0.5;
   if (typeof s.rings !== 'number') s.rings = 0;
   if (s.lastDoneCount === undefined) s.lastDoneCount = null;
   if (!(s.seenDoneIds instanceof Set)) s.seenDoneIds = new Set;

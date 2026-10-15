@@ -27,11 +27,11 @@ function ensurePosts(S, Vv) {
   const sig = s * 1000 + ml;
   if (S.posts && S.posts.length === 5 && S._sig === sig) return;
   const props = [];
-  props.push({ gx: -2, gy: 0 }, { gx: 0, gy: -2 }, { gx: 1, gy: 0 }, { gx: 0, gy: 1 });
-  props.push({ gx: -1, gy: -1 }, { gx: 1, gy: -1 }, { gx: -1, gy: 1 }, { gx: 1, gy: 1 });
+  props.push({ gx: -8, gy: 2.5 }, { gx: -7.5, gy: -5 }, { gx: 7.5, gy: 0.5 }, { gx: -4.5, gy: 6 });
+  props.push({ gx: -1, gy: -1 }, { gx: 2.5, gy: -2.5 }, { gx: -2, gy: 2 }, { gx: 1, gy: 1 });
   props.push({ gx: 0, gy: -1 });
-  if (ml >= 3) props.push({ gx: 1, gy: -1 });
-  if (ml >= 5) props.push({ gx: -1, gy: 1 });
+  if (ml >= 3) props.push({ gx: 2.5, gy: -2.5 });
+  if (ml >= 5) props.push({ gx: -2, gy: 2 });
   if (ml >= 7) props.push({ gx: 1, gy: 0 });
   function clampIsland(gx, gy) {
     const minC = -2 - s;

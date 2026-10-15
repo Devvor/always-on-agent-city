@@ -1,6 +1,6 @@
 function createState() {
   return {
-    gx: -2, gy: -1,
+    gx: -4.5, gy: -0.5,
     swingT: -1,
     swingDuration: 0.9,
     lastRing: -1e12,

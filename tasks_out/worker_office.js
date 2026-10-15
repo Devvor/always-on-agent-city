@@ -54,10 +54,10 @@ function init(canvas, apiBase) {
   requestAnimationFrame(frame);
 }
 const BUILDINGS = [
-  { project: 'P1', gx: -2, gy: 0, h: 28, wall: '#6b4a2d', roof: '#8b5a2b', sign: 'parchment' },
-  { project: 'P2', gx: 0, gy: -2, h: 36, wall: '#40404f', roof: '#5a5a6b', sign: 'flask' },
-  { project: 'P3', gx: 1, gy: 0, h: 30, wall: '#52525b', roof: '#71717a', sign: 'anvil' },
-  { project: 'P4', gx: 0, gy: 1, h: 29, wall: '#7a5a44', roof: '#9a7a5e', sign: 'brush' }
+  { project: 'P1', gx: -8, gy: 2.5, h: 28, wall: '#6b4a2d', roof: '#8b5a2b', sign: 'parchment' },
+  { project: 'P2', gx: -7.5, gy: -5, h: 36, wall: '#40404f', roof: '#5a5a6b', sign: 'flask' },
+  { project: 'P3', gx: 7.5, gy: 0.5, h: 30, wall: '#52525b', roof: '#71717a', sign: 'anvil' },
+  { project: 'P4', gx: -4.5, gy: 6, h: 29, wall: '#7a5a44', roof: '#9a7a5e', sign: 'brush' }
 ];
 const V = {
   canvas: null,
@@ -1754,7 +1754,7 @@ function drawProps(now) {
     ctx.globalAlpha = 1;
   }
   if (V.mapLevel >= 1) {
-    const base = iso(0, -1);
+    const base = iso(2, -4);
     const px = Math.round(base.x);
     const py = Math.round(base.y);
     const sway = Math.round(Math.sin(now * 0.004) * 3 + V.wind * 4);
@@ -1785,7 +1785,7 @@ function drawProps(now) {
     ctx.fillRect(cp.x - Math.round(flameW * 0.25), cp.y - flameH + 2, Math.max(2, Math.round(flameW * 0.5)), Math.max(2, flameH - 3));
   }
   if (V.mapLevel >= 3) {
-    const base = iso(1, -1);
+    const base = iso(2.5, -2.5);
     const x = Math.round(base.x);
     const y = Math.round(base.y);
     ctx.fillStyle = '#5a3f25';
@@ -1804,7 +1804,7 @@ function drawProps(now) {
     }
   }
   if (V.mapLevel >= 5) {
-    const base = iso(-1, 1);
+    const base = iso(-2, 2);
     const x = Math.round(base.x);
     const y = Math.round(base.y);
     ctx.fillStyle = '#6b6b6b';

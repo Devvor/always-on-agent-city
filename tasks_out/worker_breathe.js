@@ -1,4 +1,4 @@
-const BUILDINGS = [{ gx: -2, gy: 0 }, { gx: 0, gy: -2 }, { gx: 1, gy: 0 }, { gx: 0, gy: 1 }];
+const BUILDINGS = [{ gx: -8, gy: 2.5 }, { gx: -7.5, gy: -5 }, { gx: 7.5, gy: 0.5 }, { gx: -4.5, gy: 6 }];
 
 function root() { return (typeof window !== 'undefined') ? window : null; }
 function getV() { const w = root(); return w && w.V; }
@@ -32,8 +32,8 @@ function tileRing(gx, gy) {
 function existingProps(Vv) {
   const props = BUILDINGS.slice();
   const level = Vv && typeof Vv.mapLevel === 'number' ? Vv.mapLevel : 1;
-  if (level >= 3) props.push({ gx: 1, gy: -1 });
-  if (level >= 5) props.push({ gx: -1, gy: 1 });
+  if (level >= 3) props.push({ gx: 2.5, gy: -2.5 });
+  if (level >= 5) props.push({ gx: -2, gy: 2 });
   if (level >= 7) {
     props.push({ gx: 1, gy: 0 });
     props.push({ gx: 1, gy: 1 });
