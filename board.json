@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T18:31:41Z",
+    "checked_at": "2026-10-15T18:52:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1851,15 +1851,16 @@
     {
       "id": "T151",
       "title": "MARKET ROW PRICE BOARD - a hinged price board at the SW market row listing stall goods with prices that drift with the island's real demand signals from board.json (economy x self-doc)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_priceboard.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cp tasks_out/worker_priceboard.js /opt/data/cache/scratch/T151_check.mjs && node --check /opt/data/cache/scratch/T151_check.mjs && grep -qi 'window.GuildPriceBoard' tasks_out/worker_priceboard.js && head -1 tasks_out/worker_priceboard.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
-      "spec": "T151: MARKET ROW PRICE BOARD.\nZONE: SW market row (-1..2, 4..6), 2+ tiles from any existing stall. Prices tick slowly and deterministically from live state (quests done, treasury count in window.V); hovering/E shows one line of flavor per good; text clamped with window.fitText so nothing clips at island bounds.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildPriceBoard, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+      "spec": "T151: MARKET ROW PRICE BOARD.\nZONE: SW market row (-1..2, 4..6), 2+ tiles from any existing stall. Prices tick slowly and deterministically from live state (quests done, treasury count in window.V); hovering/E shows one line of flavor per good; text clamped with window.fitText so nothing clips at island bounds.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildPriceBoard, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block.",
+      "updated_at": "2026-10-15T18:53:15Z"
     },
     {
       "id": "T152",
