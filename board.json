@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T01:59:40Z",
+    "checked_at": "2026-10-15T02:20:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1232,8 +1232,8 @@
       "updated_at": "2026-10-15T02:00:33Z"
     },
     {
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
@@ -1242,7 +1242,8 @@
       "title": "SPECTACLE/LIVING WORLD - dusk glow-fish leaping the S-rim waterfall (tiny gold arcs + splash)",
       "target_file": "tasks_out/worker_glowfish.js",
       "verify_cmd": "cp tasks_out/worker_glowfish.js /opt/data/cache/scratch/T106_check.mjs && node --check /opt/data/cache/scratch/T106_check.mjs && grep -q 'window.GuildGlowFish' tasks_out/worker_glowfish.js && [ -s tasks_out/worker_glowfish.js ] && ! head -1 tasks_out/worker_glowfish.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Occasionally at dusk, tiny gold fish arc over the existing S-rim waterfall: a small parabolic leap with a splash puff on re-entry, rare (a few per dusk window), reusing the existing gold accent only. Export window.GuildGlowFish, draw additively, no DOM edits, offset from the fishing hut. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildGlowFish on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_glowfish.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+      "spec": "Occasionally at dusk, tiny gold fish arc over the existing S-rim waterfall: a small parabolic leap with a splash puff on re-entry, rare (a few per dusk window), reusing the existing gold accent only. Export window.GuildGlowFish, draw additively, no DOM edits, offset from the fishing hut. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildGlowFish on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_glowfish.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it.",
+      "updated_at": "2026-10-15T02:21:21Z"
     },
     {
       "status": "pending",
