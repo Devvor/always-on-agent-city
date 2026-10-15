@@ -13,7 +13,7 @@ const COOLDOWN_NO_BUY = 90;
 const WINDOW_MS = 5 * 60 * 1000;
 const FLASH_MS = 1000;
 const BOARD_W = 132;
-const BOARD_H = 120;
+const BOARD_H = 78;
 const FRAME_PAD = 4;
 const TITLE_H = 18;
 const PRICE_H = 26;
@@ -269,7 +269,6 @@ function drawBoard(ctx, st, Vv, now) {
   ctx.fillStyle = COL_TEXT;
   ctx.font = FONT_LINE;
   ctx.fillText('buys(5m): ' + st.buys.length, bx + BOARD_W * 0.5, by + TITLE_H + PRICE_H + LINE_H * 0.5);
-  ctx.fillText(moodWord(st.buys.length), bx + BOARD_W * 0.5, by + TITLE_H + PRICE_H + LINE_H + LINE_H * 0.5);
 
   const vis = getVisitor();
   let near = false;

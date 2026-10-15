@@ -418,3 +418,374 @@ Node.js v26.7.0
 2026-10-14 13:57:29 T78 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-14 13:57:29 T78 DONE on attempt 1
+2026-10-14 14:18:48 T79 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 14:18:48 T79 DONE on attempt 1
+2026-10-14 14:40:36 T80 attempt 1 verify rc 1 out tail: 
+2026-10-14 14:41:51 T80 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 14:41:51 T80 DONE on attempt 2
+2026-10-14 15:03:38 T81 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 15:03:38 T81 DONE on attempt 1
+2026-10-14 15:25:22 T82 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 15:25:22 T82 DONE on attempt 1
+2026-10-14 15:46:38 T83 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 15:46:38 T83 DONE on attempt 1
+2026-10-14 16:07:25 T84 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 16:07:25 T84 DONE on attempt 1
+2026-10-14 16:28:21 T85 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 16:28:21 T85 DONE on attempt 1
+2026-10-14 16:49:45 T87 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 16:49:45 T87 DONE on attempt 1
+2026-10-14 17:11:13 T88 attempt 1 verify rc 1 out tail: 
+2026-10-14 17:11:59 T88 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 17:11:59 T88 DONE on attempt 2
+2026-10-14 17:33:50 T89 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 17:33:50 T89 DONE on attempt 1
+2026-10-14 17:55:21 T90 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 17:55:21 T90 DONE on attempt 1
+2026-10-14 18:16:41 T92 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 18:16:41 T92 DONE on attempt 1
+2026-10-14 18:38:32 T93 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 18:38:32 T93 DONE on attempt 1
+2026-10-14 19:23:05 T95 attempt 1 verify rc 1 out tail: 
+2026-10-14 19:26:08 T95 attempt 2 verify rc 1 out tail: 
+2026-10-14 19:29:12 T95 attempt 3 verify rc 1 out tail: 
+2026-10-14 19:29:12 T95 FAILED no output
+2026-10-14 19:53:41 T96 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 19:53:41 T96 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-14 19:54:16 T96 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0568, month $0.31 / cap $2.00
+2026-10-14 19:54:16 T96 attempt 2 verify rc 1 out tail: 
+2026-10-14 19:58:16 T96 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0000, month $0.31 / cap $2.00
+2026-10-14 19:58:16 T96 attempt 3 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 19:58:16 T96 FAILED model call failed: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 20:22:40 T98 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 20:22:40 T98 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-14 20:22:53 T98 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0436, month $0.36 / cap $2.00
+2026-10-14 20:22:54 T98 attempt 2 verify rc 1 out tail: 
+2026-10-14 20:26:54 T98 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0000, month $0.36 / cap $2.00
+2026-10-14 20:26:54 T98 attempt 3 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 20:26:54 T98 FAILED model call failed: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 20:51:40 T99 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 20:51:40 T99 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-14 20:52:23 T99 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0563, month $0.41 / cap $2.00
+2026-10-14 20:52:23 T99 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/T99_check.mjs:1
+# tasks_out/worker_nightguard.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 20:52:59 T99 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0544, month $0.47 / cap $2.00
+2026-10-14 20:52:59 T99 attempt 3 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 20:52:59 T99 DONE on attempt 3
+2026-10-14 21:35:35 T100 attempt 1 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_wishtoss.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:36:38 T100 attempt 2 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_wishtoss.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:37:28 T100 attempt 3 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_wishtoss.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:37:28 T100 FAILED node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_wishtoss.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:58:33 T101 attempt 1 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_census.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:59:17 T101 attempt 2 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_census.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 22:00:12 T101 attempt 3 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_census.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 22:00:12 T101 FAILED node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_census.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 22:20:55 EXIT 0 ALERT: missingno free window CLOSED (canary HTTP 500) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-14 23:25:38 T102 attempt 1 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_skyisles.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:28:00 T102 attempt 2 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_skyisles.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:28:57 T102 attempt 3 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_skyisles.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:28:57 T102 FAILED node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_skyisles.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:50:22 T103 attempt 1 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_vane.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:50:55 T103 attempt 2 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_vane.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:51:33 T103 attempt 3 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_vane.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 23:51:33 T103 FAILED node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_vane.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-15 00:12:48 T105 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 00:12:48 T105 DONE on attempt 1
+2026-10-15 01:37:29 T110 attempt 1 verify rc 1 out tail: 
+2026-10-15 01:38:38 T110 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 01:38:38 T110 DONE on attempt 2
+2026-10-15 02:00:33 T111 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 02:00:33 T111 DONE on attempt 1
+2026-10-15 02:21:21 T106 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 02:21:21 T106 DONE on attempt 1
+2026-10-15 02:41:40 EXIT 0 ALERT: missingno free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 03:03:31 T107 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 03:03:31 T107 DONE on attempt 1
+2026-10-15 03:23:41 EXIT 0 ALERT: missingno free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 03:45:34 T112 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 03:45:34 T112 DONE on attempt 1
+2026-10-15 04:06:15 T113 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 04:06:15 T113 DONE on attempt 1
+2026-10-15 04:27:49 T108 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 04:27:49 T108 DONE on attempt 1
+2026-10-15 04:49:32 T114 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 04:49:32 T114 DONE on attempt 1
+2026-10-15 05:10:36 T115 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 05:10:36 T115 DONE on attempt 1
+2026-10-15 05:31:26 T116 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 05:31:26 T116 DONE on attempt 1
+2026-10-15 05:52:49 T119 attempt 1 model error: HTTP 500 {'status': 500, 'message': 'Something unexpected happened while processing your request. Please try again in a moment, or contact us if the issue persists.'}
+2026-10-15 05:52:49 T119 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-15 05:56:50 T119 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0000, month $0.55 / cap $2.00
+2026-10-15 05:56:50 T119 attempt 2 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-15 05:59:33 T119 attempt 3 escalated call on z-ai/glm-5.3 cost $0.1734, month $0.72 / cap $2.00
+2026-10-15 05:59:33 T119 attempt 3 model error: empty content (finish_reason=length — reasoning budget exhausted, need more max_tokens)
+2026-10-15 05:59:33 T119 FAILED model call failed: empty content (finish_reason=length — reasoning budget exhausted, need more max_tokens)
+2026-10-15 06:19:45 EXIT 0 ALERT: missingno free window CLOSED (canary HTTP 500) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 06:44:42 T120 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-15 06:44:42 T120 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-15 06:44:59 T120 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0462, month $0.77 / cap $2.00
+2026-10-15 06:45:00 T120 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 06:45:00 T120 DONE on attempt 2
+2026-10-15 07:05:52 T121 attempt 1 model error: empty content (finish_reason=stop — reasoning budget exhausted, need more max_tokens)
+2026-10-15 07:05:52 T121 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-15 07:09:52 T121 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0000, month $0.77 / cap $2.00
+2026-10-15 07:09:52 T121 attempt 2 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-15 07:10:18 T121 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0481, month $0.82 / cap $2.00
+2026-10-15 07:10:19 T121 attempt 3 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 07:10:19 T121 DONE on attempt 3
+2026-10-15 07:31:47 T122 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 07:31:47 T122 DONE on attempt 1
+2026-10-15 07:53:23 T123 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 07:53:23 T123 DONE on attempt 1
+2026-10-15 08:15:11 T117 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 08:15:11 T117 DONE on attempt 1
+2026-10-15 08:35:40 EXIT 0 ALERT: missingno free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 08:57:15 T118 attempt 1 model error: HTTP 429 {'status': 429, 'message': "The requested model is temporarily at capacity upstream. This is not your API key's rate limit — please retry shortly."}
+2026-10-15 08:57:15 T118 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-15 08:57:31 T118 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0440, month $0.86 / cap $2.00
+2026-10-15 08:57:32 T118 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 08:57:32 T118 DONE on attempt 2
+2026-10-15 09:18:39 T124 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 09:18:39 T124 DONE on attempt 1
+2026-10-15 09:39:40 EXIT 0 ALERT: missingno free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 10:01:55 T125 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 10:01:55 T125 DONE on attempt 1
+2026-10-15 10:23:14 T126 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 10:23:14 T126 DONE on attempt 1
+2026-10-15 10:44:34 T127 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 10:44:34 T127 DONE on attempt 1

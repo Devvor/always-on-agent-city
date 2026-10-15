@@ -73,6 +73,12 @@ MASTERY (get better at the loop), EXPRESSION (leave a mark — endorsements, gar
 wishes), STATUS (ranks, statues, ledger). Every proposed feature must name which need
 it serves. Features serving none are cut.
 
+## 9b. LABEL DISCIPLINE (text is UI, treat it like one)
+- One floating label per prop, one name tag per character. If two labels would overlap on screen, the more important one wins (speaker > visitor > acting worker > prop sign); the loser is NOT drawn.
+- Status bubbles sit ABOVE name tags with clear separation — never on top of them.
+- Boards show at most 3 lines of standing text; detail lines (counts, moods, hints) appear only when the visitor is near.
+- Quests must not draw their own task IDs (T12, L4...) as world text — visitors can't read shorthand.
+
 ## 10. THE REVIEW RUBRIC — how the director critiques a screenshot
 1. Trace the eye path. Where does the eye land first? Should it?
 2. Count POIs visible: fewer than 4 = too sparse, more than 9 = noise.

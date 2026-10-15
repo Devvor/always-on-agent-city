@@ -318,3 +318,86 @@ Node.js v26.7.0
 2026-10-14 11:37:17 T73 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_fishhut.js': No such file or directory
 
 2026-10-14 13:00:53 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-14 15:07:31 T86 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/T86_check.mjs:1
+# tasks_out/guild_puddles.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 15:08:22 T86 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 15:08:22 T86 DONE on attempt 2
+2026-10-14 17:14:52 T91 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/T91_check.mjs:1
+# tasks_out/guild_catnaps.js
+^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-14 17:15:40 T91 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-14 17:15:40 T91 DONE on attempt 2
+2026-10-14 19:25:41 T94 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 19:25:41 T94 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-14 19:27:58 T94 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0788, month $0.17 / cap $2.00
+2026-10-14 19:27:58 T94 attempt 2 verify rc 1 out tail: 
+2026-10-14 19:28:15 T94 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0438, month $0.21 / cap $2.00
+2026-10-14 19:28:16 T94 attempt 3 verify rc 1 out tail: 
+2026-10-14 19:28:16 T94 FAILED no output
+2026-10-14 19:52:41 T97 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 19:52:41 T97 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-14 19:52:59 T97 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0436, month $0.26 / cap $2.00
+2026-10-14 19:52:59 T97 attempt 2 verify rc 1 out tail: 
+2026-10-14 19:56:59 T97 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0000, month $0.31 / cap $2.00
+2026-10-14 19:56:59 T97 attempt 3 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 19:56:59 T97 FAILED model call failed: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 21:24:41 T104 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-14 21:24:41 T104 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-14 21:24:50 T104 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0409, month $0.51 / cap $2.00
+2026-10-14 21:24:50 T104 attempt 2 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_mist.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:24:57 T104 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0404, month $0.55 / cap $2.00
+2026-10-14 21:24:57 T104 attempt 3 verify rc 1 out tail: node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_mist.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 21:24:57 T104 FAILED node:internal/modules/cjs/loader:1573
+  throw err;
+  ^
+
+Error: Cannot find module '/opt/data/cache/scratch/worker_mist.js_check.mjs'
+    at node:internal/modules/cjs/loader:1569:15
+    at node:internal/main/check_syntax:33:20 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v26.7.0
+
+2026-10-14 22:06:40 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 08:36:41 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.

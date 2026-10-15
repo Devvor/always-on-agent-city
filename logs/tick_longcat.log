@@ -10,3 +10,4 @@
 2026-10-13 09:52:54 W3 attempt 2 model error: HTTP 0 {'error': 'The read operation timed out'}
 2026-10-13 09:56:54 W3 attempt 3 model error: HTTP 0 {'error': 'The read operation timed out'}
 2026-10-13 09:56:54 W3 FAILED model call failed: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-15 00:06:09 EXIT 0 ALERT: longcat free window CLOSED (models list HTTP 0) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.

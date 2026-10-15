@@ -1,7 +1,15 @@
 # DESIGN FINDINGS — the director's quest seeds (newest last; foreman converts to quests)
-- [MED] ~40% of visible floor is featureless -> districts zones (SW market, NE roost, S rim) still thin; seed 2-3 district props
+- [MED] ~60% of visible floor is featureless (capture 2026-10-15T04:39Z, WORSE than the ~40% of Oct 14) -> outer rim/zones still thin; seed 2-3 district props per remaining thin zone (NE aviary, W museum wing, S rim)
 - [HIGH] central hub 3x denser than surroundings (snack stall + ledger + visitor icons all at the hearth) -> relocate/duplicate the stall into the SW market zone; keep the hearth = campfire + banter only
 - [LOW] 5 accent colors in play (green/gold/red/blue/white) at the budget edge -> no new accent colors until existing ones mark findable things
 - [INFO] first review 2026-10-14T10:31Z by orchestrator-prototyped director pass
 - [DONE->removed] central congestion 2026-10-14: market row relocated S (2.5,6), pondside SE (5,5.5), garden pinned E (6,1) init-order bug fixed, orientation card moved bottom-right; LAYOUT.md is now the authoritative town plan
 - [MED] roads missing -> seeded T70 (cobblestone paths HEARTH to each district anchor)
+- [HIGH] capture 2026-10-14T16:33Z shows ERR_CONNECTION_REFUSED — office server on 8798 is DOWN, page cannot be reviewed -> restart worker_office_server.py (persist_on_release) and recapture before next review
+- [HIGH] capture 2026-10-14T22:36Z: HUD text cut off — ledger ticker lines ("the ledger awaits its first entry...", tick lines) and quest-log entries truncate mid-word -> widen ledger/quest-log panels or clamp + ellipsize with full text on hover/E
+- [MED] capture 2026-10-14T22:36Z: no visible idle motion — world doesn't breathe -> seed ambient idle anim pass (rain streaks + puddle shimmer during RAIN, worker bob/sway, fireflies at night) [T111 seeded]
+- [MED] capture 2026-10-15T04:39Z: accent colors now 7 (was 5; canon budget ~3) — purple + orange are the weakest, neither marks something findable -> retire/merge purple patron-license accents toward gold and orange toward the base floor palette before any new color lands
+- [LOW] capture 2026-10-15T04:39Z: "EASURY" treasury sign clipped at the island/viewport edge -> shift treasury label inward 1-2 tiles or wrap to "TREASURY" on two lines
+- [LOW] capture 2026-10-15T04:39Z: "Fireflies: 0" debug counter still exposed as HUD -> hide behind a debug toggle; counters that show zero shouldn't spend eye budget
+- [INFO] review 2026-10-15T04:39Z: live page confirmed; prior HIGH (HUD truncation, T110) + MED (static world, T111) still visibly present — pending quests, not re-reported
+- [LOW] capture 2026-10-15T10:43Z: chat-log entries also truncate mid-line ("W2 FAIL...", "EXIT 0 A...") — same class as the ledger/quest-log T110 finding; extend T110's clamp+ellipsize helper to the chat log too

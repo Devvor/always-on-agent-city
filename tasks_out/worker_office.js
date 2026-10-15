@@ -2034,7 +2034,7 @@ function drawWorker(w, meta, now) {
   if (bubbleText && w.atDesk) {
     const bw = Math.max(60, bubbleText.length * 7 + 10);
     const bx = x - 10;
-    const by = y - 30;
+    const by = y - 57;   // lifted above the name tag — they used to overlap each other
     const shownBubble = fitText(bubbleText, bw - 10);
     ctx.fillStyle = 'rgba(255,255,255,0.94)';
     ctx.fillRect(bx, by, bw, 18);
@@ -2047,34 +2047,45 @@ function drawWorker(w, meta, now) {
     ctx.fillText(shownBubble, bx + 5, by + 9);
   }
   const name = (meta.name != null ? meta.name : (index === 0 ? 'MISSINGNO' : 'STEP5'));
+  // LABEL DISCIPLINE (LAYOUT.md): name tags collide when workers cluster.
+  // Greedy per-frame pass — first tag at a spot wins, later overlapping tags are suppressed.
+  if (V.__tagStamp !== now) { V.__tagStamp = now; V.__tagRects = []; }
   const tagW = 76;
   const tagH = 12;
   const cx = x + 7;
   const tagX = cx - Math.round(tagW * 0.5);
   const tagY = y - 35;
-  ctx.fillStyle = 'rgba(10, 10, 12, 0.88)';
-  ctx.fillRect(tagX, tagY, tagW, tagH);
-  ctx.strokeStyle = nameBorder;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(tagX, tagY, tagW, tagH);
-  ctx.fillStyle = nameColor;
-  ctx.font = 'bold 9px monospace';
-  ctx.textBaseline = 'middle';
-  const shownName = fitText(name, tagW - 6);
-  const metrics = ctx.measureText(shownName);
-  ctx.fillText(shownName, tagX + (tagW - metrics.width) * 0.5, tagY + tagH * 0.5 + 1);
-  const barX = tagX + 3;
-  const barY = tagY + tagH + 3;
-  const barW = tagW - 6;
-  const barH = 3;
-  const tasks = Array.isArray(meta.tasks) ? meta.tasks : [];
-  const total = Math.max(1, tasks.length);
-  const done = tasks.filter(function (t) { return t.status === 'done'; }).length;
-  const ratio = tasks.length ? done / total : 0;
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillRect(barX, barY, barW, barH);
-  ctx.fillStyle = nameColor;
-  ctx.fillRect(barX, barY, Math.round(barW * ratio), barH);
+  let tagClash = false;
+  for (let ri = 0; ri < V.__tagRects.length; ri++) {
+    const r = V.__tagRects[ri];
+    if (tagX < r[0] + r[2] && tagX + tagW > r[0] && tagY < r[1] + r[3] && tagY + tagH > r[1]) { tagClash = true; break; }
+  }
+  if (!tagClash) {
+    V.__tagRects.push([tagX, tagY, tagW, tagH + 6]); // +6: include progress bar
+    ctx.fillStyle = 'rgba(10, 10, 12, 0.88)';
+    ctx.fillRect(tagX, tagY, tagW, tagH);
+    ctx.strokeStyle = nameBorder;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(tagX, tagY, tagW, tagH);
+    ctx.fillStyle = nameColor;
+    ctx.font = 'bold 9px monospace';
+    ctx.textBaseline = 'middle';
+    const shownName = fitText(name, tagW - 6);
+    const metrics = ctx.measureText(shownName);
+    ctx.fillText(shownName, tagX + (tagW - metrics.width) * 0.5, tagY + tagH * 0.5 + 1);
+    const barX = tagX + 3;
+    const barY = tagY + tagH + 3;
+    const barW = tagW - 6;
+    const barH = 3;
+    const tasks = Array.isArray(meta.tasks) ? meta.tasks : [];
+    const total = Math.max(1, tasks.length);
+    const done = tasks.filter(function (t) { return t.status === 'done'; }).length;
+    const ratio = tasks.length ? done / total : 0;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(barX, barY, barW, barH);
+    ctx.fillStyle = nameColor;
+    ctx.fillRect(barX, barY, Math.round(barW * ratio), barH);
+  }
 }
 function render(now) {
   if (V.gameState === 'title') { renderTitle(now); return; }

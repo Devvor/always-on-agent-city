@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-14T17:13:41Z",
+    "checked_at": "2026-10-15T10:42:41Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -313,6 +313,50 @@
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - CAT SUNBEAM NAPS - window.GuildCatnaps = { state: 'idle' } with update/draw/__probe (probe returns { state }):\n1. SUBJECT: the existing guild cat (window.GuildCat if present; otherwise skip drawing the cat itself and only draw FX near it - never move or replace the cat's own module).\n2. DAY: when V.daylight > 0.6, occasionally (every 40-90s, RNG) the cat enters 'napping' state for 20-40s wherever it stands: it curls, a soft warm light patch (gold, alpha 0.15) spreads under it, and small 'z' glyphs float up and fade.\n3. NIGHT: when V.daylight < 0.25, occasionally the cat sits and 'stargazes' - a single tiny star glint above its head for a few seconds.\n4. Transitions are gentle (no snapping); all RNG timers reset cleanly.\n5. Zero exceptions if V/window.GuildCat absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "created_at": "2026-10-14T17:08:49Z",
       "updated_at": "2026-10-14T17:15:40Z"
+    },
+    {
+      "id": "T94",
+      "title": "PLAYABILITY/LIVING WORLD - birdsong request (NE aviary)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_birdsong.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_birdsong.js /opt/data/cache/scratch/T94_check.mjs && node --check /opt/data/cache/scratch/T94_check.mjs && head -1 tasks_out/worker_birdsong.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBirdsong' /opt/data/cache/scratch/T94_check.mjs && echo VERIFY-OK",
+      "spec": "At the NE aviary roosts, the visitor can request a song: when within 2 tiles of a roost and pressing E, one bird hops, a 3-note whistle plays via cue() (randomized from a small pentatonic set), and a music-note label floats up. Show a tiny 'E: song' hint in range. Cooldown 4s per roost.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "updated_at": "2026-10-14T19:28:16Z"
+    },
+    {
+      "id": "T97",
+      "title": "LIVING WORLD/SPECTACLE - crystal grove chimes (NW grove)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_crystalchime.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_crystalchime.js /opt/data/cache/scratch/T97_check.mjs && node --check /opt/data/cache/scratch/T97_check.mjs && head -1 tasks_out/worker_crystalchime.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildCrystalChime' /opt/data/cache/scratch/T97_check.mjs && echo VERIFY-OK",
+      "spec": "In the NW crystal grove, place 3 small crystals (offset 2+ tiles from the existing shrine) in existing accent colors only. When the visitor walks past within 1.5 tiles, each crystal softly chimes (cue(), pitch scaled by crystal size) and glints once. Crystals also glint gently on their own every ~15s at night.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; the visitor must be able to walk to it and interact with E.\n\nCreate a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.allTasks list of {id,status,title}, camera pan/zoom), iso tile helpers, fitText for labels, GuildVisitor (visitor position Vx,Vy in grid coords), cue(type) for sound. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "updated_at": "2026-10-14T19:56:59Z"
+    },
+    {
+      "id": "T104",
+      "title": "LIVING WORLD - pond mist wisps at dusk (S rim, simple FX)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_mist.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_mist.js /opt/data/cache/scratch/T104_check.mjs && node --check /opt/data/cache/scratch/worker_mist.js_check.mjs && head -1 tasks_out/worker_mist.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildMist' /opt/data/cache/scratch/worker_mist.js_check.mjs && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === \"play\".\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - POND MIST - window.GuildMist = { wisps: [] } with update/draw/__probe (probe returns { wisps: wisps.length }):\n1. When V.daylight is between 0.2 and 0.45 (dusk) OR V.weather is RAIN, spawn a slow mist wisp every 2-4s over the S-rim waterfall/pond area (world coords near gx 2..4, south edge; project with iso, clamp on-canvas). Cap 8 wisps.\n2. Each wisp: a soft translucent pale ellipse (alpha 0.10-0.16) drifting sideways ~6px/s with gentle sin-bob, life 6-9s, fade in/out; drawn behind workers.\n3. When weather clears and daylight leaves the band, existing wisps fade out and no new ones spawn.\n4. Pure FX layer, no collision, never writes to V. Zero exceptions if V/iso absent.\n\nZONE RULE: offset your prop 2+ tiles from any existing prop in that zone; never write to V or worker positions; zero exceptions if V/iso absent. NO literal triple-backticks anywhere in your output. End with this instruction: output is only the new file wrapped in one standard fenced code block, three backticks, no language tag, with one line of prose max outside it.",
+      "seeded_by": "foreman",
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-14T21:24:57Z"
     }
   ]
 }
