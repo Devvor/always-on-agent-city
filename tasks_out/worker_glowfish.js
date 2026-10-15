@@ -1,12 +1,29 @@
-function root() {
-  return (typeof window !== 'undefined') ? window : null;
+const BUILDINGS = [];
+
+function createState() {
+  const fish = [];
+  for (let i = 0; i < 6; i++) {
+    fish.push({
+      angle: Math.random() * Math.PI * 2,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.12 + Math.random() * 0.18,
+      radius: 16 + Math.random() * 12,
+      verticalScale: 0.42 + Math.random() * 0.18,
+      driftX: 0,
+      driftY: 0,
+      bubbles: []
+    });
+  }
+  return {
+    fish: fish,
+    ripples: [],
+    shy: false,
+    fade: 0
+  };
 }
 
-function getV() {
-  const w = root();
-  return w && w.V;
-}
-
+function root() { return (typeof window !== 'undefined') ? window : null; }
+function getV() { const w = root(); return w && w.V; }
 function isoFn(gx, gy) {
   const w = root();
   if (w && typeof w.iso === 'function') return w.iso(gx, gy);
@@ -15,239 +32,153 @@ function isoFn(gx, gy) {
   if (g) return { x: g.originX + (gx - gy) * g.tileW * 0.5, y: g.originY + (gx + gy) * g.tileH * 0.5 };
   return { x: 0, y: 0 };
 }
-
-function fitFn(text, maxW) {
+function nowFn() { return (typeof performance !== 'undefined') ? performance.now() : Date.now(); }
+function getState() { const w = root(); return w && w.GuildGlowfish; }
+function cueFn(name) {
   const w = root();
-  if (w && typeof w.fitText === 'function') return w.fitText(text, maxW);
-  return String(text == null ? '' : text);
+  if (w && typeof w.cue === 'function') {
+    try { w.cue(name); } catch (e) {}
+  }
 }
 
-function nowFn() {
-  return (typeof performance !== 'undefined') ? performance.now() : Date.now();
-}
+let lastTime = null;
 
-function getState() {
+function pondTile() { return { gx: 3, gy: 1 }; }
+
+function visitorNearPond(Vv) {
   const w = root();
-  return w && w.GuildGlowFish;
-}
-
-function getAllTasks() {
-  const w = root();
-  if (!w) return null;
-  if (Array.isArray(w.allTasks)) return w.allTasks;
-  const Vv = getV();
-  if (Vv && Array.isArray(Vv.allTasks)) return Vv.allTasks;
-  return null;
-}
-
-function contractOk() {
-  const w = root();
-  if (!w) return false;
-  if (!w.V) return false;
-  if (typeof w.iso !== 'function') return false;
-  if (typeof w.fitText !== 'function') return false;
-  if (!w.GuildVisitor) return false;
-  if (typeof w.cue !== 'function') return false;
-  if (!Array.isArray(getAllTasks())) return false;
-  return true;
-}
-
-function clamp(v, a, b) {
-  return v < a ? a : (v > b ? b : v);
-}
-
-function createState() {
-  return {
-    fishes: [],
-    splashes: [],
-    lastTime: null,
-    dusk: false,
-    spawned: 0,
-    budget: 4,
-    nextSpawn: 0
-  };
-}
-
-function isDusk(Vv) {
-  if (!Vv || typeof Vv.dayHour !== 'number') return false;
-  const h = Vv.dayHour;
-  return h >= 17 && h < 19.5;
-}
-
-function waterAnchor(Vv) {
-  const s = (Vv && typeof Vv.growthStep === 'number') ? Vv.growthStep : 0;
-  const maxC = 1 + s;
-  const water = isoFn(0, maxC);
-  return {
-    start: { x: water.x - 18, y: water.y - 4 },
-    end: { x: water.x + 14, y: water.y + 3 },
-    height: 18 + Math.random() * 8
-  };
-}
-
-function fishPos(f) {
-  const t = clamp(f.t, 0, 1);
-  return {
-    x: f.sx + (f.ex - f.sx) * t,
-    y: f.sy + (f.ey - f.sy) * t - f.height * 4 * t * (1 - t)
-  };
+  const vis = w && w.GuildVisitor;
+  const pond = pondTile();
+  if (!vis || !isFinite(vis.gx) || !isFinite(vis.gy)) return false;
+  const dx = vis.gx - pond.gx;
+  const dy = vis.gy - pond.gy;
+  return Math.hypot(dx, dy) <= 1.8;
 }
 
 function update(now) {
   if (typeof now !== 'number') now = nowFn();
-  const st = getState();
+  const state = getState();
   const Vv = getV();
-  if (!st) {
+  if (!state || !Vv || Vv.gameState !== 'play') {
+    lastTime = now;
     return;
   }
-  if (!Vv || !contractOk()) {
-    st.lastTime = now;
-    return;
-  }
-  if (st.lastTime === null) st.lastTime = now;
-  let dt = (now - st.lastTime) / 1000;
+  if (lastTime === null) lastTime = now;
+  let dt = (now - lastTime) / 1000;
   if (!isFinite(dt) || dt < 0) dt = 0;
   if (dt > 0.12) dt = 0.12;
-  st.lastTime = now;
+  lastTime = now;
 
-  if (Vv.gameState !== 'play') return;
+  const night = Vv.daylight < 0.3;
+  if (night) state.fade = 1;
+  else state.fade = Math.max(0, state.fade - dt / 2);
 
-  const duskNow = isDusk(Vv);
-  if (duskNow) {
-    if (!st.dusk) {
-      st.dusk = true;
-      st.spawned = 0;
-      st.budget = 3 + Math.floor(Math.random() * 3);
-      st.nextSpawn = 0.2 + Math.random() * 1.8;
+  const near = night && visitorNearPond(Vv);
+  if (night && near && !state.shy) {
+    state.shy = true;
+    for (let i = 0; i < state.fish.length; i++) {
+      const f = state.fish[i];
+      const bx = Math.cos(f.angle) * f.radius;
+      const by = Math.sin(f.angle) * f.radius * f.verticalScale;
+      const len = Math.hypot(bx, by) || 1;
+      f.driftX += (bx / len) * 12;
+      f.driftY += (by / len) * 12;
     }
-    if (st.spawned < st.budget) {
-      st.nextSpawn -= dt;
-      if (st.nextSpawn <= 0 && st.fishes.length < 3) {
-        const a = waterAnchor(Vv);
-        st.fishes.push({
-          sx: a.start.x,
-          sy: a.start.y,
-          ex: a.end.x,
-          ey: a.end.y,
-          height: a.height,
-          dur: 0.75 + Math.random() * 0.4,
-          t: 0,
-          size: 2
-        });
-        st.spawned += 1;
-        st.nextSpawn = 2.4 + Math.random() * 4.2;
-      }
-    }
-  } else {
-    st.dusk = false;
-    st.spawned = 0;
-    st.fishes = [];
-  }
-
-  const alive = [];
-  for (let i = 0; i < st.fishes.length; i++) {
-    const f = st.fishes[i];
-    f.t += dt / (f.dur > 0 ? f.dur : 1);
-    if (f.t >= 1) {
-      const p = fishPos(f);
-      st.splashes.push({
-        x: p.x,
-        y: p.y,
-        age: 0,
-        duration: 0.55,
-        size: 2.5
-      });
-    } else {
-      alive.push(f);
+    cueFn('ripple');
+    const pond = pondTile();
+    const center = isoFn(pond.gx, pond.gy);
+    const hasActive = state.ripples.some(function (r) { return (now - r.start) / 1000 < r.duration; });
+    if (!hasActive) {
+      state.ripples.push({ start: now, duration: 1.2, x: center.x, y: center.y, maxRadius: 48 });
     }
   }
-  st.fishes = alive;
+  if (!near) state.shy = false;
 
-  const splashes = [];
-  for (let i = 0; i < st.splashes.length; i++) {
-    const sp = st.splashes[i];
-    sp.age += dt;
-    if (sp.age < sp.duration) splashes.push(sp);
+  for (let i = 0; i < state.fish.length; i++) {
+    const f = state.fish[i];
+    f.angle += f.speed * dt;
+    f.driftX *= Math.max(0, 1 - 1.5 * dt);
+    f.driftY *= Math.max(0, 1 - 1.5 * dt);
+
+    const bx = Math.cos(f.angle) * f.radius;
+    const by = Math.sin(f.angle) * f.radius * f.verticalScale;
+    f.bubbles.unshift({ x: bx + f.driftX, y: by + f.driftY, life: 1 });
+    if (f.bubbles.length > 5) f.bubbles.pop();
+    for (let b = 0; b < f.bubbles.length; b++) {
+      f.bubbles[b].life = Math.max(0, f.bubbles[b].life - dt * 1.3);
+    }
   }
-  st.splashes = splashes;
+
+  const nextRipples = [];
+  for (let i = 0; i < state.ripples.length; i++) {
+    const r = state.ripples[i];
+    if ((now - r.start) / 1000 < r.duration) nextRipples.push(r);
+  }
+  state.ripples = nextRipples;
 }
 
 function draw(ctx) {
-  const st = getState();
+  const state = getState();
   const Vv = getV();
-  if (!ctx || !st || !Vv || Vv.gameState !== 'play') return;
+  if (!state || !ctx || !Vv || Vv.gameState !== 'play' || state.fade <= 0) return;
 
-  ctx.save();
-  try {
-    const prevComposite = ctx.globalCompositeOperation;
-    ctx.globalCompositeOperation = 'lighter';
+  const pond = pondTile();
+  const center = isoFn(pond.gx, pond.gy);
+  const fade = state.fade;
 
-    ctx.fillStyle = '#facc15';
-    for (let i = 0; i < st.fishes.length; i++) {
-      const f = st.fishes[i];
-      const p = fishPos(f);
-      ctx.globalAlpha = 0.95;
-      ctx.fillRect(Math.round(p.x), Math.round(p.y), f.size, f.size);
-      ctx.globalAlpha = 0.45;
-      ctx.fillRect(Math.round(p.x) - 1, Math.round(p.y), 1, 1);
-    }
-
-    for (let i = 0; i < st.splashes.length; i++) {
-      const sp = st.splashes[i];
-      const ratio = clamp(sp.age / (sp.duration > 0 ? sp.duration : 1), 0, 1);
-      const grow = 1 + ratio * 2.6;
-      const size = sp.size * grow;
-      const half = size * 0.5;
-
-      ctx.globalAlpha = (1 - ratio) * 0.85;
-      ctx.fillStyle = '#facc15';
-      ctx.fillRect(
-        Math.round(sp.x - half),
-        Math.round(sp.y - half),
-        Math.round(size),
-        Math.round(size)
-      );
-
-      const size2 = size * 1.7;
-      const half2 = size2 * 0.5;
-      ctx.globalAlpha = (1 - ratio) * 0.45;
-      ctx.fillRect(
-        Math.round(sp.x - half2),
-        Math.round(sp.y - half2),
-        Math.round(size2),
-        Math.round(size2)
-      );
-    }
-
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = prevComposite;
-  } finally {
-    ctx.restore();
+  for (let i = 0; i < state.ripples.length; i++) {
+    const r = state.ripples[i];
+    const prog = (nowFn() - r.start) / (r.duration * 1000);
+    if (prog < 0 || prog >= 1) continue;
+    const radius = 6 + prog * r.maxRadius;
+    ctx.globalAlpha = (1 - prog) * 0.75 * fade;
+    ctx.strokeStyle = '#67e8f9';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+    ctx.stroke();
   }
-}
 
-function drawBackdrop(ctx, now) {
-  if (ctx) return;
-}
+  ctx.globalAlpha = 1;
+  for (let i = 0; i < state.fish.length; i++) {
+    const f = state.fish[i];
 
-function boot() {
-  if (typeof window === 'undefined') return;
-  if (!contractOk()) return;
-  if (window.GuildGlowFish && typeof window.GuildGlowFish.update === 'function') return;
+    for (let b = 0; b < f.bubbles.length; b++) {
+      const bubble = f.bubbles[b];
+      if (bubble.life <= 0) continue;
+      ctx.globalAlpha = bubble.life * 0.45 * fade;
+      ctx.fillStyle = '#67e8f9';
+      ctx.fillRect(Math.round(center.x + bubble.x), Math.round(center.y + bubble.y), 1, 1);
+    }
 
-  const instance = createState();
-  instance.update = update;
-  instance.draw = draw;
-  instance.drawBackdrop = drawBackdrop;
-  instance.__booted = true;
-  window.GuildGlowFish = instance;
+    const bx = Math.cos(f.angle) * f.radius + f.driftX;
+    const by = Math.sin(f.angle) * f.radius * f.verticalScale + f.driftY;
+    const x = Math.round(center.x + bx);
+    const y = Math.round(center.y + by);
+
+    ctx.globalAlpha = 0.14 * fade;
+    ctx.fillStyle = '#67e8f9';
+    ctx.fillRect(x - 5, y - 5, 13, 13);
+    ctx.globalAlpha = 0.22 * fade;
+    ctx.fillRect(x - 3, y - 3, 9, 9);
+
+    ctx.globalAlpha = fade;
+    ctx.fillStyle = '#67e8f9';
+    ctx.fillRect(x, y, 3, 2);
+  }
+  ctx.globalAlpha = 1;
 }
 
 if (typeof window !== 'undefined') {
-  try {
-    boot();
-  } catch (e) {
-  }
+  if (!window.GuildGlowfish) window.GuildGlowfish = createState();
+  window.GuildGlowfish.update = update;
+  window.GuildGlowfish.draw = draw;
+  window.GuildGlowfish.__rawUpdate = update;
+  window.GuildGlowfish.__probe = function () {
+    const st = getState();
+    if (!st) return { fish: 0, shy: false };
+    return { fish: st.fish.length, shy: !!st.shy };
+  };
 }
 
 export {};
