@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-15T18:19:44Z",
+    "checked_at": "2026-10-15T22:43:45Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -89,6 +89,34 @@
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ]
+    },
+    {
+      "id": "D7",
+      "title": "Fishing-derby podium ceremony (craft-heavy polish) - when a derby catch window ends, a small podium rises at the S rim with the top catcher's name, confetti burst and cue, reading live derby state from board data",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T20:12:46Z",
+      "target_file": "tasks_out/worker_derbypodium.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_derbypodium.js /opt/data/cache/scratch/DERBYPODIUM_check.mjs && node --check /opt/data/cache/scratch/DERBYPODIUM_check.mjs && grep -qi 'window.Guild' tasks_out/worker_derbypodium.js && head -1 tasks_out/worker_derbypodium.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D7: DERBY PODIUM CEREMONY (craft-heavy polish pass).\nZONE: S rim near the fishing derby spot, offset 2+ tiles from the lighthouse and buoys. Read live board/derby state via window.V / window.allTasks / any Guild derby global; when a derby round completes, raise a 3-step podium prop, show the top catcher with fitText, fire one confetti burst (existing palette) and cue. Adds real ceremony craft: easing on the podium rise, nameplate flourish. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildDerbyPodium, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+    },
+    {
+      "id": "D8",
+      "title": "Worker emote reaction ring (office polish) - when the visitor uses emotes 1-4, nearby workers glance over and answer with a matching idle flourish and a soft ring FX at the visitor's feet",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T20:38:14Z",
+      "target_file": "tasks_out/worker_emotering.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_emotering.js /opt/data/cache/scratch/EMOTERING_check.mjs && node --check /opt/data/cache/scratch/EMOTERING_check.mjs && grep -qi 'window.Guild' tasks_out/worker_emotering.js && head -1 tasks_out/worker_emotering.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D8: VISITOR EMOTE REACTION RING (craft-heavy polish pass).\nZONE: follows the visitor (no fixed prop). Listen for the visitor's emote state (window.V / GuildVisitor / existing emote globals); on emote 1-4, draw a soft expanding ring FX at the visitor's feet (existing palette) and make workers within ~3 tiles face the visitor with one matching idle flourish for ~2s. Rate-limit to one ring per second. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildEmoteRing, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
     }
   ]
 }
