@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T19:13:40Z",
+    "checked_at": "2026-10-15T19:34:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1879,15 +1879,16 @@
     {
       "id": "T153",
       "title": "S-RIM LIGHTHOUSE - a short lighthouse at the S rim whose beam sweeps slowly after dusk and doubles its sweep speed when a quest ships (spectacle x living world)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_lighthouse.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cp tasks_out/worker_lighthouse.js /opt/data/cache/scratch/T153_check.mjs && node --check /opt/data/cache/scratch/T153_check.mjs && grep -qi 'window.GuildLighthouse' tasks_out/worker_lighthouse.js && head -1 tasks_out/worker_lighthouse.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
-      "spec": "T153: S-RIM LIGHTHOUSE.\nZONE: S rim corner, 2+ tiles from the fishing hut and tide pools. A striped tower with a rotating light cone drawn in the existing gold/white accents only; listens for the guild ship signal (window.V hooks / Guild* globals) to speed up briefly; no new colors, low draw cost.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLighthouse, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+      "spec": "T153: S-RIM LIGHTHOUSE.\nZONE: S rim corner, 2+ tiles from the fishing hut and tide pools. A striped tower with a rotating light cone drawn in the existing gold/white accents only; listens for the guild ship signal (window.V hooks / Guild* globals) to speed up briefly; no new colors, low draw cost.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLighthouse, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block.",
+      "updated_at": "2026-10-15T19:35:11Z"
     },
     {
       "id": "T154",
