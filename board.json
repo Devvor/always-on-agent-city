@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T05:30:40Z",
+    "checked_at": "2026-10-15T06:40:42Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1354,8 +1354,8 @@
     {
       "id": "T119",
       "title": "LIVING WORLD/PLAYABILITY - night-market greeter NPC (lantern arc Q2, SW market row) (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "failed",
+      "attempts": 1,
       "target_file": "tasks_out/worker_lanterngreeter.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1364,13 +1364,14 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_lanterngreeter.js /opt/data/cache/scratch/T119_check.mjs && node --check /opt/data/cache/scratch/T119_check.mjs && head -1 tasks_out/worker_lanterngreeter.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildLanternGreeter' /opt/data/cache/scratch/T119_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - LIVING WORLD/PLAYABILITY - night-market greeter NPC (lantern arc Q2, SW market row) - window.GuildLanternGreeter = {{ ... }} with update/draw/__probe:\nA small lantern-bearer NPC who appears at dusk (V.daylight crossing below 0.6) on the SW market row (around gx 1.5..3, gy 4..6, offset 2+ tiles from the night-market stalls). They carry a tiny glowing lantern (gold halo, 2px light radius), walk a slow fixed loop down the row, pause 3s at each stall, and when the visitor comes within 2 tiles they face the visitor and raise the lantern with an inviting bob plus a one-line speech bubble inviting them down the row (rotate 3 flavor lines). At dawn they walk off and fade. __probe returns { active, visitorNear }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse the existing gold accent (#d4af37) for lantern light - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-15"
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T05:59:33Z"
     },
     {
       "id": "T120",
       "title": "PLAYABILITY - lantern-wishing coin toss (lantern arc Q3, SW market row) (fresh module)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_wishbooth.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1379,7 +1380,8 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_wishbooth.js /opt/data/cache/scratch/T120_check.mjs && node --check /opt/data/cache/scratch/T120_check.mjs && head -1 tasks_out/worker_wishbooth.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildWishBooth' /opt/data/cache/scratch/T120_check.mjs && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather like 'CLEAR'/'RAIN', V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBEHAVIOR - PLAYABILITY - lantern-wishing coin toss (lantern arc Q3, SW market row) - window.GuildWishBooth = {{ ... }} with update/draw/__probe:\nA tiny wishing booth on the SW market row (offset 2+ tiles from stall clusters and the greeter's loop path). At night (V.daylight < 0.35) a small sign appears; when the visitor stands within 1.5 tiles, show a one-line prompt (fitText, gold): toss a coin. A single E press plays a coin-flip arc to the booth, a paper lantern rises 20px with a soft pop, a short wish whisper line appears in a fading bubble (rotate 5 lines), and window.cue('coin') fires (try/catch). Track coins tossed on the module state; every 10th toss the booth's lantern flares 2x briefly. No persistence, no V writes. __probe returns { coins }.\n\nZONE RULE: anchor your prop to the stated zone, offset 2+ tiles from any existing prop there; never write to V or worker positions; pure prop/FX/UI layer, no collision changes; zero exceptions if V/iso absent. Reuse the existing gold accent (#d4af37) for lantern light - no new accent colors.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-15"
+      "seeded_at": "2026-10-15",
+      "updated_at": "2026-10-15T06:45:00Z"
     },
     {
       "id": "T121",
