@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T02:20:40Z",
+    "checked_at": "2026-10-15T03:02:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1246,8 +1246,8 @@
       "updated_at": "2026-10-15T02:21:21Z"
     },
     {
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
@@ -1256,7 +1256,8 @@
       "title": "SELF-DOC - walking history tour: bronze ring of marker stones, each tied to one real guild milestone date from board history (readable with E)",
       "target_file": "tasks_out/worker_stonestour.js",
       "verify_cmd": "cp tasks_out/worker_stonestour.js /opt/data/cache/scratch/T107_check.mjs && node --check /opt/data/cache/scratch/T107_check.mjs && grep -q 'window.GuildStoneTour' tasks_out/worker_stonestour.js && [ -s tasks_out/worker_stonestour.js ] && ! head -1 tasks_out/worker_stonestour.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Build window.GuildStoneTour: a ring of small bronze marker stones spread AROUND the island rim (not the center), each bound to one real milestone from V.allTasks history (first done, first economy quest, first spectacle, latest done, etc). Standing near a stone + E opens a one-line parchment note with the date + quest title. A subtle chevron points to the next unread stone. Bronze = existing palette, no new accents, 2+ tiles from existing props. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildStoneTour on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_stonestour.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it."
+      "spec": "Build window.GuildStoneTour: a ring of small bronze marker stones spread AROUND the island rim (not the center), each bound to one real milestone from V.allTasks history (first done, first economy quest, first spectacle, latest done, etc). Standing near a stone + E opens a one-line parchment note with the date + quest title. A subtle chevron points to the next unread stone. Bronze = existing palette, no new accents, 2+ tiles from existing props. Pattern/style: follow tasks_out/worker_visitor.js. Contract: the client exposes window V, iso, fitText, GuildVisitor, cue(), allTasks; register your module as window.GuildStoneTour on load and self-init defensively (no-op if contract missing). Target file: tasks_out/worker_stonestour.js (fresh ES module; NEVER edit worker_office.js or worker_office.html). Verify: node --check passes. Output: reply with ONLY the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside it.",
+      "updated_at": "2026-10-15T03:03:31Z"
     },
     {
       "status": "pending",
