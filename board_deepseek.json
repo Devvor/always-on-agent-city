@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-15T16:34:43Z",
+    "checked_at": "2026-10-15T16:39:47Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -23,9 +23,9 @@
     {
       "id": "D2",
       "title": "Worker naming-day ceremony (charter queue T148) - quirk-flavored roster moments",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "",
+      "status": "done",
+      "attempts": 1,
+      "updated_at": "2026-10-15T16:46:12Z",
       "target_file": "tasks_out/worker_namingday.js",
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_namingday.js /opt/data/cache/scratch/D2_check.mjs && node --check /opt/data/cache/scratch/D2_check.mjs && head -1 tasks_out/worker_namingday.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildNamingDay' /opt/data/cache/scratch/D2_check.mjs && echo VERIFY-OK",
       "spec": "BEHAVIOR - WORKER NAMING-DAY CEREMONY (charter queue T148: personality x spectacle) - window.GuildNamingDay = { ceremonies: 0, active: null, cool: 0 } with update/draw/__probe (probe returns { ceremonies, activeName }).\n1. Pattern + client contract: same as worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); the render loop auto-discovers window.GuildNamingDay when V.gameState === 'play'. V exposes V.workers, V.workerStates, V.daylight, V.grid; iso(gx,gy), fitText(text,maxW), window.GuildVisitor, window.cue(name) in try/catch.\n2. ROTATION: every 150-210s (RNG) pick the next worker in rotation from V.workers (skip absent) for their NAMING DAY: 6s ceremony at the campfire hearth zone (anchor near the hearth, 2+ tiles from other props' centers).\n3. CEREMONY: gold bunting strands rise between two poles, the worker sprite gets a 2s spotlight cone (soft alpha, existing gold only), a banner unfurls with their name in their archetype style - write all four voices: glitchy trickster (e.g. 'missingno, the Glitch of Honor'), aloof poet (a 6-word verse), eager rookie (an excited exclamation), serene philosopher (a calm epithet) - plus 1 spoken bubble line per archetype (3 variants each, rotate). cue('levelup') once in try/catch. Fireworks: 3 small gold spark bursts, staggered.\n4. The visitor within 2.5 tiles during a ceremony sees a hint '[E] CONGRATULATE' - E adds a small heart + a thank-you bubble from the worker (1 per ceremony).\n5. Never moves workers or other props (you only draw overlay FX, you never write V); zero exceptions if V/iso absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
