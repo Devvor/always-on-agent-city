@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T17:49:42Z",
+    "checked_at": "2026-10-15T18:10:41Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1819,6 +1819,85 @@
       "attempts": 1,
       "verify_cmd": "cp tasks_out/worker_butterfly.js /opt/data/cache/scratch/T146_check.mjs && node --check /opt/data/cache/scratch/T146_check.mjs && ! sed -n 1p tasks_out/worker_butterfly.js | grep -qE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -qE \"(window\\.)?Guild|Guild\" tasks_out/worker_butterfly.js && grep -q 'GuildButterfly' tasks_out/worker_butterfly.js && echo VERIFY-OK",
       "updated_at": "2026-10-15T17:50:16Z"
+    },
+    {
+      "id": "T149",
+      "title": "S-RIM FISHING DERBY - a timed catch challenge at the S-rim fishing spot: press E at the dock to start a 30s derby, each catch rings a cue and adds to a derby score plaque (playability x economy)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_fishingderby.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_fishingderby.js /opt/data/cache/scratch/T149_check.mjs && node --check /opt/data/cache/scratch/T149_check.mjs && grep -qi 'window.GuildFishingDerby' tasks_out/worker_fishingderby.js && head -1 tasks_out/worker_fishingderby.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
+      "spec": "T149: S-RIM FISHING DERBY.\nZONE: S rim (2..4, south edge), near the existing fishing hut but 2+ tiles off it. A small derby post with a floating score plaque; the derby uses the E-key interact only; catches feed the existing economy (coins via window.V hooks, no new currency); cooldown between derbies so it cannot be spammed.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildFishingDerby, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block.",
+      "updated_at": "2026-10-15T18:11:08Z"
+    },
+    {
+      "id": "T150",
+      "title": "N-EDGE CAIRN TRAIL - a trail of small stone cairns along the north edge, one cairn per district, each with a one-line plaque generated from live board.json history (self-doc x spectacle)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_cairns.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_cairns.js /opt/data/cache/scratch/T150_check.mjs && node --check /opt/data/cache/scratch/T150_check.mjs && grep -qi 'window.GuildCairns' tasks_out/worker_cairns.js && head -1 tasks_out/worker_cairns.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
+      "spec": "T150: N-EDGE CAIRN TRAIL.\nZONE: N edge (x -4..4, y near -6), spaced 2+ tiles apart, away from the watchtower. Each cairn stacks 3-5 stones with slight jitter; plaques use window.fitText and read real counts from window.allTasks/window.V (e.g. quests done, workers on shift); no new colors.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildCairns, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+    },
+    {
+      "id": "T151",
+      "title": "MARKET ROW PRICE BOARD - a hinged price board at the SW market row listing stall goods with prices that drift with the island's real demand signals from board.json (economy x self-doc)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_priceboard.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_priceboard.js /opt/data/cache/scratch/T151_check.mjs && node --check /opt/data/cache/scratch/T151_check.mjs && grep -qi 'window.GuildPriceBoard' tasks_out/worker_priceboard.js && head -1 tasks_out/worker_priceboard.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
+      "spec": "T151: MARKET ROW PRICE BOARD.\nZONE: SW market row (-1..2, 4..6), 2+ tiles from any existing stall. Prices tick slowly and deterministically from live state (quests done, treasury count in window.V); hovering/E shows one line of flavor per good; text clamped with window.fitText so nothing clips at island bounds.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildPriceBoard, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+    },
+    {
+      "id": "T152",
+      "title": "WORKER DREAM BUBBLES - at night, sleeping workers emit slow-rising dream bubbles containing tiny quirk-flavored glyphs (missingno glitch blocks, step5 verse dashes, laguna sparkles, longcat ellipses) (personality x living world)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_dreambubbles.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_dreambubbles.js /opt/data/cache/scratch/T152_check.mjs && node --check /opt/data/cache/scratch/T152_check.mjs && grep -qi 'window.GuildDreamBubbles' tasks_out/worker_dreambubbles.js && head -1 tasks_out/worker_dreambubbles.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
+      "spec": "T152: WORKER DREAM BUBBLES.\nZONE: follows each worker's sleeping position (read from window.V / roster), no fixed prop. Bubbles rise, wobble, pop softly; only at night; use the existing gold/white accents; keep particle counts tiny (<20 live).\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildDreamBubbles, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+    },
+    {
+      "id": "T153",
+      "title": "S-RIM LIGHTHOUSE - a short lighthouse at the S rim whose beam sweeps slowly after dusk and doubles its sweep speed when a quest ships (spectacle x living world)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_lighthouse.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_lighthouse.js /opt/data/cache/scratch/T153_check.mjs && node --check /opt/data/cache/scratch/T153_check.mjs && grep -qi 'window.GuildLighthouse' tasks_out/worker_lighthouse.js && head -1 tasks_out/worker_lighthouse.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
+      "spec": "T153: S-RIM LIGHTHOUSE.\nZONE: S rim corner, 2+ tiles from the fishing hut and tide pools. A striped tower with a rotating light cone drawn in the existing gold/white accents only; listens for the guild ship signal (window.V hooks / Guild* globals) to speed up briefly; no new colors, low draw cost.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLighthouse, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
+    },
+    {
+      "id": "T154",
+      "title": "N-EDGE STARGAZING POST - a small telescope platform on the N edge where the visitor presses E to get one line of real guild lore pulled from live board state (playability x self-doc)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_stargazing.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_stargazing.js /opt/data/cache/scratch/T154_check.mjs && node --check /opt/data/cache/scratch/T154_check.mjs && grep -qi 'window.GuildStargazing' tasks_out/worker_stargazing.js && head -1 tasks_out/worker_stargazing.js | grep -qv '^[A-Za-z_][A-Za-z0-9_]*$' && echo VERIFY-OK",
+      "spec": "T154: N-EDGE STARGAZING POST.\nZONE: N edge, 2+ tiles from the cairn trail and watchtower. A tripod telescope prop; E cycles 5-6 lore lines composed from real live data (top worker, quests shipped, current streak) via window.V/window.allTasks; text drawn with window.fitText, gold accent only.\nPATTERN: study tasks_out/worker_visitor.js \u2014 a self-contained ES module. CONTRACT: publish your feature on a window global named GuildStargazing, with an update(now) method (and draw(ctx) if it paints); guard all state (typeof window.V, window.iso, window.fitText, window.GuildVisitor, window.cue, window.allTasks) and no-op gracefully when missing; module-scope only, no DOM except the given canvas ctx; no imports of project files; reuse existing accent colors only (green/gold/red/blue/white), no new colors; anchor props to the zone in the spec, 2+ tiles from any existing prop; never edit worker_office.js.\nOutput is ONLY the new file wrapped in one standard fenced code block, three backticks, no language tag; one line of prose max outside the block."
     }
   ],
   "projects": [
