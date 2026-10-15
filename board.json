@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T12:29:42Z",
+    "checked_at": "2026-10-15T12:50:41Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1612,8 +1612,8 @@
       "title": "PLAYABILITY/ECONOMY - SW market snack-stall annex (decentralize the hub)",
       "target_file": "tasks_out/worker_stallannex.js",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\nCOLOR DISCIPLINE: use only the existing accent palette (gold #d4af37, green, red, blue, white) - no new accent colors.\nZONE RULE: offset your prop 2+ tiles from any existing prop in its zone; never write to V or worker positions; zero exceptions if V/iso absent.\nBEHAVIOR - STALL ANNEX - window.GuildStallAnnex = { gx, gy, customers: [] } with update/draw/__probe (probe returns { customers: customers.length }):\n1. The design review found the central hub 3x denser than its surroundings (snack stall + ledger + visitors all at the hearth). Build a SATELLITE snack stall in the SW market row zone (around gx 0.5, gy 5.3, 2+ tiles from the night-market stalls and quest board): striped awning (tan/dark), counter, a chalk price tag reading 'SNACKS 2 GC', gold trim only.\n2. AMBIENT CUSTOMERS: every 20-40s, if any IDLE worker exists, briefly draw that worker as a ghost overlay standing at the stall for 4s with a small 'buys a snack' bubble (dark box, gold border, fitText) - NEVER move real workers.\n3. If window.GuildEconomy exists and any purse DECREASES while a customer is at the stall, float a tiny gold '+2 GC' above the stall (feedback only, do not double-write economy state).\n4. Pure prop/FX layer. Zero exceptions if V absent. NOTE for the orchestrator (outside the spec): the ORIGINAL hearth stall stays until the orchestrator relocates it - workers cannot edit worker_snackstall.js.",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
@@ -1621,7 +1621,7 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_stallannex.js /opt/data/cache/scratch/T133_check.mjs && node --check /opt/data/cache/scratch/T133_check.mjs && head -1 tasks_out/worker_stallannex.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.Guild' /opt/data/cache/scratch/T133_check.mjs && echo VERIFY-OK",
       "seeded_by": "foreman",
       "seeded_at": "2026-10-15",
-      "updated_at": "2026-10-15T11:42:31Z"
+      "updated_at": "2026-10-15T12:51:35Z"
     },
     {
       "id": "T134",
