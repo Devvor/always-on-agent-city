@@ -73,31 +73,36 @@ foreman (seeding) -> workers (build) -> gates (verify) -> orchestrator (wiring +
 
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
 
-0. ARC: THE LANTERN NIGHT MARKET (director arc, ACTIVE) —
-   - PITCH: "When night falls, the market row lights up — lanterns, stalls, and one big
+0. ARC: THE LANTERN NIGHT MARKET (director arc, ACTIVE) -
+   - PITCH: "When night falls, the market row lights up - lanterns, stalls, and one big
      festival finale you'll stop to watch."
    - LOOP: feeds the visitor loop (walk -> interact -> reward) and the economy sink:
      night-only stalls want the coins the visitor earns by day.
-   - NEED: CURIOSITY (why is the market different at night?) + STATUS (festival patron ranks).
-   - ARC: 3-6 quests, ending in spectacle —
-     Q1 night-only lantern stalls glow on after dusk (SW market row, 2+ tiles apart);
-     Q2 a night-market greeter NPC invites the visitor down the row;
-     Q3 lantern-wishing: toss a coin at a lantern for a small reward (sink + juice);
-     Q4 festival finale: when the night market earns 50 GC total, ALL lanterns lift off
-        as a rising lantern release (moment of spectacle) and the counter resets.
-   - RISK: night is already the firefly/glow window — color budget overflows (canon §4:
-     max ~3 accents). GUARD: lantern glow reuses existing gold accent only, no new colors;
-     stalls reuse the SW market zone, no new district. Builds on seeded T108 (night market).
-   - DIRECTOR NOTE: this arc is ACTIVE from 2026-10-15T04:39Z; no other arc may start
-     until the finale ships end-to-end.
+   - ARC STATUS: all beats (T108/T119/T120/T121) shipped -> awaiting orchestrator wiring;
+     arc closes on visual QA of the finale.
+   - RISK: lantern glow reuses existing gold accent only, no new colors; stalls reuse the SW
+     market zone.
 
-1. T147 ISLAND BIRDWATCHING JOURNAL (proposed, not seeded) -
-   - RATIONALE: playability x self-doc - a pocket journal where spotting each fauna type
-     (birds, butterflies, pigeons, owl, cat) earns a stamped entry from REAL live-game state; a completed page gets a small ceremony. Makes wandering rewarding.
-2. T148 WORKER NAMING-DAY CEREMONY (proposed, not seeded) -
-   - RATIONALE: personality x spectacle - each worker earns a quirk-flavored naming-day moment on rotation (missingno glitch-trick, laguna rookie hat, step5 poet verse); the roster becomes characters, not sprites.
+1. T160 GUILD PETTING ZOO LEDGER (proposed, not seeded) -
+3. T163 WISH SCALE DRIFT (proposed, not seeded) -
+   - RATIONALE: economy x playability - the S-rim wish scales (T137) slowly tip toward whichever
+     wish type the VISITOR actually makes most; a tiny needle move each game-day makes spending feel
+     consequential and gives the pond a mood you can read at a glance.
+4. T164 RIVALRY NOTICE BOARD (proposed, not seeded) -
+   - RATIONALE: self-doc x personality - a small board in the heroes' plaza (SE) that posts one
+     playful line per game-day pairing two workers (from real board.json history: fastest ship,
+     longest retry streak), written in each worker's voice; keeps personality visible without new code paths.
+   - RATIONALE: self-doc x playability - a small ledger plaque in the E garden listing every pettable creature (cat, fox, ...) with a pet-count
+     that reads live from the pet globals; makes the island's living creatures part of its own record.
+2. T161 NIGHT-MARKET LANTERN FERRY (proposed, not seeded) -
+   - RATIONALE: spectacle x living world - a tiny lantern ferry that crosses the S-rim water after dusk carrying one passenger NPC, docking at the
+     buoy line; a moment to stop and watch that compounds with the buoy/lighthouse work.
+
 ## Seeded (foreman, 2026-10-15)
 
+- Run 29 (2026-10-15 ~23:40Z, ORCHESTRATOR — SPREAD PASS, thedev directive 'everything is still clumped, spread everything out'): core client P1-P4 buildings moved from the 2x2 center clump (-2,0)/(0,-2)/(1,0)/(0,1) to the cardinal edges: P1 (-8,2.5) W, P2 (-7.5,-5) NW, P3 (7.5,0.5) E, P4 (-4.5,6) SW — all spots collision-checked >=2 tiles from every known zone prop. Core hearth satellites spread: banner -> (2,-4), bookshelf-stall -> (2.5,-2.5), forge -> (-2,2); campfire + monument + cat + coin pile STAY as the social hearth (charter-protected). Misplaced props moved to their spec-ordered zones: stargazing post -> N edge (0,-8), lighthouse -> S rim (4.5,7.5), guild bell pair -> (−4.5,−0.5), memorybook -> W wing (−7.5,4.5). COUPLING FIX: 5 modules carried hardcoded copies of the old core coords as avoid-lists (breathe/firejar2/lanternpath/murmur/namingday) — all updated. QA: BUILDINGS verified live at new coords via CDP, 41 center pixel-blocks lost their dark mass, all 11 files pass node --check, page renders healthy (129 Guild globals). Director: next pass should re-check the clump finding against the new layout. LESSON: modules copy core coordinates into avoid-lists — any future core position change MUST grep worker_*.js for stale copies.
+- Run 28 (2026-10-15 ~20Z, foreman): missingno was 1 pending (T154) -> seeded 5 to missingno (window open), converting the Queue FIRST: T155 festival memory book (W wing) + T156 treasury vault glint (SW), then foreman inventions T157 market busker (SW row, economy x living world), T158 garden pet fox (E garden, playability x living world), T159 rim lantern buoys (S rim, spectacle; gold glow only). Also seeded 2 craft-heavy polish quests to deepseek (window open): D7 derby podium ceremony (compounds with T149), D8 visitor emote reaction ring (juice pass). laguna NOT seeded: tail = 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE. step5 not seeded (dies ~Oct 16). DESIGN_FINDINGS unconverted remain orchestrator-side (HIGH central-hub density / MED hub label overlap / LOW sign clips). Spot-audit clean: missingno T153 worker_lighthouse.js node --check OK, 12 Guild/Lighthouse refs, line-1 clean, commit 271cf16 matches title; deepseek D6 worker_footprints.js node --check OK, GuildFootprints export, commit clean. Queue replenished with proposals T160 petting-zoo ledger + T161 night-market lantern ferry. Pending now 6 missingno + 2 deepseek.
+- Run 27 (2026-10-15 ~18Z, foreman): missingno was 0 pending -> seeded 6 to missingno (window open), converting the remaining MED finding first: T149 S-rim fishing derby (playability x economy; S rim is a priority zone per the MED 'empty floor ~35% / prioritize S rim + N edge' finding), T150 N-edge cairn trail (self-doc x spectacle, N edge priority), T151 market row price board (economy x self-doc), T152 worker dream bubbles (personality x living world), T153 S-rim lighthouse (spectacle), T154 N-edge stargazing post (playability x self-doc). Queue cleaned: T147/T148 were built as deepseek D1/D2 (done) - removed; proposed T155 festival memory book + T156 treasury glint. laguna NOT seeded: tail = 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE. step5 not seeded (dies ~Oct 16). deepseek D5/D6 pending (window open). DESIGN_FINDINGS unconverted: HIGH central-hub density (satellite stall built, original-stall removal is orchestrator-side) + MED hub label overlap + LOW clips/debug counter - all client/orchestrator-side, workers cannot edit worker_office.js. Spot-audit clean: missingno T146 worker_butterfly.js node --check OK, 4x window.Guild refs, line-1 clean, commit 058de6d matches title; deepseek D4 worker_statusflair.js OK (commit fb1d01f); laguna T91 worker_catnaps.js re-checked OK. Pending now 6 (all missingno) + 2 deepseek.
 - Run 26 (2026-10-15 ~16:50Z, ORCHESTRATOR — worker #5 species online, user-approved): deepseek = opencode/deepseek-v4.1-flash-free via the OpenCode CLI (no auth, free limited-time window). Engine /opt/data/scripts/missingno_worker_tick5.py, cron 20m no_agent (same Slack deliver), board_deepseek.json, tick5 has a flock overlap guard + 480s engine timeout (100KB client includes need it; 240s timed out once and the paid ladder finished D1 for $0.05). Office server /api/board now serves 5 workers (deepseek nameplate verified by screenshot QA). Seeded 6 polish quests, D-series, charter-queue conversions FIRST: D1 T147 birdwatching journal (DONE — built by paid fallback after timeout, clean) + D2 T148 naming-day ceremony (DONE first-try by DeepSeek itself, 538 lines, $0.00 — the bench PASS), D3 dockside arrivals ferry, D4 worker activity status flair, D5 golden-hour sky grade, D6 visitor footprints. Quality bar per thedev Oct 15: pallete-office-grade polish (living statuses, arrivals, moments that stop you) — route craft-heavy quests here. D3-D6 pending. missingno unchanged, 6 pending. step5 not seeded (dies ~Oct 16). laguna breaker unchanged.
 - Run 25 (2026-10-15 ~16Z, foreman): both boards were 0 pending. Queue converted FIRST -> seeded to missingno (window open): T141 night-market merchant moods (was T139) + T142 guild time capsule (was T140), plus foreman inventions T143 lamplighter dusk rounds (living world, reuses gold only), T144 souvenir coin press at treasury plaza (playability x economy), T145 N-rim watchtower signal lantern (spectacle x self-doc), T146 butterfly meadow E garden (living world fauna; also serves the recurring MED 'thin zones / ~60% featureless floor' finding). laguna NOT seeded: tail = 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE. step5 not seeded (dies ~Oct 16). Pending now 6 (all missingno). Spot-audit clean: missingno T138 worker_statueglow.js node --check OK, 3x GuildStatueGlow refs, line-1 clean, commit e59c628 matches title; laguna T91 re-checked clean in prior runs. Queue replenished with proposals T147 birdwatching journal + T148 worker naming-day ceremony. Server 8798 answering 200. T138 + T136 + T137 + T97 + T104 ready to wire.
 - Run 24 (2026-10-15 ~14Z, foreman): both boards were 0 pending. Queue items converted FIRST -> seeded to missingno (window open): T136 letter-writing desk + T137 pond feeding sink (from Queue), then re-routed 2 laguna-failed zone quests to missingno with attempts reset: T97 crystal grove chimes (NW) + T104 pond mist (S rim), reset failed T119 lantern greeter (arc Q2, genuine failure, retry), plus foreman invention T138 hero statue victory glow (SE plaza, spectacle x self-doc; references window.GuildStatues, no new colors). laguna NOT seeded: tail = 3 consecutive failures (T94/T97/T104) -> CIRCUIT BREAKER ACTIVE (T97/T104 now re-routed; still not seeding laguna itself). step5 not seeded (dies ~Oct 16). Pending now 6 (all missingno). Spot-audit clean: missingno T135 worker_windsocks.js node --check OK, 5x window.GuildWindsocks refs, line-1 clean, commit df8b64c matches title; laguna T91 worker_catnaps.js re-checked clean. Server 8798 answering 200. Lantern arc beats status: T108/T120/T121 done, T119 reset pending (only arc Q2 left). T135 + T134 + T133 + T130 ready to wire.
@@ -162,6 +167,7 @@ foreman (seeding) -> workers (build) -> gates (verify) -> orchestrator (wiring +
 - T39 CONTROLS CARD (steal: balik-kampung onboarding) — worker_controls.js: first-visit parchment card listing the controls (WASD/arrows walk, E talk/pet/endorse, drag pan, wheel zoom, 1-4 emotes), any-key dismiss, gold #d4af37 accents; never blocks after first dismiss (session-only).
 - T40 GOLD GUIDES (steal: balik-kampung 'ikut penanda emas') — worker_guides.js: soft gold chevron markers orbiting the visitor pointing at the nearest point of interest (quest board, museum pedestal, a working worker, the cat), rotating when reached.
 
+- Run 29 (2026-10-15 ~22Z, foreman): ALL four seedable boards breaker-tripped (missingno 5 consecutive fails T155-T159, laguna 4 T94-T104, longcat 3, deepseek 3) AND pending=0 everywhere -> NOTHING seeded; breakers flag. Proposals added to Queue: T163 wish-scale drift (economy), T164 rivalry notice board (self-doc x personality). Spot-audit clean: missingno T154 worker_stargazing.js node --check OK + window.GuildStargazing export, commit d10e9d6 matches title; laguna T91 worker_catnaps.js node --check OK. Wiring is auto (loader fetches server manifest), so no 'ready to wire' backlog. step5 window dies ~Oct 16. DESIGN_FINDINGS HIGH/MED (hub density, label overlap) remain orchestrator-side client edits.
 ## Done (moved here once verified)
 - T27 quest board, T31 emotes, T32 journal (charter 1-3, missingno, all
   first-try). T29 (old museum sketch) superseded by T36 museum wing.
