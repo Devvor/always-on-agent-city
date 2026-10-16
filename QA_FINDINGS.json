@@ -1,0 +1,20 @@
+[
+  {
+    "id": "render_loop_alive",
+    "check": "render_loop_alive",
+    "status": "resolved",
+    "detail": "nowTime 4397.3 -> 4397.3",
+    "first_seen": "2026-10-16T08:41:52Z",
+    "last_seen": "2026-10-16T08:43:13Z",
+    "seeded_task": null
+  },
+  {
+    "id": "district_anchors",
+    "check": "district_anchors",
+    "status": "resolved",
+    "detail": "clocktower=[3, 3]",
+    "first_seen": "2026-10-16T08:41:52Z",
+    "last_seen": "2026-10-16T08:43:13Z",
+    "seeded_task": null
+  }
+]

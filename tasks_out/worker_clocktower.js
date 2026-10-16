@@ -40,14 +40,17 @@ function createState() {
 function getState() { const w = root(); return w && w.GuildClocktower; }
 
 function clampTowerPos(st, Vv) {
-  // NW plaza rim anchor: tiles around gx 1..3, gy 1..3, clamped within the grown floor.
-  let gx = 3, gy = 3;
+  // NORTH_RIM district anchor (LAYOUT.md / window.GuildZones), clamped within
+  // the grown floor so the tower never floats over void on a young island.
+  const z = (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.NORTH_RIM) || { gx: 0, gy: -14 };
+  let gx = z.gx + 2, gy = z.gy;
   const s = (typeof Vv.growthStep === 'number') ? Vv.growthStep : 0;
-  while (tileRing(gx, gy) > s && (gx > 1 || gy > 1)) {
-    if (gx > 1) gx--;
-    else if (gy > 1) gy--;
+  const r = Math.abs(gx) > Math.abs(gy) ? Math.abs(gx) : Math.abs(gy);
+  if (r > s) {
+    const k = (s - 1) / r;
+    gx = Math.round(gx * k);
+    gy = Math.round(gy * k);
   }
-  if (tileRing(gx, gy) > s) { gx = 1; gy = 1; }
   st.gx = gx;
   st.gy = gy;
 }
