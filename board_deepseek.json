@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T07:32:46Z",
+    "checked_at": "2026-10-16T07:54:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -337,15 +337,16 @@
     {
       "id": "D24",
       "title": "T173 far-corner compass sundial - a stone sundial in the far NW corner whose shadow sweeps with the real day-night cycle and whose rose marks every district anchor (self-doc x spectacle)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_sundial.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_sundial.js /opt/data/cache/scratch/D24_check.mjs && node --check /opt/data/cache/scratch/D24_check.mjs && grep -qi 'window.Guild' tasks_out/worker_sundial.js && head -1 tasks_out/worker_sundial.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildSundial = { } with update/draw/__probe:\n1. DIAL: one stone compass-rose sundial at (-5.5, -5.5) in the far NW corner, 2+ tiles from the crystal grove and shrine props, clamped within the grown floor. Rose arms etched in stone-grey with the 4 cardinal letters (N/E/S/W) via fitText in small size.\n2. SELF-DOC: faint gold tick marks around the rose pointing toward each real district anchor (crystal grove NW, aviary NE, market SW, heroes SE) - these are directions, not labels; keep them 1 tile long, no text.\n3. SHADOW: the gnomon shadow rotates with V.daylight (noon = shortest, night = faint moon-shadow at a fixed slow angle); at night the rose's cardinal letters glow faint gold.\n4. Pure FX/prop layer: no collision, no interaction, no new colors; zero exceptions if V or iso are absent."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildSundial = { } with update/draw/__probe:\n1. DIAL: one stone compass-rose sundial at (-5.5, -5.5) in the far NW corner, 2+ tiles from the crystal grove and shrine props, clamped within the grown floor. Rose arms etched in stone-grey with the 4 cardinal letters (N/E/S/W) via fitText in small size.\n2. SELF-DOC: faint gold tick marks around the rose pointing toward each real district anchor (crystal grove NW, aviary NE, market SW, heroes SE) - these are directions, not labels; keep them 1 tile long, no text.\n3. SHADOW: the gnomon shadow rotates with V.daylight (noon = shortest, night = faint moon-shadow at a fixed slow angle); at night the rose's cardinal letters glow faint gold.\n4. Pure FX/prop layer: no collision, no interaction, no new colors; zero exceptions if V or iso are absent.",
+      "updated_at": "2026-10-16T07:57:29Z"
     },
     {
       "id": "D25",
