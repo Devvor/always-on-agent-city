@@ -1,3 +1,26 @@
+// =====================================================================
+// FISHHUT :: window.GuildFishhut
+// ---------------------------------------------------------------------
+// A wooden fishing hut with smoke wisps, a catch pennant and drying
+// racks, planted in the PONDSIDE district (LAYOUT.md town plan) — the
+// southeast fishing corner by the pond and dock. The district anchor is
+// read from window.GuildZones.PONDSIDE when available, falling back to
+// the literal { gx: 14, gy: 15 }; the hut stands two tiles off the anchor
+// so it stays within ~3 tiles of the district centre while keeping 2+
+// tiles clear of the lighthouse and other props already there. Pure FX /
+// prop layer: no collision, never writes to V or worker state.
+// Conventions copied from tasks_out/worker_visitor.js: self-installing
+// ES module, no imports, no top-level DOM access (typeof guards), state
+// on window.GuildFishhut exposing update(now) / draw(ctx) / __probe().
+// Bails silently if V or iso are missing. Palette: wood browns + slate
+// greys + pale fish tones.
+// =====================================================================
+
+// PONDSIDE district anchor (LAYOUT.md / window.GuildZones). The hut is
+// offset two tiles from the anchor to avoid clumping with the lighthouse.
+const Z = (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.PONDSIDE) || { gx: 14, gy: 15 };
+const HUT_ANCHOR = { gx: Z.gx - 2, gy: Z.gy + 2 };
+
 function root() { return (typeof window !== 'undefined') ? window : null; }
 function getV() { const w = root(); return w && w.V; }
 function isoFn(gx, gy) {
@@ -27,13 +50,14 @@ function tileRing(gx, gy) {
 
 function clampHut(v, a, b) { return v < a ? a : (v > b ? b : v); }
 
-// Clamp the hut position on-island using growthStep floor math, keeping it on
-// the south rim, clear of the waterfall zone (north rim) and the market row.
+// Clamp the hut position on-island using growthStep floor math, keeping it
+// in the PONDSIDE district (southeast pond corner) once the island is large
+// enough, clear of the waterfall zone (north rim) and the market row.
 function hutPos(Vv) {
   const s = (typeof Vv.growthStep === 'number') ? Math.floor(Vv.growthStep) : 0;
   const maxC = 1 + s;
-  let gx = 3.2;
-  let gy = 5.2;
+  let gx = HUT_ANCHOR.gx;
+  let gy = HUT_ANCHOR.gy;
   gx = clampHut(gx, -1.5, maxC - 0.8);
   gy = clampHut(gy, 0.5, maxC - 0.8);
   if (tileRing(Math.floor(gx), Math.floor(gy)) > s) {
@@ -273,7 +297,7 @@ function draw(ctx) {
 
 if (typeof window !== 'undefined') {
   if (!window.GuildFishhut) {
-    window.GuildFishhut = { hut: { gx: 3.2, gy: 5.2 }, smoke: [], flag: 0 };
+    window.GuildFishhut = { hut: { gx: HUT_ANCHOR.gx, gy: HUT_ANCHOR.gy }, smoke: [], flag: 0 };
   }
   window.GuildFishhut.update = update;
   window.GuildFishhut.draw = draw;
