@@ -262,6 +262,11 @@ class OfficeHandler(BaseHTTPRequestHandler):
             deepseek_board = os.path.join(
                 os.path.dirname(os.path.abspath(main_board_path)), "board_deepseek.json"
             )
+        nemotron_board = None
+        if main_board_path:
+            nemotron_board = os.path.join(
+                os.path.dirname(os.path.abspath(main_board_path)), "board_nemotron.json"
+            )
         boards_dir = os.path.dirname(os.path.abspath(main_board_path)) if main_board_path else ""
         workers = [
             self._build_worker("missingno", main_board_path, main_log_path),
@@ -269,6 +274,7 @@ class OfficeHandler(BaseHTTPRequestHandler):
             self._build_worker("laguna", laguna_board, os.path.join(boards_dir, "logs", "tick_laguna.log")),
             self._build_worker("longcat", longcat_board, os.path.join(boards_dir, "logs", "tick_longcat.log")),
             self._build_worker("deepseek", deepseek_board, os.path.join(boards_dir, "logs", "tick_deepseek.log")),
+            self._build_worker("nemotron", nemotron_board, os.path.join(boards_dir, "logs", "tick_nemotron.log")),
         ]
 
         first = workers[0] if workers else {}
