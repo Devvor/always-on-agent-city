@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/nemotron-3.5-super-vl-free",
     "status": "open",
-    "checked_at": "2026-10-16T05:27:22Z",
+    "checked_at": "2026-10-16T06:22:44Z",
     "note": "nemotron worker #6 (NVIDIA Nemotron 3.5 Super VL 120B-A12B, multimodal, 1M ctx); free on OpenCode Zen (limited time), no auth; engine = opencode CLI via missingno_worker_tick6.py"
   },
   "tasks": [
@@ -21,6 +21,20 @@
         "tasks_out/worker_office.js"
       ],
       "updated_at": "2026-10-16T05:35:41Z"
+    },
+    {
+      "id": "N2",
+      "title": "T175 horizon telescope - a brass viewing scope at the far NE corner the visitor can look through to see a distant sky-isle silhouette drift by (playability x spectacle)",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_telescope.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_telescope.js /opt/data/cache/scratch/N2_check.mjs && node --check /opt/data/cache/scratch/N2_check.mjs && grep -qi 'window.Guild' tasks_out/worker_telescope.js && head -1 tasks_out/worker_telescope.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildTelescope = { } with update/draw/__probe:\n1. SCOPE: one small brass tripod telescope at (0.5, -7.0) on the NE rim, 2+ tiles from the kite field, capsule hollow and stargazing post, clamped within the grown floor. Brass/gold from the existing palette only.\n2. INTERACT: when the visitor dwells within 1.5 tiles, draw a gold prompt glyph and a parchment thought-bubble above the visitor cycling 3 short sky-isle vignettes (tiny floating isle + waterfall silhouette drifting slowly across the bubble, one per 4s) via fitText captions ('a drifting isle...', 'waterfall into cloud', 'someone lives up there'). Ends when the visitor walks away.\n3. CUE: one soft cue('chime') per look (cooldown-guarded). Pure FX: no collision, no HUD panels, never writes to V.",
+      "updated_at": "2026-10-16T06:24:35Z"
     }
   ]
 }
