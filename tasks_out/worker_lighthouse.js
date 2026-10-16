@@ -1,7 +1,9 @@
+// Lighthouse — PONDSIDE district (LAYOUT.md)
 const BASE_SPEED = 1.0;
 const BOOST_SPEED = 3.8;
 const BOOST_MS = 2000;
-const ANCHOR = { gx: 4.5, gy: 7.5 };
+const Z = (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.PONDSIDE) || { gx: 14, gy: 15 };
+const ANCHOR = { gx: Z.gx, gy: Z.gy };
 
 let rotation = 0;
 let lastTime = null;
