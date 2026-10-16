@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T03:12:48Z",
+    "checked_at": "2026-10-16T03:35:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -191,15 +191,16 @@
     {
       "id": "D14",
       "title": "S-rim message-in-a-bottle (charter queue T166) - bottles wash ashore at dawn containing one real line of board.json history; visitor collects, reads, tosses one back for a coin",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_bottlepost.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
-      "verify_cmd": "cp tasks_out/tasks_out/worker_bottlepost.js /opt/data/cache/scratch/D14_check.mjs && node --check /opt/data/cache/scratch/D14_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_bottlepost.js && head -1 tasks_out/tasks_out/worker_bottlepost.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D14: MESSAGE-IN-A-BOTTLE (craft-heavy polish, playability x economy x self-doc).\nZONE: S rim shore (roughly x 2..6, south edge), offset 2+ tiles from the lighthouse, fishing hut, driftwood nook and tide pools. At each dawn, 1-2 bottles wash ashore with a gentle bob, each containing ONE real line drawn from window.V / window.allTasks history (a done quest title, a funny failed attempt). Visitor walks near + E to collect: a small parchment overlay shows the line (window.fitText), then the visitor can toss the bottle back to sea for one coin (same coin visuals as the treasury/coin pile). Bottles despawn at next dawn. Existing palette only.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+      "verify_cmd": "cp tasks_out/worker_bottlepost.js /opt/data/cache/scratch/D14_check.mjs && node --check /opt/data/cache/scratch/D14_check.mjs && grep -qi 'window.Guild' tasks_out/worker_bottlepost.js && head -1 tasks_out/worker_bottlepost.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D14: MESSAGE-IN-A-BOTTLE (craft-heavy polish, playability x economy x self-doc).\nZONE: S rim shore (roughly x 2..6, south edge), offset 2+ tiles from the lighthouse, fishing hut, driftwood nook and tide pools. At each dawn, 1-2 bottles wash ashore with a gentle bob, each containing ONE real line drawn from window.V / window.allTasks history (a done quest title, a funny failed attempt). Visitor walks near + E to collect: a small parchment overlay shows the line (window.fitText), then the visitor can toss the bottle back to sea for one coin (same coin visuals as the treasury/coin pile). Bottles despawn at next dawn. Existing palette only.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+      "updated_at": "2026-10-16T03:38:10Z"
     },
     {
       "id": "D15",
