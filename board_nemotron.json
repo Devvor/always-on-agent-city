@@ -1,0 +1,26 @@
+{
+  "window": {
+    "model": "opencode/nemotron-3.5-super-vl-free",
+    "status": "open",
+    "checked_at": "2026-10-16T05:27:22Z",
+    "note": "nemotron worker #6 (NVIDIA Nemotron 3.5 Super VL 120B-A12B, multimodal, 1M ctx); free on OpenCode Zen (limited time), no auth; engine = opencode CLI via missingno_worker_tick6.py"
+  },
+  "tasks": [
+    {
+      "id": "N1",
+      "title": "T170 hourly clock-tower chime - small clocktower whose bell chimes on the real hour (cue + ripple ring), clock face shows the guild's REAL session uptime",
+      "status": "done",
+      "attempts": 2,
+      "seeded_at": "2026-10-16T05:30:00Z",
+      "seeded_by": "orchestrator (bench quest per guild protocol: one real quest before assigning a workstream)",
+      "target_file": "tasks_out/worker_clocktower.js",
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_clocktower.js /opt/data/cache/scratch/worker_clocktower_check.mjs && node --check /opt/data/cache/scratch/worker_clocktower_check.mjs && grep -qi 'window.GuildClocktower' tasks_out/worker_clocktower.js && head -1 tasks_out/worker_clocktower.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildClocktower = { chimes: [] } with update/draw/__probe (probe returns { chimes: chimes.length, faceTime }):\n1. CLOCKTOWER: one small stone clocktower prop on the NW plaza rim (tiles around gx 1..3, gy 1..3, clamped within the grown floor, 2+ tiles from the quest board and museum): a stone-grey tower about 2 tiles tall with a gold #d4af37 clock face on its side and a tiny bell on top.\n2. REAL-HOUR CHIME: when the REAL wall clock crosses an hour boundary (Date: minutes and seconds both wrap to ~0), the bell chimes once: a soft gold ripple ring expands from the tower (2-3 rings, fading alpha), plus window.cue('chime') in a try/catch. At most one chime per hour boundary; track the last chimed hour in state.\n3. UPTIME FACE: the clock face hands show the guild's REAL session uptime (time since the module first loaded), not wall time - the island keeps time like a repo. Draw hour/minute hands from the uptime in HH:MM.\n4. NIGHT GLOW: when V.daylight < 0.3 the clock face emits a soft warm gold halo (radial glow, alpha pulsing slowly); by day a small white glint. RAIN: halo dims. Zero exceptions.",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "updated_at": "2026-10-16T05:35:41Z"
+    }
+  ]
+}
