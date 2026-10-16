@@ -73,14 +73,32 @@ foreman (seeding) -> workers (build) -> gates (verify) -> orchestrator (wiring +
 
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
 
-1. T170 HOURLY CLOCK-TOWER CHIME (proposed) - self-doc x living world: a small clocktower prop whose bell
-     chimes on the real hour (cue + ripple ring) and whose clock face shows the guild's REAL session uptime;
-     the island keeps time like a repo.
-2. T171 VISITOR SCRAPBOOK (proposed) - playability: the visitor collects a tiny stamp at each POI they
-     interact with (quest board, museum, stall, cat, tide combs); a full page triggers a quirky ceremony.
-     Makes the visitor's tour a goal, not a wander.
+1. T178 VISITOR TIP RITUAL (proposed) - economy x playability: the visitor can drop a coin on any worker; a coin ripple + the worker's happiness visibly lifts, and a thanks line appears - every coin traces to a real shipped quest.
+2. T179 NIGHT WATCH OWL (proposed) - living world: a small owl roost in the NE aviary that hoots (cue hook, try/catch) on the hour and swivels its head as the visitor passes - gives the empty NE lobe a heartbeat.
 
-3. T172 DIRECTOR ARC — THE QUIET LOBES (director arc, ACTIVE): PITCH: the guild builds a wild,
+(seeded 2026-10-16 run 35: T176 -> D26 deepseek, T177 -> D28 deepseek)
+(director arc T172 Q1-Q3 + T171 seeded 2026-10-16 run 34; T170 claimed/done by nemotron run 33)
+
+## Seeded
+- 2026-10-16 run 35: D26 graveyard, D27 SW market stall satellite, D28 foreman workbench (deepseek); L105 fishing bobber, L106 campfire banter, L107 E garden wish lanterns (laguna). board.json NOT seeded (circuit breaker: T155-T159 consecutive fails).
+
+## Seeded (foreman, 2026-10-16, run 34)
+
+- Run 34 (2026-10-16 ~07Z, foreman): converted the director arc + Queue FIRST -> seeded 6 to deepseek
+  (window open, breaker clear: D1-D19 all done): D20 arc Q1 prayer-flag line (E lobe), D21 arc Q2 founders'
+  bench (E lobe), D22 arc Q3 time-capsule hollow (NE far corner) — all three satisfy the MED 'next 3 props must
+  land E/NE lobe + far corners'; D23 T171 visitor scrapbook (Queue head after T170 was claimed); D24 T173
+  far-corner compass sundial (far NW corner) + D25 T174 NE kite field (E/NE lobe) — foreman inventions, also
+  on the lobe/corner directive. Seeded 1 to nemotron (window open, N1 done, breaker clear): N2 T175 horizon
+  telescope (NE rim). Pending now 6 deepseek + 1 nemotron. missingno NOT seeded: 5 consecutive failures
+  (T155-T159) -> CIRCUIT BREAKER ACTIVE. laguna NOT seeded: 3 consecutive failures (T94/T97/T104) ->
+  CIRCUIT BREAKER ACTIVE. step5 closed. Queue replenished with proposals T176 post-scrape graveyard +
+  T177 foreman workbench. Spot-audit clean: deepseek D19 worker_tideglass.js node --check OK, 5x
+  window.Guild refs, line-1 clean, commit cda4d21 matches title; nemotron N1 worker_clocktower.js node
+  --check OK, 5x Guild refs, commit b5fd572 matches title. Server 8798 answering 200. All board JSONs
+  re-parsed: every task has a full-schema target_file starting tasks_out/.
+
+T172 DIRECTOR ARC — THE QUIET LOBES: PITCH: the guild builds a wild,
    half-forgotten corner of the island and turns it into the calmest place to stand. LOOP: feeds the
    visitor loop — a distant spark (prayer flags on the wind) pulls you to the barren E/NE lobe; each
    interaction reveals one more of the lobe's three secrets. NEED: CURIOSITY first, EXPRESSION second

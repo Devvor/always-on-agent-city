@@ -1,365 +1,404 @@
 {
-  "window": {
-    "model": "opencode/deepseek-v4.1-flash-free",
-    "status": "open",
-    "checked_at": "2026-10-16T07:54:44Z",
-    "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
+ "window": {
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "status": "open",
+  "checked_at": "2026-10-16T07:54:44Z",
+  "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
+ },
+ "tasks": [
+  {
+   "id": "D1",
+   "title": "Island birdwatching journal (charter queue T147) - pocket journal, stamped fauna entries",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_birdjournal.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_birdjournal.js /opt/data/cache/scratch/D1_check.mjs && node --check /opt/data/cache/scratch/D1_check.mjs && head -1 tasks_out/worker_birdjournal.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBirdJournal' /opt/data/cache/scratch/D1_check.mjs && echo VERIFY-OK",
+   "spec": "BEHAVIOR - ISLAND BIRDWATCHING JOURNAL (charter queue T147: playability x self-doc) - window.GuildBirdJournal = { entries: {}, complete: false, open: false } with update/draw/__probe (probe returns { entries: count, complete, open }).\n1. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks, __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n2. Client contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y}, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n3. POCKET JOURNAL: pressing J toggles a small parchment journal panel (clipped, fitText discipline, gold #d4af37 header 'FIELD JOURNAL'). It tracks 5 fauna stamps: BIRDS (spot within 2 tiles of the NE aviary zone), BUTTERFLIES (E garden meadow), PIGEONS (courtyard), OWL (NE roost at night, V.daylight below 0.35), CAT (within 1.5 tiles of the sleeping guild cat). A stamp needs the visitor to stand in the right zone with the right conditions for 2 continuous seconds - then the page stamps in with a soft pop animation + cue('coin') in try/catch.\n4. Each stamped entry shows a tiny pixel pictogram of the fauna (fillRect blocks, no images) + a one-line field note (write 1 flavor line per fauna). All 5 stamped = complete: a 3s confetti burst in gold + a one-line ceremony bubble ('MASTER BIRDER OF THE ISLAND') + cue('levelup').\n5. Zone detection is by tile ranges you define (document them in a comment at the top); never write to V or other modules; zero exceptions if V/iso absent. No new accent colors - gold and parchment tones only. No persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+   "updated_at": "2026-10-15T16:39:07Z"
   },
-  "tasks": [
-    {
-      "id": "D1",
-      "title": "Island birdwatching journal (charter queue T147) - pocket journal, stamped fauna entries",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_birdjournal.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_birdjournal.js /opt/data/cache/scratch/D1_check.mjs && node --check /opt/data/cache/scratch/D1_check.mjs && head -1 tasks_out/worker_birdjournal.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildBirdJournal' /opt/data/cache/scratch/D1_check.mjs && echo VERIFY-OK",
-      "spec": "BEHAVIOR - ISLAND BIRDWATCHING JOURNAL (charter queue T147: playability x self-doc) - window.GuildBirdJournal = { entries: {}, complete: false, open: false } with update/draw/__probe (probe returns { entries: count, complete, open }).\n1. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks, __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n2. Client contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.canvas, V.camera, V.grid), iso(gx, gy) -> {x,y}, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n3. POCKET JOURNAL: pressing J toggles a small parchment journal panel (clipped, fitText discipline, gold #d4af37 header 'FIELD JOURNAL'). It tracks 5 fauna stamps: BIRDS (spot within 2 tiles of the NE aviary zone), BUTTERFLIES (E garden meadow), PIGEONS (courtyard), OWL (NE roost at night, V.daylight below 0.35), CAT (within 1.5 tiles of the sleeping guild cat). A stamp needs the visitor to stand in the right zone with the right conditions for 2 continuous seconds - then the page stamps in with a soft pop animation + cue('coin') in try/catch.\n4. Each stamped entry shows a tiny pixel pictogram of the fauna (fillRect blocks, no images) + a one-line field note (write 1 flavor line per fauna). All 5 stamped = complete: a 3s confetti burst in gold + a one-line ceremony bubble ('MASTER BIRDER OF THE ISLAND') + cue('levelup').\n5. Zone detection is by tile ranges you define (document them in a comment at the top); never write to V or other modules; zero exceptions if V/iso absent. No new accent colors - gold and parchment tones only. No persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
-      "updated_at": "2026-10-15T16:39:07Z"
-    },
-    {
-      "id": "D2",
-      "title": "Worker naming-day ceremony (charter queue T148) - quirk-flavored roster moments",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_namingday.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_namingday.js /opt/data/cache/scratch/D2_check.mjs && node --check /opt/data/cache/scratch/D2_check.mjs && head -1 tasks_out/worker_namingday.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildNamingDay' /opt/data/cache/scratch/D2_check.mjs && echo VERIFY-OK",
-      "spec": "BEHAVIOR - WORKER NAMING-DAY CEREMONY (charter queue T148: personality x spectacle) - window.GuildNamingDay = { ceremonies: 0, active: null, cool: 0 } with update/draw/__probe (probe returns { ceremonies, activeName }).\n1. Pattern + client contract: same as worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); the render loop auto-discovers window.GuildNamingDay when V.gameState === 'play'. V exposes V.workers, V.workerStates, V.daylight, V.grid; iso(gx,gy), fitText(text,maxW), window.GuildVisitor, window.cue(name) in try/catch.\n2. ROTATION: every 150-210s (RNG) pick the next worker in rotation from V.workers (skip absent) for their NAMING DAY: 6s ceremony at the campfire hearth zone (anchor near the hearth, 2+ tiles from other props' centers).\n3. CEREMONY: gold bunting strands rise between two poles, the worker sprite gets a 2s spotlight cone (soft alpha, existing gold only), a banner unfurls with their name in their archetype style - write all four voices: glitchy trickster (e.g. 'missingno, the Glitch of Honor'), aloof poet (a 6-word verse), eager rookie (an excited exclamation), serene philosopher (a calm epithet) - plus 1 spoken bubble line per archetype (3 variants each, rotate). cue('levelup') once in try/catch. Fireworks: 3 small gold spark bursts, staggered.\n4. The visitor within 2.5 tiles during a ceremony sees a hint '[E] CONGRATULATE' - E adds a small heart + a thank-you bubble from the worker (1 per ceremony).\n5. Never moves workers or other props (you only draw overlay FX, you never write V); zero exceptions if V/iso absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
-      "updated_at": "2026-10-15T16:46:12Z"
-    },
-    {
-      "id": "D3",
-      "title": "Dockside arrivals ferry (living world x spectacle, S rim) - visiting sprites come and go",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_ferry.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_ferry.js /opt/data/cache/scratch/D3_check.mjs && node --check /opt/data/cache/scratch/D3_check.mjs && head -1 tasks_out/worker_ferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFerry' /opt/data/cache/scratch/D3_check.mjs && echo VERIFY-OK",
-      "spec": "BEHAVIOR - DOCKSIDE ARRIVALS FERRY (living world x spectacle; S rim zone - anchor 2+ tiles from the fishing hut and waterfall props) - window.GuildFerry = { ferries: 0, visitors: 0, phase: 'away' } with update/draw/__probe (probe returns { ferries, visitors, phase }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.daylight, V.weather, V.grid; iso(gx,gy), fitText, window.GuildVisitor, window.cue(name) in try/catch.\n2. THE FERRY: every 180-260s (RNG, staggered start offset so the first arrives 30-60s in) a small lantern-lit ferry boat slides in from the south water edge to a dock plank at the S rim. It bobs gently (sin) while docked; its lantern reuses the gold accent #d4af37 - no new colors. cue('coin') once on docking, try/catch.\n3. VISITING SPRITE: one palette-swapped pixel visitor (fillRect blocks, distinct silhouette from workers - give it a tiny suitcase) walks down the plank, strolls a short loop through the SW market row (3 waypoints), pauses at the hearth stall, then walks back, boards, and the ferry departs. While a visiting sprite is near the player-controlled visitor (1.5 tiles), it waves (arm pixel toggles) once per trip.\n4. STATE MACHINE: phases 'away' -> 'arriving' -> 'docked' -> 'strolling' -> 'departing' -> 'away'; only ONE ferry cycle active at a time; counts ferries (completed cycles) and visitors (sprites landed) on the state.\n5. Pure overlay - never write V, never move other props; zero exceptions if V/iso absent; no persistence; no new accent colors.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
-      "updated_at": "2026-10-15T17:11:41Z"
-    },
-    {
-      "id": "D4",
-      "title": "Worker activity status flair (office polish) - animated status chips over busy workers",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_statusflair.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_statusflair.js /opt/data/cache/scratch/D4_check.mjs && node --check /opt/data/cache/scratch/D4_check.mjs && head -1 tasks_out/worker_statusflair.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildStatusFlair' /opt/data/cache/scratch/D4_check.mjs && echo VERIFY-OK",
-      "spec": "BEHAVIOR - WORKER ACTIVITY STATUS FLAIR (office-polish pass: the roster should read like characters mid-task, not dots) - window.GuildStatusFlair = { chips: {}, shown: 0 } with update/draw/__probe (probe returns { shown, chips: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.workers, V.workerStates, V.allTasks (array with status fields); iso(gx,gy), fitText(text,maxW), window.cue in try/catch.\n2. CHIP: for each worker whose current task is in_progress (derive from V.workerStates activity or V.allTasks newest in_progress per worker - be defensive, missing fields = skip), draw a small parchment chip 22px above their head: a 6x6 pixel pictogram + a verb. Verbs by what the task title suggests (write a small classifier over title keywords, default 'working'): building = hammer pictogram + 'RAISING', doc/journal/ledger/guide = quill + 'WRITING', museum/plaque/history = scroll + 'RECORDING', sound/music = note + 'TUNING', FX/glow/firefly/lantern/aurora = spark + 'LIGHTING', default = gear + 'CRAFTING'.\n3. ANIMATION: the pictogram bobs 1px on a 700ms cycle; the chip fades in over 300ms, holds 5s, fades out, then re-shows a rotated verb variant every 14s (alternate verbs per classifier so it stays alive: e.g. CRAFTING/PLYING THE TRADE). Only when V.daylight > 0.2 (chips are a daytime read; at night the lanterns own the eye).\n4. LEGIBILITY: chip max width 90px, fitText with ellipsis, never overlaps the worker nameplate (draw 22px above it, verify offset), max 5 chips on screen at once (closest to the visitor win).\n5. Pure overlay - never write V, never move sprites; zero exceptions if V/iso absent; parchment + existing palette only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
-      "updated_at": "2026-10-15T17:35:16Z"
-    },
-    {
-      "id": "D5",
-      "title": "Golden-hour sky grade (backdrop polish) - dawn/dusk color pass, star easing",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_goldenhour.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_goldenhour.js /opt/data/cache/scratch/D5_check.mjs && node --check /opt/data/cache/scratch/D5_check.mjs && head -1 tasks_out/worker_goldenhour.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildGoldenHour' /opt/data/cache/scratch/D5_check.mjs && echo VERIFY-OK",
-      "spec": "BEHAVIOR - GOLDEN-HOUR SKY GRADE (canon #4 legibility + #6 pacing: dawn/dusk deserve a breath) - window.GuildGoldenHour = { grade: 0, phase: 'none' } with update/__probe and a drawBackdrop(ctx, now) hook (the client paints backdrop layers BEFORE the island; modules expose drawBackdrop for sky/water layers).\n1. Pattern: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now), __probe). The client calls your update every frame when V.gameState === 'play' and your drawBackdrop(ctx, now) before the island layer. V gives V.daylight 0..1 and V.canvas.\n2. GRADE: compute t = distance of V.daylight from the mid-day plateau: grade rises smoothly to 1.0 as V.daylight enters the 0.35-0.62 transition band (dawn and dusk shoulders) with a 60s eased ramp, 0 in full day or full night. phase = 'dawn' | 'dusk' | 'none' depending on which shoulder.\n3. PAINT: drawBackdrop paints a horizontal warm band wash over the sky region (upper half of the canvas) using layered translucent rects (alpha up to 0.18) in EXISTING warm palette hues only (gold #d4af37 family and existing dusk tones) - a soft horizon glow that is stronger near the horizon line and fades upward. Also ease the day-night tint: the client's own night tint must not double up - keep total added alpha under 0.2 anywhere.\n4. STARS: expose eased star alpha for the night shoulder: expose window.GuildGoldenHour.starAlpha (0..1) that rises from 0 to 1 through the dusk shoulder (do not draw stars yourself - just expose the value; add a comment that the sky module may read it).\n5. Never write to V (except exposing your own global), never draws over the island (backdrop only), zero exceptions if V/canvas absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
-      "updated_at": "2026-10-15T17:58:45Z"
-    },
-    {
-      "id": "D6",
-      "title": "Visitor footprints and sparkle trail (juice pass) - every step leaves a trace",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_footprints.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_footprints.js /opt/data/cache/scratch/D6_check.mjs && node --check /opt/data/cache/scratch/D6_check.mjs && head -1 tasks_out/worker_footprints.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFootprints' /opt/data/cache/scratch/D6_check.mjs && echo VERIFY-OK",
-      "spec": "BEHAVIOR - VISITOR FOOTPRINTS AND SPARKLE TRAIL (canon #3 juice: no silent movement) - window.GuildFootprints = { prints: [], sparkles: [], steps: 0 } with update/draw/__probe (probe returns { steps, prints: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. window.GuildVisitor gives { gx, gy, moving, facing }; iso(gx,gy) -> {x,y}; V gives V.daylight and V.weather (e.g. 'CLEAR'/'RAIN'); window.cue(name) in try/catch.\n2. FOOTPRINTS: while GuildVisitor.moving is true, every 0.5s of continuous movement drop a tiny footprint pair (2 fillRect dots, alternating left/right offset perpendicular to facing) at the visitor's current world position. Prints live 3.5s, fading alpha 0.35 -> 0, max 40 on screen (oldest pruned). In RAIN weather prints are slightly darker and live 5s (wet ground); draw them UNDER the visitor (paint order: your draw is called with other overlay modules - keep prints subtle, they are texture, not signal).\n3. SPARKLE TRAIL: only for the 1.2s after any emote or interact cue you can observe without V writes (detect via a window.GuildVisitor.facing flip is NOT an emote - instead: if window.GuildEmotes or similar exposes a recent emote timestamp, read it defensively; if absent, fall back to a 90s ambient sparkle: 5 gold sparks rise around a resting visitor, cue-free). Sparks: 1-2px gold glints, 0.8s life, upward drift, alpha fade.\n4. SOUND: never fire cues yourself except on the ambient sparkle once (cue('coin') at most once per 90s, try/catch).\n5. Pure overlay - never write V or GuildVisitor; zero exceptions if V/iso absent; gold + soft neutrals only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
-      "updated_at": "2026-10-15T18:23:16Z"
-    },
-    {
-      "id": "D7",
-      "title": "Fishing-derby podium ceremony (craft-heavy polish) - when a derby catch window ends, a small podium rises at the S rim with the top catcher's name, confetti burst and cue, reading live derby state from board data",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_derbypodium.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_derbypodium.js /opt/data/cache/scratch/DERBYPODIUM_check.mjs && node --check /opt/data/cache/scratch/DERBYPODIUM_check.mjs && grep -qi 'window.Guild' tasks_out/worker_derbypodium.js && head -1 tasks_out/worker_derbypodium.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D7: DERBY PODIUM CEREMONY (craft-heavy polish pass).\nZONE: S rim near the fishing derby spot, offset 2+ tiles from the lighthouse and buoys. Read live board/derby state via window.V / window.allTasks / any Guild derby global; when a derby round completes, raise a 3-step podium prop, show the top catcher with fitText, fire one confetti burst (existing palette) and cue. Adds real ceremony craft: easing on the podium rise, nameplate flourish. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildDerbyPodium, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
-      "updated_at": "2026-10-15T20:12:46Z"
-    },
-    {
-      "id": "D8",
-      "title": "Worker emote reaction ring (office polish) - when the visitor uses emotes 1-4, nearby workers glance over and answer with a matching idle flourish and a soft ring FX at the visitor's feet",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_emotering.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_emotering.js /opt/data/cache/scratch/EMOTERING_check.mjs && node --check /opt/data/cache/scratch/EMOTERING_check.mjs && grep -qi 'window.Guild' tasks_out/worker_emotering.js && head -1 tasks_out/worker_emotering.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D8: VISITOR EMOTE REACTION RING (craft-heavy polish pass).\nZONE: follows the visitor (no fixed prop). Listen for the visitor's emote state (window.V / GuildVisitor / existing emote globals); on emote 1-4, draw a soft expanding ring FX at the visitor's feet (existing palette) and make workers within ~3 tiles face the visitor with one matching idle flourish for ~2s. Rate-limit to one ring per second. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildEmoteRing, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
-      "updated_at": "2026-10-15T20:38:14Z"
-    },
-    {
-      "id": "D9",
-      "title": "Night-market lantern ferry (charter queue T161) - a tiny lantern ferry crosses the S-rim water after dusk carrying one passenger NPC, docking at the buoy line; a moment to stop and watch that compounds with the lighthouse + buoy work",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_lanternferry.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_lanternferry.js /opt/data/cache/scratch/FERRY_check.mjs && node --check /opt/data/cache/scratch/FERRY_check.mjs && grep -qi 'window.Guild' tasks_out/worker_lanternferry.js && head -1 tasks_out/worker_lanternferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D9: NIGHT-MARKET LANTERN FERRY (craft-heavy polish, spectacle x living world).\nZONE: S-rim water (south edge, roughly x 2..6, beyond the shoreline) - the lighthouse (worker_lighthouse.js, S rim ~4.5,7.5) and any rim lantern buoys are neighbors; keep 2+ tiles from every existing prop. After dusk (read the day-night state the same way worker_lighthouse.js or worker_nightmarket.js does), a tiny ferry with 2-3 hanging lanterns crosses the water slowly carrying ONE passenger NPC (silhouette + nameplate with window.fitText), shuttling between two dock points about 6 tiles apart with a gentle pause + bob at each end, then turns around. During the day the ferry is moored (still, lanterns unlit). Lantern glow uses the existing gold accent ONLY; water interaction is a soft wake ripple (existing palette). PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLanternFerry with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. No new accent colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
-      "updated_at": "2026-10-16T00:10:48Z"
-    },
-    {
-      "id": "D10",
-      "title": "Wish scale drift (charter queue T163) - the S-rim wish scales slowly tip toward whichever wish type the visitor actually makes most, one needle move per game-day, giving the pond a readable mood",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_wishedrift.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_wishedrift.js /opt/data/cache/scratch/WISHDRIFT_check.mjs && node --check /opt/data/cache/scratch/WISHDRIFT_check.mjs && grep -qi 'window.Guild' tasks_out/worker_wishedrift.js && head -1 tasks_out/worker_wishedrift.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D10: WISH SCALE DRIFT (craft-heavy polish, economy x playability).\nZONE: S-rim pond at the wish scales (worker_wishbooth.js / worker_wishes.js territory, S rim) - offset 2+ tiles from any existing prop there. Build a small two-pan balance scale prop that reacts to REAL wish data: tally wish types the visitor has actually made (read the wish globals from the wish/lantern modules, e.g. window.GuildWishes or similar - inspect tasks_out/worker_wishes.js and worker_wishbooth.js first; fall back to counting window.allTasks wish-flavored entries if no live tally exists). Once per in-game day the needle drifts one small step toward the heavier wish type, with a tiny creak cue (window.cue, try/catch) and the pans visibly shifting. Keep drift bounded (max ~15 degrees either way) so it reads as mood, not judgment. Gold accent only; no new colors. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildWishDrift with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
-      "updated_at": "2026-10-16T00:37:11Z"
-    },
-    {
-      "id": "D11",
-      "title": "Petting-zoo ledger (charter queue T160) - a small ledger plaque in the E garden listing every pettable creature (cat, fox, ...) with a live pet-count read from the pet globals; makes the island's living creatures part of its own record",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_petledger.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_petledger.js /opt/data/cache/scratch/D11_check.mjs && node --check /opt/data/cache/scratch/D11_check.mjs && grep -qi 'window.Guild' tasks_out/worker_petledger.js && head -1 tasks_out/worker_petledger.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D11: GUILD PETTING ZOO LEDGER (craft-heavy polish, self-doc x playability).\nZONE: E garden (roughly x 4..6, y 0..3) - offset 2+ tiles from any existing prop (butterfly meadow, wish seeds). Build a small wooden ledger plaque on a post that lists each pettable creature (read the live pet/creature globals from worker modules like the cat/fox modules via window - probe window.Guild* keys defensively with try/catch) and a pet-count beside each name that increments live when the visitor pets. Sign text uses window.fitText and clamps inside island bounds (see canon sign-clip findings). Plaque glow at night uses the existing gold accent ONLY.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
-      "updated_at": "2026-10-16T02:25:55Z"
-    },
-    {
-      "id": "D12",
-      "title": "Rivalry notice board (charter queue T164) - a small board in the SE heroes' plaza posting one playful line per game-day pairing two workers, from real board history, written in each worker's voice",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_rivalryboard.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_rivalryboard.js /opt/data/cache/scratch/D12_check.mjs && node --check /opt/data/cache/scratch/D12_check.mjs && grep -qi 'window.Guild' tasks_out/worker_rivalryboard.js && head -1 tasks_out/worker_rivalryboard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D12: RIVALRY NOTICE BOARD (craft-heavy polish, self-doc x personality).\nZONE: SE heroes' plaza (roughly x 4..6, y -3..-1), offset 2+ tiles from the hero statues. A small corkboard on posts that, once per game-day, derives ONE playful rivalry line from real history available on window.V / window.allTasks (fastest ship, longest retry streak, most recent failure) and renders it in each worker's archetype voice (missingno glitchy trickster, laguna eager rookie, deepseek earnest newcomer, step5 aloof poet) - read worker_personality.js for the voice canon if present on window. Lines use window.fitText clamped inside island bounds; board paper uses existing palette only. Touching the board with E shows the last 3 days of lines.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
-      "updated_at": "2026-10-16T02:51:39Z"
-    },
-    {
-      "id": "D13",
-      "title": "N-edge frost ferns (charter queue T165) - delicate frost-fern patterns blooming on N-edge rocks during SNOW weather, melting at dawn; zero new colors",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_frostferns.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_frostferns.js /opt/data/cache/scratch/D13_check.mjs && node --check /opt/data/cache/scratch/D13_check.mjs && grep -qi 'window.Guild' tasks_out/worker_frostferns.js && head -1 tasks_out/worker_frostferns.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D13: N-EDGE FROST FERNS (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly y -8..-6, x -3..3), offset 2+ tiles from the stargazing post (0,-8) and cairn trail. During SNOW weather (read the day-night/weather state the same way worker_puddles.js does), delicate frost-fern fronds bloom outward on N-edge rocks over ~20s (whitish, existing palette ONLY - no new accent colors), and melt away progressively after dawn. Fronds are small procedural line/curve sprites, 4-6 rocks max, gentle shimmer. NO new colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
-      "updated_at": "2026-10-16T03:15:29Z"
-    },
-    {
-      "id": "D14",
-      "title": "S-rim message-in-a-bottle (charter queue T166) - bottles wash ashore at dawn containing one real line of board.json history; visitor collects, reads, tosses one back for a coin",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_bottlepost.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_bottlepost.js /opt/data/cache/scratch/D14_check.mjs && node --check /opt/data/cache/scratch/D14_check.mjs && grep -qi 'window.Guild' tasks_out/worker_bottlepost.js && head -1 tasks_out/worker_bottlepost.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D14: MESSAGE-IN-A-BOTTLE (craft-heavy polish, playability x economy x self-doc).\nZONE: S rim shore (roughly x 2..6, south edge), offset 2+ tiles from the lighthouse, fishing hut, driftwood nook and tide pools. At each dawn, 1-2 bottles wash ashore with a gentle bob, each containing ONE real line drawn from window.V / window.allTasks history (a done quest title, a funny failed attempt). Visitor walks near + E to collect: a small parchment overlay shows the line (window.fitText), then the visitor can toss the bottle back to sea for one coin (same coin visuals as the treasury/coin pile). Bottles despawn at next dawn. Existing palette only.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
-      "updated_at": "2026-10-16T03:38:10Z"
-    },
-    {
-      "id": "D15",
-      "title": "N-edge ice-mirror pool (foreman invention) - a small frozen mirror pool on the N edge that faintly reflects passing birds and the moon at night; living world x spectacle",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_icemirror.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_icemirror.js /opt/data/cache/scratch/D15_check.mjs && node --check /opt/data/cache/scratch/D15_check.mjs && grep -qi 'window.Guild' tasks_out/worker_icemirror.js && head -1 tasks_out/worker_icemirror.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D15: N-EDGE ICE-MIRROR POOL (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly x -4..-1, y -7..-5), offset 2+ tiles from stargazing post, cairns and frost ferns. A small oval ice pool that acts as a faint mirror: at night it reflects the moon as a soft smear, and whenever a bird module's fauna passes overhead (probe window.Guild* bird/aviary keys defensively), a tiny reflected silhouette crosses the pool surface. Subtle ripple on interact (E near the edge). Palette: whites/blues already in base, NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
-      "updated_at": "2026-10-16T04:02:03Z"
-    },
-    {
-      "id": "D16",
-      "title": "S-rim drift-market barge (foreman invention) - a small barge occasionally poles up to the S rim carrying 1-2 rotating goods the visitor can buy with earned coins; economy x playability",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_driftbarge.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cp tasks_out/worker_driftbarge.js /opt/data/cache/scratch/D16_check.mjs && node --check /opt/data/cache/scratch/D16_check.mjs && grep -qi 'window.Guild' tasks_out/worker_driftbarge.js && head -1 tasks_out/worker_driftbarge.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D16: S-RIM DRIFT-MARKET BARGE (craft-heavy polish, economy x playability).\nZONE: S-rim water (south edge, x -2..2), offset 2+ tiles from the lantern ferry route and dock points. Every few game-hours a small flat barge poles up to the S rim shore carrying 1-2 rotating goods (snack, seed pouch, paper lantern - sprites from existing palette), moors for ~60s with a vendor NPC nameplate (window.fitText), then poles away. Visitor near + E opens a tiny 2-item buy sheet priced in the guild coin; purchases cue a coin sound + item bob in the visitor's hand. NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
-      "updated_at": "2026-10-16T04:26:04Z"
-    },
-    {
-      "id": "D17",
-      "title": "T167 N-edge ice mirror moonpath - a still tide pool on the N edge that lays a shimmering moon-path across the water at night, cracking faintly when birds pass over",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_moonpath.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_moonpath.js /opt/data/cache/scratch/worker_moonpath_check.mjs && node --check /opt/data/cache/scratch/worker_moonpath_check.mjs && grep -qi 'window.Guild' tasks_out/worker_moonpath.js && head -1 tasks_out/worker_moonpath.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildMoonpath = { path: null, cracks: [] } with update/draw/__probe (probe returns { path: !!path, cracks: cracks.length }):\n1. TIDE POOL: a still water pool on the N edge (anchor around tile gx 0, gy -7, clamp within the grown floor from V.growthStep: core 4x4 plus one ring per growth step, max 8; keep 2+ tiles from the stargazing post at (0,-8) and the frost ferns) - a pale-blue ellipse ~14x7px with a thin ice rim (stone grey). Prop layer.\n2. MOONPATH: at night (V.daylight < 0.3) draw a shimmering path of light leading from the pool across the water toward the moon side of the sky: 6-8 soft gold-white glints (#d4af37 mixed with pale blue) in a widening column, each gently pulsing with sin phase offsets. Fade the whole path in/out over 2s at nightfall/dawn. Draw nothing by day.\n3. BIRD CRACKS: if window.GuildAviary exists and any of its birds is overhead (probe its birds count/state defensively), occasionally spawn a faint crack: 2-3 thin white line segments radiating across the pool, fading over 4s, at most one crack per 10s. If GuildAviary is absent, instead spawn a crack every 45-70s on its own.\n4. Rain makes the path shimmer faster (higher pulse frequency). Zero exceptions.",
-      "seeded_by": "foreman",
-      "seeded_at": "2026-10-16",
-      "updated_at": "2026-10-16T05:22:31Z"
-    },
-    {
-      "id": "D18",
-      "title": "T168 S-rim tide-combs - visitor-driftwood combs left at low tide that sift 1-3 coins or one real board-history line from the wet sand once per game-day",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_tidecombs.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tidecombs.js /opt/data/cache/scratch/worker_tidecombs_check.mjs && node --check /opt/data/cache/scratch/worker_tidecombs_check.mjs && grep -qi 'window.Guild' tasks_out/worker_tidecombs.js && head -1 tasks_out/worker_tidecombs.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildTideCombs = { combs: [], sifting: null, lastSift: 0, loot: [] } with update/draw/__probe (probe returns { combs: combs.length, sifting: !!sifting, loot: loot.length }):\n1. COMBS: 2 small driftwood comb props (brown #6b4a2f rectangles with 4 tooth prongs, gold trim #d4af37) on the S rim wet sand (anchor tiles around gx 1.5, gy 6.8 and gx 4.5, gy 7.2, clamp within the grown floor; keep 2+ tiles from the lighthouse (4.5,7.5), the fishing hut zone and the waterfall). Props, no collision.\n2. SIFT: when window.GuildVisitor stands within 1.5 tiles of a comb and presses 'e'/'E' (one-shot key flag), if not on cooldown: sifting = { t0, dur: 2000, comb } - draw a small sand-sift animation (3 sand-grain particles flicking out) for 2s, then loot: roll 1-3 gold coins (small #facc15 circles floating up, fading) OR one real board-history line: pick a random done quest id+title from V.allTasks and show it as a parchment scrap label (fitText to 150px, clipped) near the comb for 6s. Cooldown 60s per comb (once per game-day feel).\n3. Optional economy read: if window.GuildEconomy exists, note its treasury in __probe only - never write to it.\n4. A hint label '[E] SIFT' shows when in range (10px gold, clipped). Zero exceptions.",
-      "seeded_by": "foreman",
-      "seeded_at": "2026-10-16",
-      "updated_at": "2026-10-16T05:35:28Z"
-    },
-    {
-      "id": "D19",
-      "title": "T169 S-rim tide-glass lanterns - stranded glass float lanterns along the S rim that glow gold at night and bob with the tide (spectacle, S-rim directive)",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_tideglass.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tideglass.js /opt/data/cache/scratch/worker_tideglass_check.mjs && node --check /opt/data/cache/scratch/worker_tideglass_check.mjs && grep -qi 'window.Guild' tasks_out/worker_tideglass.js && head -1 tasks_out/worker_tideglass.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildTideglass = { lanterns: [] } with update/draw/__probe (probe returns { lanterns: lanterns.length }):\n1. LANTERNS: 4 tide-glass float lanterns stranded along the S rim sand (tiles around gx -1..5 on the south edge rows gy 6.5-7.5, clamped within the grown floor, each 1.5+ tiles apart and 2+ tiles from the drift-market barge, lighthouse (4.5,7.5) and waterfall zone). Each: a small seafoam-green glass sphere (existing palette: soft green/teal from the pond colors) in a knotted rope net (thin #6b4a2f lines), resting on a sand mound.\n2. BOB: each lantern bobs gently (sin, own phase, ~3px vertical + 1px tilt) as if with the tide.\n3. NIGHT GLOW: when V.daylight < 0.3 each lantern emits a soft warm gold halo (radial glow, #d4af37, alpha pulsing slowly, flicker with tiny randomness); by day it is just glass with a small white glint.\n4. RAIN: halos dim and the bob quickens. Zero exceptions.",
-      "seeded_by": "foreman",
-      "seeded_at": "2026-10-16",
-      "updated_at": "2026-10-16T05:58:21Z"
-    },
-    {
-      "id": "D20",
-      "title": "T172 Q1 Quiet Lobes prayer-flag line - a string of small gold prayer flags strung across the barren E lobe, rippling on the wind (living world + spectacle, director arc Q1)",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_prayerflags.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_prayerflags.js /opt/data/cache/scratch/D20_check.mjs && node --check /opt/data/cache/scratch/D20_check.mjs && grep -qi 'window.Guild' tasks_out/worker_prayerflags.js && head -1 tasks_out/worker_prayerflags.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildPrayerflags = { flags: [] } with update/draw/__probe (probe returns { flags: flags.length }):\n1. FLAGS: 7 small triangle pennants strung on a gentle sagging line across the E lobe (anchor tiles gx 3.5 to 6.5 around gy -1.5, clamped within the grown floor, each 2+ tiles from every known prop - garden wishes, butterfly meadow, kite field are nearby, so place along the lobe's open mid-span). Gold #d4af37 cloth ONLY - the calm-lobe palette rule says no other accent.\n2. MOTION: each pennant ripples with a slow per-flag phase offset (sin-based sway, amplitude grows with V.weather wind if available); at night the line carries a faint gold ember-glow (V.daylight < 0.25).\n3. DRAW: iso-projected via iso(gx,gy), tiny shadow ellipse per pennant; fitText not needed (no labels - the lobe stays wordless).\n4. DISTANCE DUTY: when window.GuildVisitor stands within 2 tiles of any flag, ONE soft cue('chime') per visit (guard with a cooldown so it never spams).",
-      "updated_at": "2026-10-16T06:21:11Z"
-    },
-    {
-      "id": "D21",
-      "title": "T172 Q2 Quiet Lobes founders bench - a stone bench with the guild cat's pawprint plaque in the E lobe; sitting = calm emote + soft chime (playability + self-doc, director arc Q2)",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_foundersbench.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_foundersbench.js /opt/data/cache/scratch/D21_check.mjs && node --check /opt/data/cache/scratch/D21_check.mjs && grep -qi 'window.Guild' tasks_out/worker_foundersbench.js && head -1 tasks_out/worker_foundersbench.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildFoundersbench = { x, y, sitting: false } with update/draw/__probe:\n1. BENCH: one small stone bench at (4.5, -2.5) in the E lobe, 2+ tiles from the prayer-flag line, the founders' plaque (carved stone with a tiny paw print, gold-painted), and a wordless plaque reading 'For the ones who started it' via fitText.\n2. INTERACT: when window.GuildVisitor is within 1.5 tiles, draw a subtle gold prompt glyph; on the visitor E-key / proximity dwell (read GuildVisitor state; if the client has an interact bus use it, else trigger when the visitor STAYS within 1 tile for 1.5s), the visitor sits: draw them on the bench with a calm breathing sway, emit one cue('chime'), and a single small heart rises (existing palette). Sitting releases when the visitor walks away.\n3. SELF-DOC: the plaque count is 1 now - structure the plaque text so it could list founder names later from V.allTasks[0] if present (first ever done task title, truncated via fitText).\n4. Never block movement: no collision writes; pure draw + read-only visitor checks.",
-      "updated_at": "2026-10-16T06:47:49Z"
-    },
-    {
-      "id": "D22",
-      "title": "T172 Q3 Quiet Lobes time-capsule hollow - a dug hollow in the NE far corner where the visitor buries one endorsed quest memory (playability + self-doc, director arc Q3)",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_capsulehollow.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_capsulehollow.js /opt/data/cache/scratch/D22_check.mjs && node --check /opt/data/cache/scratch/D22_check.mjs && grep -qi 'window.Guild' tasks_out/worker_capsulehollow.js && head -1 tasks_out/worker_capsulehollow.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildCapsulehollow = { buried: false, memory: null } with update/draw/__probe:\n1. HOLLOW: a shallow dug hollow (dark earth ellipse + rim stones) in the NE far corner around (2.5, -6.5), 2+ tiles from any prop, clamped within the grown floor. A tiny wooden marker post stands beside it (no sign text until buried).\n2. INTERACT: when the visitor stands within 1.5 tiles, draw a gold prompt glyph. On interaction (proximity-dwell pattern like the bench, or the interact bus if present): pick the most recent endorsed/working quest from V.allTasks (find the newest task with status done, fall back to the newest of any status); store its title via fitText into state.memory; play one cue('dig') if available else cue('chime'); set buried = true.\n3. BURIED STATE: after burial the marker post grows a small gold ribbon and a one-line label shows the buried memory title; re-interaction shows a quiet 'sealed' message instead (cooldown-guarded). It must never re-bury or duplicate.\n4. Pure read of V.allTasks - never mutate it.",
-      "updated_at": "2026-10-16T07:12:02Z"
-    },
-    {
-      "id": "D23",
-      "title": "T171 visitor scrapbook - the visitor collects a tiny stamp at each POI they interact with; a full page triggers a quirky ceremony (playability)",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_scrapbook.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_scrapbook.js /opt/data/cache/scratch/D23_check.mjs && node --check /opt/data/cache/scratch/D23_check.mjs && grep -qi 'window.Guild' tasks_out/worker_scrapbook.js && head -1 tasks_out/worker_scrapbook.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildScrapbook = { stamps: {} } with update/draw/__probe (probe returns { collected: Object.keys(stamps).length }):\n1. STAMPS: define 6 POIs by checking proximity to known window.Guild* props where possible (quest board area, museum, snack stall, the cat, tide combs, founders bench - read their window globals' x/y if exposed, else use fixed anchor coords clamped inside the grown floor: board (0,0 area), museum W (-6,3), stall (2.5,-2.5), cat (1,1), tide combs S rim (2,7), founders bench (4.5,-2.5)). When the visitor dwells within 1.5 tiles of a POI for 2s, award that POI's stamp once (id in stamps with timestamp).\n2. CEREMONY: when all 6 are collected, ONE quirky ceremony: a short parchment scroll unfurls near the visitor reading 'SCRAPBOOK COMPLETE - the guild salutes a thorough wanderer' via fitText, one cue('fanfare') guarded to fire exactly once ever (persist the flag in the state object only, not localStorage).\n3. DRAW: a tiny open book glyph bottom-right of the visitor ONLY while it is within 3 tiles of an uncollected POI (show which POI is missing as a 1-2 word fitText hint). No HUD panels, no new accent colors - parchment tan + gold only.\n4. Cooldown-guard every cue; never spam; zero exceptions if V or iso are absent.",
-      "updated_at": "2026-10-16T07:34:11Z"
-    },
-    {
-      "id": "D24",
-      "title": "T173 far-corner compass sundial - a stone sundial in the far NW corner whose shadow sweeps with the real day-night cycle and whose rose marks every district anchor (self-doc x spectacle)",
-      "status": "done",
-      "attempts": 1,
-      "target_file": "tasks_out/worker_sundial.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_sundial.js /opt/data/cache/scratch/D24_check.mjs && node --check /opt/data/cache/scratch/D24_check.mjs && grep -qi 'window.Guild' tasks_out/worker_sundial.js && head -1 tasks_out/worker_sundial.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildSundial = { } with update/draw/__probe:\n1. DIAL: one stone compass-rose sundial at (-5.5, -5.5) in the far NW corner, 2+ tiles from the crystal grove and shrine props, clamped within the grown floor. Rose arms etched in stone-grey with the 4 cardinal letters (N/E/S/W) via fitText in small size.\n2. SELF-DOC: faint gold tick marks around the rose pointing toward each real district anchor (crystal grove NW, aviary NE, market SW, heroes SE) - these are directions, not labels; keep them 1 tile long, no text.\n3. SHADOW: the gnomon shadow rotates with V.daylight (noon = shortest, night = faint moon-shadow at a fixed slow angle); at night the rose's cardinal letters glow faint gold.\n4. Pure FX/prop layer: no collision, no interaction, no new colors; zero exceptions if V or iso are absent.",
-      "updated_at": "2026-10-16T07:57:29Z"
-    },
-    {
-      "id": "D25",
-      "title": "T174 NE kite field - two paper kites tethered in the empty NE diamond lobe, dancing on the wind (living world x spectacle, E/NE-lobe directive)",
-      "status": "pending",
-      "attempts": 0,
-      "target_file": "tasks_out/worker_kites.js",
-      "include_files": [
-        "tasks_out/worker_visitor.js",
-        "tasks_out/worker_office.js"
-      ],
-      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_kites.js /opt/data/cache/scratch/D25_check.mjs && node --check /opt/data/cache/scratch/D25_check.mjs && grep -qi 'window.Guild' tasks_out/worker_kites.js && head -1 tasks_out/worker_kites.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildKites = { kites: [] } with update/draw/__probe (probe returns { kites: kites.length }):\n1. KITES: two diamond paper kites tethered to the NE lobe ground around (-2.5, -6.0) and (-0.5, -5.0) (clamped within the grown floor, 2+ tiles apart and from any prop; one red-orange from the existing palette, one blue - both already in budget). Tether lines anchor to small ground pegs.\n2. MOTION: each kite swoops in a lazy lemniscate above its peg (sin/cos phase offsets, per-kite period 9-13s), line drawn as a slight catenary; amplitude breathes with V.weather wind if available.\n3. NIGHT: kites land (rest on their pegs) when V.daylight < 0.15 - grounded look, faint moonlight rim.\n4. Pure FX: no collision, no text, no cues, never writes to V or worker positions; zero exceptions if V or iso are absent."
-    }
-  ]
+  {
+   "id": "D2",
+   "title": "Worker naming-day ceremony (charter queue T148) - quirk-flavored roster moments",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_namingday.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_namingday.js /opt/data/cache/scratch/D2_check.mjs && node --check /opt/data/cache/scratch/D2_check.mjs && head -1 tasks_out/worker_namingday.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildNamingDay' /opt/data/cache/scratch/D2_check.mjs && echo VERIFY-OK",
+   "spec": "BEHAVIOR - WORKER NAMING-DAY CEREMONY (charter queue T148: personality x spectacle) - window.GuildNamingDay = { ceremonies: 0, active: null, cool: 0 } with update/draw/__probe (probe returns { ceremonies, activeName }).\n1. Pattern + client contract: same as worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); the render loop auto-discovers window.GuildNamingDay when V.gameState === 'play'. V exposes V.workers, V.workerStates, V.daylight, V.grid; iso(gx,gy), fitText(text,maxW), window.GuildVisitor, window.cue(name) in try/catch.\n2. ROTATION: every 150-210s (RNG) pick the next worker in rotation from V.workers (skip absent) for their NAMING DAY: 6s ceremony at the campfire hearth zone (anchor near the hearth, 2+ tiles from other props' centers).\n3. CEREMONY: gold bunting strands rise between two poles, the worker sprite gets a 2s spotlight cone (soft alpha, existing gold only), a banner unfurls with their name in their archetype style - write all four voices: glitchy trickster (e.g. 'missingno, the Glitch of Honor'), aloof poet (a 6-word verse), eager rookie (an excited exclamation), serene philosopher (a calm epithet) - plus 1 spoken bubble line per archetype (3 variants each, rotate). cue('levelup') once in try/catch. Fireworks: 3 small gold spark bursts, staggered.\n4. The visitor within 2.5 tiles during a ceremony sees a hint '[E] CONGRATULATE' - E adds a small heart + a thank-you bubble from the worker (1 per ceremony).\n5. Never moves workers or other props (you only draw overlay FX, you never write V); zero exceptions if V/iso absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+   "updated_at": "2026-10-15T16:46:12Z"
+  },
+  {
+   "id": "D3",
+   "title": "Dockside arrivals ferry (living world x spectacle, S rim) - visiting sprites come and go",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_ferry.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_ferry.js /opt/data/cache/scratch/D3_check.mjs && node --check /opt/data/cache/scratch/D3_check.mjs && head -1 tasks_out/worker_ferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFerry' /opt/data/cache/scratch/D3_check.mjs && echo VERIFY-OK",
+   "spec": "BEHAVIOR - DOCKSIDE ARRIVALS FERRY (living world x spectacle; S rim zone - anchor 2+ tiles from the fishing hut and waterfall props) - window.GuildFerry = { ferries: 0, visitors: 0, phase: 'away' } with update/draw/__probe (probe returns { ferries, visitors, phase }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.daylight, V.weather, V.grid; iso(gx,gy), fitText, window.GuildVisitor, window.cue(name) in try/catch.\n2. THE FERRY: every 180-260s (RNG, staggered start offset so the first arrives 30-60s in) a small lantern-lit ferry boat slides in from the south water edge to a dock plank at the S rim. It bobs gently (sin) while docked; its lantern reuses the gold accent #d4af37 - no new colors. cue('coin') once on docking, try/catch.\n3. VISITING SPRITE: one palette-swapped pixel visitor (fillRect blocks, distinct silhouette from workers - give it a tiny suitcase) walks down the plank, strolls a short loop through the SW market row (3 waypoints), pauses at the hearth stall, then walks back, boards, and the ferry departs. While a visiting sprite is near the player-controlled visitor (1.5 tiles), it waves (arm pixel toggles) once per trip.\n4. STATE MACHINE: phases 'away' -> 'arriving' -> 'docked' -> 'strolling' -> 'departing' -> 'away'; only ONE ferry cycle active at a time; counts ferries (completed cycles) and visitors (sprites landed) on the state.\n5. Pure overlay - never write V, never move other props; zero exceptions if V/iso absent; no persistence; no new accent colors.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+   "updated_at": "2026-10-15T17:11:41Z"
+  },
+  {
+   "id": "D4",
+   "title": "Worker activity status flair (office polish) - animated status chips over busy workers",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_statusflair.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_statusflair.js /opt/data/cache/scratch/D4_check.mjs && node --check /opt/data/cache/scratch/D4_check.mjs && head -1 tasks_out/worker_statusflair.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildStatusFlair' /opt/data/cache/scratch/D4_check.mjs && echo VERIFY-OK",
+   "spec": "BEHAVIOR - WORKER ACTIVITY STATUS FLAIR (office-polish pass: the roster should read like characters mid-task, not dots) - window.GuildStatusFlair = { chips: {}, shown: 0 } with update/draw/__probe (probe returns { shown, chips: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. V gives V.workers, V.workerStates, V.allTasks (array with status fields); iso(gx,gy), fitText(text,maxW), window.cue in try/catch.\n2. CHIP: for each worker whose current task is in_progress (derive from V.workerStates activity or V.allTasks newest in_progress per worker - be defensive, missing fields = skip), draw a small parchment chip 22px above their head: a 6x6 pixel pictogram + a verb. Verbs by what the task title suggests (write a small classifier over title keywords, default 'working'): building = hammer pictogram + 'RAISING', doc/journal/ledger/guide = quill + 'WRITING', museum/plaque/history = scroll + 'RECORDING', sound/music = note + 'TUNING', FX/glow/firefly/lantern/aurora = spark + 'LIGHTING', default = gear + 'CRAFTING'.\n3. ANIMATION: the pictogram bobs 1px on a 700ms cycle; the chip fades in over 300ms, holds 5s, fades out, then re-shows a rotated verb variant every 14s (alternate verbs per classifier so it stays alive: e.g. CRAFTING/PLYING THE TRADE). Only when V.daylight > 0.2 (chips are a daytime read; at night the lanterns own the eye).\n4. LEGIBILITY: chip max width 90px, fitText with ellipsis, never overlaps the worker nameplate (draw 22px above it, verify offset), max 5 chips on screen at once (closest to the visitor win).\n5. Pure overlay - never write V, never move sprites; zero exceptions if V/iso absent; parchment + existing palette only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+   "updated_at": "2026-10-15T17:35:16Z"
+  },
+  {
+   "id": "D5",
+   "title": "Golden-hour sky grade (backdrop polish) - dawn/dusk color pass, star easing",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_goldenhour.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_goldenhour.js /opt/data/cache/scratch/D5_check.mjs && node --check /opt/data/cache/scratch/D5_check.mjs && head -1 tasks_out/worker_goldenhour.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildGoldenHour' /opt/data/cache/scratch/D5_check.mjs && echo VERIFY-OK",
+   "spec": "BEHAVIOR - GOLDEN-HOUR SKY GRADE (canon #4 legibility + #6 pacing: dawn/dusk deserve a breath) - window.GuildGoldenHour = { grade: 0, phase: 'none' } with update/__probe and a drawBackdrop(ctx, now) hook (the client paints backdrop layers BEFORE the island; modules expose drawBackdrop for sky/water layers).\n1. Pattern: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now), __probe). The client calls your update every frame when V.gameState === 'play' and your drawBackdrop(ctx, now) before the island layer. V gives V.daylight 0..1 and V.canvas.\n2. GRADE: compute t = distance of V.daylight from the mid-day plateau: grade rises smoothly to 1.0 as V.daylight enters the 0.35-0.62 transition band (dawn and dusk shoulders) with a 60s eased ramp, 0 in full day or full night. phase = 'dawn' | 'dusk' | 'none' depending on which shoulder.\n3. PAINT: drawBackdrop paints a horizontal warm band wash over the sky region (upper half of the canvas) using layered translucent rects (alpha up to 0.18) in EXISTING warm palette hues only (gold #d4af37 family and existing dusk tones) - a soft horizon glow that is stronger near the horizon line and fades upward. Also ease the day-night tint: the client's own night tint must not double up - keep total added alpha under 0.2 anywhere.\n4. STARS: expose eased star alpha for the night shoulder: expose window.GuildGoldenHour.starAlpha (0..1) that rises from 0 to 1 through the dusk shoulder (do not draw stars yourself - just expose the value; add a comment that the sky module may read it).\n5. Never write to V (except exposing your own global), never draws over the island (backdrop only), zero exceptions if V/canvas absent; no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+   "updated_at": "2026-10-15T17:58:45Z"
+  },
+  {
+   "id": "D6",
+   "title": "Visitor footprints and sparkle trail (juice pass) - every step leaves a trace",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_footprints.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_footprints.js /opt/data/cache/scratch/D6_check.mjs && node --check /opt/data/cache/scratch/D6_check.mjs && head -1 tasks_out/worker_footprints.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildFootprints' /opt/data/cache/scratch/D6_check.mjs && echo VERIFY-OK",
+   "spec": "BEHAVIOR - VISITOR FOOTPRINTS AND SPARKLE TRAIL (canon #3 juice: no silent movement) - window.GuildFootprints = { prints: [], sparkles: [], steps: 0 } with update/draw/__probe (probe returns { steps, prints: count }).\n1. Pattern + client contract: worker_visitor.js conventions (self-installing ES module, no imports, typeof guards, state on the window global, update(now)/draw(ctx), __probe); auto-discovered when V.gameState === 'play'. window.GuildVisitor gives { gx, gy, moving, facing }; iso(gx,gy) -> {x,y}; V gives V.daylight and V.weather (e.g. 'CLEAR'/'RAIN'); window.cue(name) in try/catch.\n2. FOOTPRINTS: while GuildVisitor.moving is true, every 0.5s of continuous movement drop a tiny footprint pair (2 fillRect dots, alternating left/right offset perpendicular to facing) at the visitor's current world position. Prints live 3.5s, fading alpha 0.35 -> 0, max 40 on screen (oldest pruned). In RAIN weather prints are slightly darker and live 5s (wet ground); draw them UNDER the visitor (paint order: your draw is called with other overlay modules - keep prints subtle, they are texture, not signal).\n3. SPARKLE TRAIL: only for the 1.2s after any emote or interact cue you can observe without V writes (detect via a window.GuildVisitor.facing flip is NOT an emote - instead: if window.GuildEmotes or similar exposes a recent emote timestamp, read it defensively; if absent, fall back to a 90s ambient sparkle: 5 gold sparks rise around a resting visitor, cue-free). Sparks: 1-2px gold glints, 0.8s life, upward drift, alpha fade.\n4. SOUND: never fire cues yourself except on the ambient sparkle once (cue('coin') at most once per 90s, try/catch).\n5. Pure overlay - never write V or GuildVisitor; zero exceptions if V/iso absent; gold + soft neutrals only, no new accent colors; no persistence.\n6. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.",
+   "updated_at": "2026-10-15T18:23:16Z"
+  },
+  {
+   "id": "D7",
+   "title": "Fishing-derby podium ceremony (craft-heavy polish) - when a derby catch window ends, a small podium rises at the S rim with the top catcher's name, confetti burst and cue, reading live derby state from board data",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_derbypodium.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_derbypodium.js /opt/data/cache/scratch/DERBYPODIUM_check.mjs && node --check /opt/data/cache/scratch/DERBYPODIUM_check.mjs && grep -qi 'window.Guild' tasks_out/worker_derbypodium.js && head -1 tasks_out/worker_derbypodium.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D7: DERBY PODIUM CEREMONY (craft-heavy polish pass).\nZONE: S rim near the fishing derby spot, offset 2+ tiles from the lighthouse and buoys. Read live board/derby state via window.V / window.allTasks / any Guild derby global; when a derby round completes, raise a 3-step podium prop, show the top catcher with fitText, fire one confetti burst (existing palette) and cue. Adds real ceremony craft: easing on the podium rise, nameplate flourish. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildDerbyPodium, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
+   "updated_at": "2026-10-15T20:12:46Z"
+  },
+  {
+   "id": "D8",
+   "title": "Worker emote reaction ring (office polish) - when the visitor uses emotes 1-4, nearby workers glance over and answer with a matching idle flourish and a soft ring FX at the visitor's feet",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_emotering.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_emotering.js /opt/data/cache/scratch/EMOTERING_check.mjs && node --check /opt/data/cache/scratch/EMOTERING_check.mjs && grep -qi 'window.Guild' tasks_out/worker_emotering.js && head -1 tasks_out/worker_emotering.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D8: VISITOR EMOTE REACTION RING (craft-heavy polish pass).\nZONE: follows the visitor (no fixed prop). Listen for the visitor's emote state (window.V / GuildVisitor / existing emote globals); on emote 1-4, draw a soft expanding ring FX at the visitor's feet (existing palette) and make workers within ~3 tiles face the visitor with one matching idle flourish for ~2s. Rate-limit to one ring per second. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildEmoteRing, with an update(now) method (and draw(ctx) if it renders), using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.GuildVisitor / window.allTasks where useful. Never edit worker_office.js or worker_office.html. Text uses existing accent colors only (gold preferred); no new colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
+   "updated_at": "2026-10-15T20:38:14Z"
+  },
+  {
+   "id": "D9",
+   "title": "Night-market lantern ferry (charter queue T161) - a tiny lantern ferry crosses the S-rim water after dusk carrying one passenger NPC, docking at the buoy line; a moment to stop and watch that compounds with the lighthouse + buoy work",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_lanternferry.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_lanternferry.js /opt/data/cache/scratch/FERRY_check.mjs && node --check /opt/data/cache/scratch/FERRY_check.mjs && grep -qi 'window.Guild' tasks_out/worker_lanternferry.js && head -1 tasks_out/worker_lanternferry.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D9: NIGHT-MARKET LANTERN FERRY (craft-heavy polish, spectacle x living world).\nZONE: S-rim water (south edge, roughly x 2..6, beyond the shoreline) - the lighthouse (worker_lighthouse.js, S rim ~4.5,7.5) and any rim lantern buoys are neighbors; keep 2+ tiles from every existing prop. After dusk (read the day-night state the same way worker_lighthouse.js or worker_nightmarket.js does), a tiny ferry with 2-3 hanging lanterns crosses the water slowly carrying ONE passenger NPC (silhouette + nameplate with window.fitText), shuttling between two dock points about 6 tiles apart with a gentle pause + bob at each end, then turns around. During the day the ferry is moored (still, lanterns unlit). Lantern glow uses the existing gold accent ONLY; water interaction is a soft wake ripple (existing palette). PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildLanternFerry with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. No new accent colors. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
+   "updated_at": "2026-10-16T00:10:48Z"
+  },
+  {
+   "id": "D10",
+   "title": "Wish scale drift (charter queue T163) - the S-rim wish scales slowly tip toward whichever wish type the visitor actually makes most, one needle move per game-day, giving the pond a readable mood",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_wishedrift.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_wishedrift.js /opt/data/cache/scratch/WISHDRIFT_check.mjs && node --check /opt/data/cache/scratch/WISHDRIFT_check.mjs && grep -qi 'window.Guild' tasks_out/worker_wishedrift.js && head -1 tasks_out/worker_wishedrift.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D10: WISH SCALE DRIFT (craft-heavy polish, economy x playability).\nZONE: S-rim pond at the wish scales (worker_wishbooth.js / worker_wishes.js territory, S rim) - offset 2+ tiles from any existing prop there. Build a small two-pan balance scale prop that reacts to REAL wish data: tally wish types the visitor has actually made (read the wish globals from the wish/lantern modules, e.g. window.GuildWishes or similar - inspect tasks_out/worker_wishes.js and worker_wishbooth.js first; fall back to counting window.allTasks wish-flavored entries if no live tally exists). Once per in-game day the needle drifts one small step toward the heavier wish type, with a tiny creak cue (window.cue, try/catch) and the pans visibly shifting. Keep drift bounded (max ~15 degrees either way) so it reads as mood, not judgment. Gold accent only; no new colors. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildWishDrift with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
+   "updated_at": "2026-10-16T00:37:11Z"
+  },
+  {
+   "id": "D11",
+   "title": "Petting-zoo ledger (charter queue T160) - a small ledger plaque in the E garden listing every pettable creature (cat, fox, ...) with a live pet-count read from the pet globals; makes the island's living creatures part of its own record",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_petledger.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_petledger.js /opt/data/cache/scratch/D11_check.mjs && node --check /opt/data/cache/scratch/D11_check.mjs && grep -qi 'window.Guild' tasks_out/worker_petledger.js && head -1 tasks_out/worker_petledger.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D11: GUILD PETTING ZOO LEDGER (craft-heavy polish, self-doc x playability).\nZONE: E garden (roughly x 4..6, y 0..3) - offset 2+ tiles from any existing prop (butterfly meadow, wish seeds). Build a small wooden ledger plaque on a post that lists each pettable creature (read the live pet/creature globals from worker modules like the cat/fox modules via window - probe window.Guild* keys defensively with try/catch) and a pet-count beside each name that increments live when the visitor pets. Sign text uses window.fitText and clamps inside island bounds (see canon sign-clip findings). Plaque glow at night uses the existing gold accent ONLY.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+   "updated_at": "2026-10-16T02:25:55Z"
+  },
+  {
+   "id": "D12",
+   "title": "Rivalry notice board (charter queue T164) - a small board in the SE heroes' plaza posting one playful line per game-day pairing two workers, from real board history, written in each worker's voice",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_rivalryboard.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_rivalryboard.js /opt/data/cache/scratch/D12_check.mjs && node --check /opt/data/cache/scratch/D12_check.mjs && grep -qi 'window.Guild' tasks_out/worker_rivalryboard.js && head -1 tasks_out/worker_rivalryboard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D12: RIVALRY NOTICE BOARD (craft-heavy polish, self-doc x personality).\nZONE: SE heroes' plaza (roughly x 4..6, y -3..-1), offset 2+ tiles from the hero statues. A small corkboard on posts that, once per game-day, derives ONE playful rivalry line from real history available on window.V / window.allTasks (fastest ship, longest retry streak, most recent failure) and renders it in each worker's archetype voice (missingno glitchy trickster, laguna eager rookie, deepseek earnest newcomer, step5 aloof poet) - read worker_personality.js for the voice canon if present on window. Lines use window.fitText clamped inside island bounds; board paper uses existing palette only. Touching the board with E shows the last 3 days of lines.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+   "updated_at": "2026-10-16T02:51:39Z"
+  },
+  {
+   "id": "D13",
+   "title": "N-edge frost ferns (charter queue T165) - delicate frost-fern patterns blooming on N-edge rocks during SNOW weather, melting at dawn; zero new colors",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_frostferns.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_frostferns.js /opt/data/cache/scratch/D13_check.mjs && node --check /opt/data/cache/scratch/D13_check.mjs && grep -qi 'window.Guild' tasks_out/worker_frostferns.js && head -1 tasks_out/worker_frostferns.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D13: N-EDGE FROST FERNS (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly y -8..-6, x -3..3), offset 2+ tiles from the stargazing post (0,-8) and cairn trail. During SNOW weather (read the day-night/weather state the same way worker_puddles.js does), delicate frost-fern fronds bloom outward on N-edge rocks over ~20s (whitish, existing palette ONLY - no new accent colors), and melt away progressively after dawn. Fronds are small procedural line/curve sprites, 4-6 rocks max, gentle shimmer. NO new colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+   "updated_at": "2026-10-16T03:15:29Z"
+  },
+  {
+   "id": "D14",
+   "title": "S-rim message-in-a-bottle (charter queue T166) - bottles wash ashore at dawn containing one real line of board.json history; visitor collects, reads, tosses one back for a coin",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_bottlepost.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_bottlepost.js /opt/data/cache/scratch/D14_check.mjs && node --check /opt/data/cache/scratch/D14_check.mjs && grep -qi 'window.Guild' tasks_out/worker_bottlepost.js && head -1 tasks_out/worker_bottlepost.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D14: MESSAGE-IN-A-BOTTLE (craft-heavy polish, playability x economy x self-doc).\nZONE: S rim shore (roughly x 2..6, south edge), offset 2+ tiles from the lighthouse, fishing hut, driftwood nook and tide pools. At each dawn, 1-2 bottles wash ashore with a gentle bob, each containing ONE real line drawn from window.V / window.allTasks history (a done quest title, a funny failed attempt). Visitor walks near + E to collect: a small parchment overlay shows the line (window.fitText), then the visitor can toss the bottle back to sea for one coin (same coin visuals as the treasury/coin pile). Bottles despawn at next dawn. Existing palette only.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+   "updated_at": "2026-10-16T03:38:10Z"
+  },
+  {
+   "id": "D15",
+   "title": "N-edge ice-mirror pool (foreman invention) - a small frozen mirror pool on the N edge that faintly reflects passing birds and the moon at night; living world x spectacle",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_icemirror.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_icemirror.js /opt/data/cache/scratch/D15_check.mjs && node --check /opt/data/cache/scratch/D15_check.mjs && grep -qi 'window.Guild' tasks_out/worker_icemirror.js && head -1 tasks_out/worker_icemirror.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D15: N-EDGE ICE-MIRROR POOL (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly x -4..-1, y -7..-5), offset 2+ tiles from stargazing post, cairns and frost ferns. A small oval ice pool that acts as a faint mirror: at night it reflects the moon as a soft smear, and whenever a bird module's fauna passes overhead (probe window.Guild* bird/aviary keys defensively), a tiny reflected silhouette crosses the pool surface. Subtle ripple on interact (E near the edge). Palette: whites/blues already in base, NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+   "updated_at": "2026-10-16T04:02:03Z"
+  },
+  {
+   "id": "D16",
+   "title": "S-rim drift-market barge (foreman invention) - a small barge occasionally poles up to the S rim carrying 1-2 rotating goods the visitor can buy with earned coins; economy x playability",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_driftbarge.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cp tasks_out/worker_driftbarge.js /opt/data/cache/scratch/D16_check.mjs && node --check /opt/data/cache/scratch/D16_check.mjs && grep -qi 'window.Guild' tasks_out/worker_driftbarge.js && head -1 tasks_out/worker_driftbarge.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "D16: S-RIM DRIFT-MARKET BARGE (craft-heavy polish, economy x playability).\nZONE: S-rim water (south edge, x -2..2), offset 2+ tiles from the lantern ferry route and dock points. Every few game-hours a small flat barge poles up to the S rim shore carrying 1-2 rotating goods (snack, seed pouch, paper lantern - sprites from existing palette), moors for ~60s with a vendor NPC nameplate (window.fitText), then poles away. Visitor near + E opens a tiny 2-item buy sheet priced in the guild coin; purchases cue a coin sound + item bob in the visitor's hand. NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+   "updated_at": "2026-10-16T04:26:04Z"
+  },
+  {
+   "id": "D17",
+   "title": "T167 N-edge ice mirror moonpath - a still tide pool on the N edge that lays a shimmering moon-path across the water at night, cracking faintly when birds pass over",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_moonpath.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_moonpath.js /opt/data/cache/scratch/worker_moonpath_check.mjs && node --check /opt/data/cache/scratch/worker_moonpath_check.mjs && grep -qi 'window.Guild' tasks_out/worker_moonpath.js && head -1 tasks_out/worker_moonpath.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildMoonpath = { path: null, cracks: [] } with update/draw/__probe (probe returns { path: !!path, cracks: cracks.length }):\n1. TIDE POOL: a still water pool on the N edge (anchor around tile gx 0, gy -7, clamp within the grown floor from V.growthStep: core 4x4 plus one ring per growth step, max 8; keep 2+ tiles from the stargazing post at (0,-8) and the frost ferns) - a pale-blue ellipse ~14x7px with a thin ice rim (stone grey). Prop layer.\n2. MOONPATH: at night (V.daylight < 0.3) draw a shimmering path of light leading from the pool across the water toward the moon side of the sky: 6-8 soft gold-white glints (#d4af37 mixed with pale blue) in a widening column, each gently pulsing with sin phase offsets. Fade the whole path in/out over 2s at nightfall/dawn. Draw nothing by day.\n3. BIRD CRACKS: if window.GuildAviary exists and any of its birds is overhead (probe its birds count/state defensively), occasionally spawn a faint crack: 2-3 thin white line segments radiating across the pool, fading over 4s, at most one crack per 10s. If GuildAviary is absent, instead spawn a crack every 45-70s on its own.\n4. Rain makes the path shimmer faster (higher pulse frequency). Zero exceptions.",
+   "seeded_by": "foreman",
+   "seeded_at": "2026-10-16",
+   "updated_at": "2026-10-16T05:22:31Z"
+  },
+  {
+   "id": "D18",
+   "title": "T168 S-rim tide-combs - visitor-driftwood combs left at low tide that sift 1-3 coins or one real board-history line from the wet sand once per game-day",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_tidecombs.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tidecombs.js /opt/data/cache/scratch/worker_tidecombs_check.mjs && node --check /opt/data/cache/scratch/worker_tidecombs_check.mjs && grep -qi 'window.Guild' tasks_out/worker_tidecombs.js && head -1 tasks_out/worker_tidecombs.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildTideCombs = { combs: [], sifting: null, lastSift: 0, loot: [] } with update/draw/__probe (probe returns { combs: combs.length, sifting: !!sifting, loot: loot.length }):\n1. COMBS: 2 small driftwood comb props (brown #6b4a2f rectangles with 4 tooth prongs, gold trim #d4af37) on the S rim wet sand (anchor tiles around gx 1.5, gy 6.8 and gx 4.5, gy 7.2, clamp within the grown floor; keep 2+ tiles from the lighthouse (4.5,7.5), the fishing hut zone and the waterfall). Props, no collision.\n2. SIFT: when window.GuildVisitor stands within 1.5 tiles of a comb and presses 'e'/'E' (one-shot key flag), if not on cooldown: sifting = { t0, dur: 2000, comb } - draw a small sand-sift animation (3 sand-grain particles flicking out) for 2s, then loot: roll 1-3 gold coins (small #facc15 circles floating up, fading) OR one real board-history line: pick a random done quest id+title from V.allTasks and show it as a parchment scrap label (fitText to 150px, clipped) near the comb for 6s. Cooldown 60s per comb (once per game-day feel).\n3. Optional economy read: if window.GuildEconomy exists, note its treasury in __probe only - never write to it.\n4. A hint label '[E] SIFT' shows when in range (10px gold, clipped). Zero exceptions.",
+   "seeded_by": "foreman",
+   "seeded_at": "2026-10-16",
+   "updated_at": "2026-10-16T05:35:28Z"
+  },
+  {
+   "id": "D19",
+   "title": "T169 S-rim tide-glass lanterns - stranded glass float lanterns along the S rim that glow gold at night and bob with the tide (spectacle, S-rim directive)",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_tideglass.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tideglass.js /opt/data/cache/scratch/worker_tideglass_check.mjs && node --check /opt/data/cache/scratch/worker_tideglass_check.mjs && grep -qi 'window.Guild' tasks_out/worker_tideglass.js && head -1 tasks_out/worker_tideglass.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildTideglass = { lanterns: [] } with update/draw/__probe (probe returns { lanterns: lanterns.length }):\n1. LANTERNS: 4 tide-glass float lanterns stranded along the S rim sand (tiles around gx -1..5 on the south edge rows gy 6.5-7.5, clamped within the grown floor, each 1.5+ tiles apart and 2+ tiles from the drift-market barge, lighthouse (4.5,7.5) and waterfall zone). Each: a small seafoam-green glass sphere (existing palette: soft green/teal from the pond colors) in a knotted rope net (thin #6b4a2f lines), resting on a sand mound.\n2. BOB: each lantern bobs gently (sin, own phase, ~3px vertical + 1px tilt) as if with the tide.\n3. NIGHT GLOW: when V.daylight < 0.3 each lantern emits a soft warm gold halo (radial glow, #d4af37, alpha pulsing slowly, flicker with tiny randomness); by day it is just glass with a small white glint.\n4. RAIN: halos dim and the bob quickens. Zero exceptions.",
+   "seeded_by": "foreman",
+   "seeded_at": "2026-10-16",
+   "updated_at": "2026-10-16T05:58:21Z"
+  },
+  {
+   "id": "D20",
+   "title": "T172 Q1 Quiet Lobes prayer-flag line - a string of small gold prayer flags strung across the barren E lobe, rippling on the wind (living world + spectacle, director arc Q1)",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_prayerflags.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_prayerflags.js /opt/data/cache/scratch/D20_check.mjs && node --check /opt/data/cache/scratch/D20_check.mjs && grep -qi 'window.Guild' tasks_out/worker_prayerflags.js && head -1 tasks_out/worker_prayerflags.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildPrayerflags = { flags: [] } with update/draw/__probe (probe returns { flags: flags.length }):\n1. FLAGS: 7 small triangle pennants strung on a gentle sagging line across the E lobe (anchor tiles gx 3.5 to 6.5 around gy -1.5, clamped within the grown floor, each 2+ tiles from every known prop - garden wishes, butterfly meadow, kite field are nearby, so place along the lobe's open mid-span). Gold #d4af37 cloth ONLY - the calm-lobe palette rule says no other accent.\n2. MOTION: each pennant ripples with a slow per-flag phase offset (sin-based sway, amplitude grows with V.weather wind if available); at night the line carries a faint gold ember-glow (V.daylight < 0.25).\n3. DRAW: iso-projected via iso(gx,gy), tiny shadow ellipse per pennant; fitText not needed (no labels - the lobe stays wordless).\n4. DISTANCE DUTY: when window.GuildVisitor stands within 2 tiles of any flag, ONE soft cue('chime') per visit (guard with a cooldown so it never spams).",
+   "updated_at": "2026-10-16T06:21:11Z"
+  },
+  {
+   "id": "D21",
+   "title": "T172 Q2 Quiet Lobes founders bench - a stone bench with the guild cat's pawprint plaque in the E lobe; sitting = calm emote + soft chime (playability + self-doc, director arc Q2)",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_foundersbench.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_foundersbench.js /opt/data/cache/scratch/D21_check.mjs && node --check /opt/data/cache/scratch/D21_check.mjs && grep -qi 'window.Guild' tasks_out/worker_foundersbench.js && head -1 tasks_out/worker_foundersbench.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildFoundersbench = { x, y, sitting: false } with update/draw/__probe:\n1. BENCH: one small stone bench at (4.5, -2.5) in the E lobe, 2+ tiles from the prayer-flag line, the founders' plaque (carved stone with a tiny paw print, gold-painted), and a wordless plaque reading 'For the ones who started it' via fitText.\n2. INTERACT: when window.GuildVisitor is within 1.5 tiles, draw a subtle gold prompt glyph; on the visitor E-key / proximity dwell (read GuildVisitor state; if the client has an interact bus use it, else trigger when the visitor STAYS within 1 tile for 1.5s), the visitor sits: draw them on the bench with a calm breathing sway, emit one cue('chime'), and a single small heart rises (existing palette). Sitting releases when the visitor walks away.\n3. SELF-DOC: the plaque count is 1 now - structure the plaque text so it could list founder names later from V.allTasks[0] if present (first ever done task title, truncated via fitText).\n4. Never block movement: no collision writes; pure draw + read-only visitor checks.",
+   "updated_at": "2026-10-16T06:47:49Z"
+  },
+  {
+   "id": "D22",
+   "title": "T172 Q3 Quiet Lobes time-capsule hollow - a dug hollow in the NE far corner where the visitor buries one endorsed quest memory (playability + self-doc, director arc Q3)",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_capsulehollow.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_capsulehollow.js /opt/data/cache/scratch/D22_check.mjs && node --check /opt/data/cache/scratch/D22_check.mjs && grep -qi 'window.Guild' tasks_out/worker_capsulehollow.js && head -1 tasks_out/worker_capsulehollow.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildCapsulehollow = { buried: false, memory: null } with update/draw/__probe:\n1. HOLLOW: a shallow dug hollow (dark earth ellipse + rim stones) in the NE far corner around (2.5, -6.5), 2+ tiles from any prop, clamped within the grown floor. A tiny wooden marker post stands beside it (no sign text until buried).\n2. INTERACT: when the visitor stands within 1.5 tiles, draw a gold prompt glyph. On interaction (proximity-dwell pattern like the bench, or the interact bus if present): pick the most recent endorsed/working quest from V.allTasks (find the newest task with status done, fall back to the newest of any status); store its title via fitText into state.memory; play one cue('dig') if available else cue('chime'); set buried = true.\n3. BURIED STATE: after burial the marker post grows a small gold ribbon and a one-line label shows the buried memory title; re-interaction shows a quiet 'sealed' message instead (cooldown-guarded). It must never re-bury or duplicate.\n4. Pure read of V.allTasks - never mutate it.",
+   "updated_at": "2026-10-16T07:12:02Z"
+  },
+  {
+   "id": "D23",
+   "title": "T171 visitor scrapbook - the visitor collects a tiny stamp at each POI they interact with; a full page triggers a quirky ceremony (playability)",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_scrapbook.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_scrapbook.js /opt/data/cache/scratch/D23_check.mjs && node --check /opt/data/cache/scratch/D23_check.mjs && grep -qi 'window.Guild' tasks_out/worker_scrapbook.js && head -1 tasks_out/worker_scrapbook.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildScrapbook = { stamps: {} } with update/draw/__probe (probe returns { collected: Object.keys(stamps).length }):\n1. STAMPS: define 6 POIs by checking proximity to known window.Guild* props where possible (quest board area, museum, snack stall, the cat, tide combs, founders bench - read their window globals' x/y if exposed, else use fixed anchor coords clamped inside the grown floor: board (0,0 area), museum W (-6,3), stall (2.5,-2.5), cat (1,1), tide combs S rim (2,7), founders bench (4.5,-2.5)). When the visitor dwells within 1.5 tiles of a POI for 2s, award that POI's stamp once (id in stamps with timestamp).\n2. CEREMONY: when all 6 are collected, ONE quirky ceremony: a short parchment scroll unfurls near the visitor reading 'SCRAPBOOK COMPLETE - the guild salutes a thorough wanderer' via fitText, one cue('fanfare') guarded to fire exactly once ever (persist the flag in the state object only, not localStorage).\n3. DRAW: a tiny open book glyph bottom-right of the visitor ONLY while it is within 3 tiles of an uncollected POI (show which POI is missing as a 1-2 word fitText hint). No HUD panels, no new accent colors - parchment tan + gold only.\n4. Cooldown-guard every cue; never spam; zero exceptions if V or iso are absent.",
+   "updated_at": "2026-10-16T07:34:11Z"
+  },
+  {
+   "id": "D24",
+   "title": "T173 far-corner compass sundial - a stone sundial in the far NW corner whose shadow sweeps with the real day-night cycle and whose rose marks every district anchor (self-doc x spectacle)",
+   "status": "done",
+   "attempts": 1,
+   "target_file": "tasks_out/worker_sundial.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_sundial.js /opt/data/cache/scratch/D24_check.mjs && node --check /opt/data/cache/scratch/D24_check.mjs && grep -qi 'window.Guild' tasks_out/worker_sundial.js && head -1 tasks_out/worker_sundial.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildSundial = { } with update/draw/__probe:\n1. DIAL: one stone compass-rose sundial at (-5.5, -5.5) in the far NW corner, 2+ tiles from the crystal grove and shrine props, clamped within the grown floor. Rose arms etched in stone-grey with the 4 cardinal letters (N/E/S/W) via fitText in small size.\n2. SELF-DOC: faint gold tick marks around the rose pointing toward each real district anchor (crystal grove NW, aviary NE, market SW, heroes SE) - these are directions, not labels; keep them 1 tile long, no text.\n3. SHADOW: the gnomon shadow rotates with V.daylight (noon = shortest, night = faint moon-shadow at a fixed slow angle); at night the rose's cardinal letters glow faint gold.\n4. Pure FX/prop layer: no collision, no interaction, no new colors; zero exceptions if V or iso are absent.",
+   "updated_at": "2026-10-16T07:57:29Z"
+  },
+  {
+   "id": "D25",
+   "title": "T174 NE kite field - two paper kites tethered in the empty NE diamond lobe, dancing on the wind (living world x spectacle, E/NE-lobe directive)",
+   "status": "pending",
+   "attempts": 0,
+   "target_file": "tasks_out/worker_kites.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_kites.js /opt/data/cache/scratch/D25_check.mjs && node --check /opt/data/cache/scratch/D25_check.mjs && grep -qi 'window.Guild' tasks_out/worker_kites.js && head -1 tasks_out/worker_kites.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildKites = { kites: [] } with update/draw/__probe (probe returns { kites: kites.length }):\n1. KITES: two diamond paper kites tethered to the NE lobe ground around (-2.5, -6.0) and (-0.5, -5.0) (clamped within the grown floor, 2+ tiles apart and from any prop; one red-orange from the existing palette, one blue - both already in budget). Tether lines anchor to small ground pegs.\n2. MOTION: each kite swoops in a lazy lemniscate above its peg (sin/cos phase offsets, per-kite period 9-13s), line drawn as a slight catenary; amplitude breathes with V.weather wind if available.\n3. NIGHT: kites land (rest on their pegs) when V.daylight < 0.15 - grounded look, faint moonlight rim.\n4. Pure FX: no collision, no text, no cues, never writes to V or worker positions; zero exceptions if V or iso are absent."
+  },
+  {
+   "id": "D26",
+   "title": "T176 POST-SCRAPE GRAVEYARD - a tiny corner of leaning headstones on the N edge for every FAILED quest id, auto-generated from V.allTasks; each headstone's epitaph is the task title, and the ghost of that worker drifts by at night (self-doc x quirky, N-edge directive)",
+   "status": "pending",
+   "attempts": 0,
+   "target_file": "tasks_out/worker_graveyard.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_graveyard.js /opt/data/cache/scratch/D26_check.mjs && node --check /opt/data/cache/scratch/D26_check.mjs && grep -qi 'window.Guild' tasks_out/worker_graveyard.js && head -1 tasks_out/worker_graveyard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nBuild the graveyard from V.allTasks at runtime: filter status === 'failed', one small leaning stone per id (cap 8, newest last), epitaph = task title via fitFn. Draw drifting ghost wisps (soft white alpha) only when V.daylight < 0.3. Cluster at the N edge zone around grid (-5,-5), 2+ tiles from any existing prop.\n\nZONE RULE: claim the named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are missing - bail silently.\n\nOutput is ONLY the new file, wrapped in one standard fenced code block (three backticks, no language tag), with at most one line of prose outside the block."
+  },
+  {
+   "id": "D27",
+   "title": "SW MARKET STALL SATELLITE - a duplicate snack stall in the SW market zone so commerce is not jammed into the central hearth; the hearth keeps campfire + banter only (HIGH director finding: hub 3x denser than surroundings; SW-market directive)",
+   "status": "pending",
+   "attempts": 0,
+   "target_file": "tasks_out/worker_stallsw.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_stallsw.js /opt/data/cache/scratch/D27_check.mjs && node --check /opt/data/cache/scratch/D27_check.mjs && grep -qi 'window.Guild' tasks_out/worker_stallsw.js && head -1 tasks_out/worker_stallsw.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nDraw a small wooden snack stall at the SW market zone anchor (grid around (1,5)) with striped awning, a snack tray, and a coin bowl. Idle animation: awning sway and a coin glint every few seconds when any worker is nearby (dist to window.GuildVisitor or workers). Pure prop - does NOT duplicate stall logic, only visuals.\n\nZONE RULE: claim the named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are missing - bail silently.\n\nOutput is ONLY the new file, wrapped in one standard fenced code block (three backticks, no language tag), with at most one line of prose outside the block."
+  },
+  {
+   "id": "D28",
+   "title": "T177 FOREMAN WORKBENCH - a small workbench prop in the W museum wing where the visitor can pick up a 'foreman memo': an in-world scroll summarizing the live board state (done/pending/failed counts + the oldest pending quest id/title from V.allTasks) (playability x self-doc, W-wing directive)",
+   "status": "pending",
+   "attempts": 0,
+   "target_file": "tasks_out/worker_workbench.js",
+   "include_files": [
+    "tasks_out/worker_visitor.js",
+    "tasks_out/worker_office.js"
+   ],
+   "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_workbench.js /opt/data/cache/scratch/D28_check.mjs && node --check /opt/data/cache/scratch/D28_check.mjs && grep -qi 'window.Guild' tasks_out/worker_workbench.js && head -1 tasks_out/worker_workbench.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+   "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nDraw a workbench with a lamp and parchment stack at the W wing anchor (grid around (-5,3)), 2+ tiles from the curator cart. When window.GuildVisitor is within 1.5 tiles, compute memo text from V.allTasks (counts by status + oldest pending title) and draw a readable scroll panel above the bench using fitFn, max 4 short lines. Readable = the visitor can DO something.\n\nZONE RULE: claim the named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are missing - bail silently.\n\nOutput is ONLY the new file, wrapped in one standard fenced code block (three backticks, no language tag), with at most one line of prose outside the block."
+  }
+ ]
 }
