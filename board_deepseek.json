@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T08:41:52Z",
+    "checked_at": "2026-10-16T09:05:45Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -379,15 +379,16 @@
     {
       "id": "D27",
       "title": "SW MARKET STALL SATELLITE - a duplicate snack stall in the SW market zone so commerce is not jammed into the central hearth; the hearth keeps campfire + banter only (HIGH director finding: hub 3x denser than surroundings; SW-market directive)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_stallsw.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_stallsw.js /opt/data/cache/scratch/D27_check.mjs && node --check /opt/data/cache/scratch/D27_check.mjs && grep -qi 'window.Guild' tasks_out/worker_stallsw.js && head -1 tasks_out/worker_stallsw.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nDraw a small wooden snack stall at the SW market zone anchor (grid around (1,5)) with striped awning, a snack tray, and a coin bowl. Idle animation: awning sway and a coin glint every few seconds when any worker is nearby (dist to window.GuildVisitor or workers). Pure prop - does NOT duplicate stall logic, only visuals.\n\nZONE RULE: claim the named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are missing - bail silently.\n\nOutput is ONLY the new file, wrapped in one standard fenced code block (three backticks, no language tag), with at most one line of prose outside the block."
+      "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nDraw a small wooden snack stall at the SW market zone anchor (grid around (1,5)) with striped awning, a snack tray, and a coin bowl. Idle animation: awning sway and a coin glint every few seconds when any worker is nearby (dist to window.GuildVisitor or workers). Pure prop - does NOT duplicate stall logic, only visuals.\n\nZONE RULE: claim the named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are missing - bail silently.\n\nOutput is ONLY the new file, wrapped in one standard fenced code block (three backticks, no language tag), with at most one line of prose outside the block.",
+      "updated_at": "2026-10-16T09:10:19Z"
     },
     {
       "id": "D28",
