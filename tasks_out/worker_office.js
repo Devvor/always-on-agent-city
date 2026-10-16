@@ -112,6 +112,7 @@ const V = {
   rainDrops: [],
   snowFlakes: [],
   workerChatBubbles: [],
+  questPanel: { collapsed: false, scroll: 0, contentH: 0, viewH: 0 },
   camera: { x: 0, y: 0, zoom: 1 },
   cameraDrag: { active: false, startX: 0, startY: 0, pan0X: 0, pan0Y: 0 },
   gameState: 'title',
@@ -198,6 +199,15 @@ function onCanvasMouseDown(e) {
   if (e.button !== 0) return;
   if (V.gameState === 'title') { triggerTitleWipe(); e.preventDefault(); return; }
   const p = canvasPoint(e);
+  // HUD hit-test first: the quest log panel never pans the map; its header toggles.
+  if (V.questPanel && V.canvas) {
+    const r = questPanelRect(V.canvas);
+    if (p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h) {
+      if (p.y <= r.y + r.headH) V.questPanel.collapsed = !V.questPanel.collapsed;
+      e.preventDefault();
+      return;
+    }
+  }
   V.cameraDrag = { active: true, startX: p.x, startY: p.y, pan0X: V.camera.x, pan0Y: V.camera.y };
   if (V.canvas) V.canvas.style.cursor = 'grabbing';
   e.preventDefault();
@@ -227,6 +237,15 @@ function onCanvasWheel(e) {
   if (V.gameState === 'title') { e.preventDefault(); return; }
   e.preventDefault();
   const p = canvasPoint(e);
+  // wheel over the expanded quest panel scrolls the log instead of zooming
+  if (V.questPanel && !V.questPanel.collapsed && V.canvas) {
+    const r = questPanelRect(V.canvas);
+    if (p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y + r.headH && p.y <= r.y + r.h) {
+      const maxScroll = Math.max(0, (V.questPanel.contentH || 0) - (V.questPanel.viewH || 0));
+      V.questPanel.scroll = clamp(V.questPanel.scroll + (e.deltaY > 0 ? 44 : -44), 0, maxScroll);
+      return;
+    }
+  }
   const z = V.camera.zoom || 1;
   let nz = (e.deltaY > 0) ? z * 0.88 : z * 1.12;
   nz = clamp(nz, 0.55, 1.6);
@@ -244,8 +263,10 @@ function onCanvasDblClick(e) {
   if (V.canvas) V.canvas.style.cursor = 'grab';
 }
 function onTitleKeyDown(e) {
-  if (V.gameState !== 'title') return;
-  triggerTitleWipe();
+  if (V.gameState === 'title') { triggerTitleWipe(); return; }
+  if (V.gameState === 'play' && (e.key === 'q' || e.key === 'Q') && V.questPanel) {
+    V.questPanel.collapsed = !V.questPanel.collapsed;
+  }
 }
 function triggerTitleWipe() {
   if (V.gameState !== 'title' || V.titleTransition) return;
@@ -2608,53 +2629,71 @@ function drawUI(c, now) {
   drawChat(c);
   drawBottomBar(c, doneCount, totalCount);
 }
-function drawRightPanel(c, now, doneCount, totalCount) {
-  const ctx = V.ctx;
+function questPanelRect(c) {
   const panelW = 232;
   const panelX = c.width - panelW - 12;
   const panelY = 44;
-  const panelH = c.height - 44 - 58;
+  const headH = 28;
+  const qp = V.questPanel || (V.questPanel = { collapsed: false, scroll: 0, contentH: 0, viewH: 0 });
+  const panelH = qp.collapsed ? headH : (c.height - 44 - 58);
+  return { x: panelX, y: panelY, w: panelW, h: panelH, headH: headH };
+}
+function drawRightPanel(c, now, doneCount, totalCount) {
+  const ctx = V.ctx;
+  if (!V.questPanel) V.questPanel = { collapsed: false, scroll: 0, contentH: 0, viewH: 0 };
+  const qp = V.questPanel;
+  const r = questPanelRect(c);
   ctx.fillStyle = '#d9c8a3';
-  ctx.fillRect(panelX, panelY, panelW, panelH);
+  ctx.fillRect(r.x, r.y, r.w, r.h);
   ctx.strokeStyle = '#6b4a2b';
   ctx.lineWidth = 2;
-  ctx.strokeRect(panelX, panelY, panelW, panelH);
+  ctx.strokeRect(r.x, r.y, r.w, r.h);
   ctx.fillStyle = '#4a2f16';
-  ctx.fillRect(panelX + 4, panelY + 4, panelW - 8, 24);
+  ctx.fillRect(r.x + 4, r.y + 4, r.w - 8, 20);
   ctx.fillStyle = '#f3e6bf';
-  ctx.font = 'bold 14px monospace';
+  ctx.font = 'bold 13px monospace';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
-  ctx.fillText('QUEST LOG', panelX + panelW * 0.5, panelY + 16);
+  ctx.fillText('QUEST LOG (Q)', r.x + r.w * 0.5, r.y + 14);
+  ctx.fillText(qp.collapsed ? '+' : '-', r.x + r.w - 13, r.y + 14);
   ctx.textAlign = 'left';
+  if (qp.collapsed) { qp.contentH = 0; qp.viewH = 0; qp.scroll = 0; return; }
   const rowH = 20;
-  const startY = panelY + 36;
-  let y = startY;
+  const startY = r.y + 34;
+  const clipTop = startY - 2;
+  const viewH = r.y + r.h - 8 - startY;
+  qp.viewH = viewH;
+  const maxScroll = Math.max(0, (qp.contentH || 0) - viewH);
+  qp.scroll = clamp(qp.scroll, 0, maxScroll);
   ctx.save();
   ctx.beginPath();
-  ctx.rect(panelX, panelY, panelW, panelH);
+  ctx.rect(r.x, clipTop, r.w, viewH + 2);
   ctx.clip();
+  let y = startY - qp.scroll;
   for (let wi = 0; wi < V.workers.length; wi++) {
     const worker = V.workers[wi];
-    if (y + 16 > panelY + panelH - 8) break;
-    const headerColor = wi === 1 ? '#6d28d9' : '#b45309';
-    ctx.fillStyle = wi === 1 ? 'rgba(139,92,246,0.28)' : 'rgba(250,204,21,0.28)';
-    ctx.fillRect(panelX + 4, y, panelW - 8, 16);
-    ctx.fillStyle = headerColor;
-    ctx.font = 'bold 12px monospace';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(fitText(String(worker.name || (wi === 0 ? 'MISSINGNO' : 'STEP5')), panelW - 24), panelX + 10, y + 8);
+    const headBottom = y + 16;
+    if (headBottom >= clipTop) {
+      const headerColor = wi === 1 ? '#6d28d9' : '#b45309';
+      ctx.fillStyle = wi === 1 ? 'rgba(139,92,246,0.28)' : 'rgba(250,204,21,0.28)';
+      ctx.fillRect(r.x + 4, y, r.w - 8, 16);
+      ctx.fillStyle = headerColor;
+      ctx.font = 'bold 13px monospace';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(fitText(String(worker.name || (wi === 0 ? 'MISSINGNO' : 'STEP5')), r.w - 24), r.x + 10, y + 8);
+    }
     y += 18;
     const tasks = Array.isArray(worker.tasks) ? worker.tasks : [];
     for (let i = 0; i < tasks.length; i++) {
-      if (y + rowH > panelY + panelH - 8) break;
+      if (y + rowH < clipTop) { y += rowH; continue; }
+      if (y > clipTop + viewH + 2) break;
       const t = tasks[i];
       const active = t.status === 'in_progress';
       if (active) {
         ctx.fillStyle = 'rgba(255, 233, 168, 0.72)';
-        ctx.fillRect(panelX + 4, y - 2, panelW - 8, rowH);
+        ctx.fillRect(r.x + 4, y - 2, r.w - 8, rowH);
       }
-      ctx.font = '12px monospace';
+      ctx.font = '13px monospace';
       ctx.textBaseline = 'middle';
       if (t.status === 'pending') ctx.fillStyle = '#b45309';
       else if (t.status === 'in_progress') ctx.fillStyle = '#1d4ed8';
@@ -2666,10 +2705,10 @@ function drawRightPanel(c, now, doneCount, totalCount) {
       else if (t.status === 'done') glyph = '\u2713';
       else if (t.status === 'failed') glyph = '\u2717';
       else if (t.status === 'in_progress') glyph = '\u25B6';
-      ctx.fillText(glyph, panelX + 10, y + 8);
+      ctx.fillText(glyph, r.x + 10, y + 8);
       const title = String(t.title || t.id || '');
-      const tx = panelX + 30;
-      const maxTitleW = panelX + panelW - 8 - tx;
+      const tx = r.x + 30;
+      const maxTitleW = r.x + r.w - 8 - tx;
       const shown = fitText(title, maxTitleW);
       if (t.status === 'done') ctx.fillStyle = 'rgba(40, 30, 20, 0.55)';
       else ctx.fillStyle = '#2b1d0e';
@@ -2687,6 +2726,16 @@ function drawRightPanel(c, now, doneCount, totalCount) {
       y += rowH;
     }
     y += 5;
+  }
+  qp.contentH = Math.max(0, (y + qp.scroll) - startY + 4);
+  if (maxScroll > 0) {
+    const trackX = r.x + r.w - 6;
+    ctx.fillStyle = 'rgba(107, 74, 43, 0.35)';
+    ctx.fillRect(trackX, clipTop + 2, 3, viewH - 4);
+    const thumbH = Math.max(18, viewH * (viewH / (qp.contentH || 1)));
+    const thumbY = clipTop + 2 + (viewH - 4 - thumbH) * (qp.scroll / maxScroll);
+    ctx.fillStyle = '#6b4a2b';
+    ctx.fillRect(trackX, thumbY, 3, thumbH);
   }
   ctx.restore();
 }
