@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T00:07:45Z",
+    "checked_at": "2026-10-16T00:31:45Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -135,15 +135,16 @@
     {
       "id": "D10",
       "title": "Wish scale drift (charter queue T163) - the S-rim wish scales slowly tip toward whichever wish type the visitor actually makes most, one needle move per game-day, giving the pond a readable mood",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_wishedrift.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
       "verify_cmd": "cp tasks_out/worker_wishedrift.js /opt/data/cache/scratch/WISHDRIFT_check.mjs && node --check /opt/data/cache/scratch/WISHDRIFT_check.mjs && grep -qi 'window.Guild' tasks_out/worker_wishedrift.js && head -1 tasks_out/worker_wishedrift.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D10: WISH SCALE DRIFT (craft-heavy polish, economy x playability).\nZONE: S-rim pond at the wish scales (worker_wishbooth.js / worker_wishes.js territory, S rim) - offset 2+ tiles from any existing prop there. Build a small two-pan balance scale prop that reacts to REAL wish data: tally wish types the visitor has actually made (read the wish globals from the wish/lantern modules, e.g. window.GuildWishes or similar - inspect tasks_out/worker_wishes.js and worker_wishbooth.js first; fall back to counting window.allTasks wish-flavored entries if no live tally exists). Once per in-game day the needle drifts one small step toward the heavier wish type, with a tiny creak cue (window.cue, try/catch) and the pans visibly shifting. Keep drift bounded (max ~15 degrees either way) so it reads as mood, not judgment. Gold accent only; no new colors. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildWishDrift with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block."
+      "spec": "D10: WISH SCALE DRIFT (craft-heavy polish, economy x playability).\nZONE: S-rim pond at the wish scales (worker_wishbooth.js / worker_wishes.js territory, S rim) - offset 2+ tiles from any existing prop there. Build a small two-pan balance scale prop that reacts to REAL wish data: tally wish types the visitor has actually made (read the wish globals from the wish/lantern modules, e.g. window.GuildWishes or similar - inspect tasks_out/worker_wishes.js and worker_wishbooth.js first; fall back to counting window.allTasks wish-flavored entries if no live tally exists). Once per in-game day the needle drifts one small step toward the heavier wish type, with a tiny creak cue (window.cue, try/catch) and the pans visibly shifting. Keep drift bounded (max ~15 degrees either way) so it reads as mood, not judgment. Gold accent only; no new colors. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildWishDrift with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
+      "updated_at": "2026-10-16T00:37:11Z"
     }
   ]
 }
