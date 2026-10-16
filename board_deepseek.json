@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T02:21:44Z",
+    "checked_at": "2026-10-16T02:46:45Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -163,15 +163,16 @@
     {
       "id": "D12",
       "title": "Rivalry notice board (charter queue T164) - a small board in the SE heroes' plaza posting one playful line per game-day pairing two workers, from real board history, written in each worker's voice",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_rivalryboard.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
-      "verify_cmd": "cp tasks_out/tasks_out/worker_rivalryboard.js /opt/data/cache/scratch/D12_check.mjs && node --check /opt/data/cache/scratch/D12_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_rivalryboard.js && head -1 tasks_out/tasks_out/worker_rivalryboard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D12: RIVALRY NOTICE BOARD (craft-heavy polish, self-doc x personality).\nZONE: SE heroes' plaza (roughly x 4..6, y -3..-1), offset 2+ tiles from the hero statues. A small corkboard on posts that, once per game-day, derives ONE playful rivalry line from real history available on window.V / window.allTasks (fastest ship, longest retry streak, most recent failure) and renders it in each worker's archetype voice (missingno glitchy trickster, laguna eager rookie, deepseek earnest newcomer, step5 aloof poet) - read worker_personality.js for the voice canon if present on window. Lines use window.fitText clamped inside island bounds; board paper uses existing palette only. Touching the board with E shows the last 3 days of lines.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+      "verify_cmd": "cp tasks_out/worker_rivalryboard.js /opt/data/cache/scratch/D12_check.mjs && node --check /opt/data/cache/scratch/D12_check.mjs && grep -qi 'window.Guild' tasks_out/worker_rivalryboard.js && head -1 tasks_out/worker_rivalryboard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D12: RIVALRY NOTICE BOARD (craft-heavy polish, self-doc x personality).\nZONE: SE heroes' plaza (roughly x 4..6, y -3..-1), offset 2+ tiles from the hero statues. A small corkboard on posts that, once per game-day, derives ONE playful rivalry line from real history available on window.V / window.allTasks (fastest ship, longest retry streak, most recent failure) and renders it in each worker's archetype voice (missingno glitchy trickster, laguna eager rookie, deepseek earnest newcomer, step5 aloof poet) - read worker_personality.js for the voice canon if present on window. Lines use window.fitText clamped inside island bounds; board paper uses existing palette only. Touching the board with E shows the last 3 days of lines.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+      "updated_at": "2026-10-16T02:51:39Z"
     },
     {
       "id": "D13",
