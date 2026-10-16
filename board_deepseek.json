@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T05:09:47Z",
+    "checked_at": "2026-10-16T05:20:19Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -233,8 +233,8 @@
     {
       "id": "D17",
       "title": "T167 N-edge ice mirror moonpath - a still tide pool on the N edge that lays a shimmering moon-path across the water at night, cracking faintly when birds pass over",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_moonpath.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -243,7 +243,8 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_moonpath.js /opt/data/cache/scratch/worker_moonpath_check.mjs && node --check /opt/data/cache/scratch/worker_moonpath_check.mjs && grep -qi 'window.Guild' tasks_out/worker_moonpath.js && head -1 tasks_out/worker_moonpath.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildMoonpath = { path: null, cracks: [] } with update/draw/__probe (probe returns { path: !!path, cracks: cracks.length }):\n1. TIDE POOL: a still water pool on the N edge (anchor around tile gx 0, gy -7, clamp within the grown floor from V.growthStep: core 4x4 plus one ring per growth step, max 8; keep 2+ tiles from the stargazing post at (0,-8) and the frost ferns) - a pale-blue ellipse ~14x7px with a thin ice rim (stone grey). Prop layer.\n2. MOONPATH: at night (V.daylight < 0.3) draw a shimmering path of light leading from the pool across the water toward the moon side of the sky: 6-8 soft gold-white glints (#d4af37 mixed with pale blue) in a widening column, each gently pulsing with sin phase offsets. Fade the whole path in/out over 2s at nightfall/dawn. Draw nothing by day.\n3. BIRD CRACKS: if window.GuildAviary exists and any of its birds is overhead (probe its birds count/state defensively), occasionally spawn a faint crack: 2-3 thin white line segments radiating across the pool, fading over 4s, at most one crack per 10s. If GuildAviary is absent, instead spawn a crack every 45-70s on its own.\n4. Rain makes the path shimmer faster (higher pulse frequency). Zero exceptions.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-16"
+      "seeded_at": "2026-10-16",
+      "updated_at": "2026-10-16T05:22:31Z"
     },
     {
       "id": "D18",
