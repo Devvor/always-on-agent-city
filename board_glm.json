@@ -1,0 +1,24 @@
+{
+  "window": {
+    "model": "opencode/glm-5.3-flash-free",
+    "status": "open",
+    "checked_at": "2026-10-16T08:20:01Z",
+    "note": "glm worker #7 (BENCH Oct 16); free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick7.py"
+  },
+  "tasks": [
+    {
+      "id": "G1",
+      "title": "Bench quest: NW wind-chime grove (full-size module, ~100KB includes) - first-try rate is the verdict",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_windchimes.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_windchimes.js /opt/data/cache/scratch/G1_check.mjs && node --check /opt/data/cache/scratch/G1_check.mjs && head -1 tasks_out/worker_windchimes.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && grep -q 'window.GuildWindChimes' /opt/data/cache/scratch/G1_check.mjs && echo VERIFY-OK",
+      "spec": "BEHAVIOR - WIND CHIME GROVE - window.GuildWindChimes = { chimes: [], rings: 0, breeze: 0 } with update(now), draw(ctx), and __probe() returning { chimes: <number>, rings: <number> } for testing.\n1. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks, __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n2. Client contract (all on window): V (V.gameState, V.weather, V.daylight 0..1, V.workers, V.workerStates, V.camera, V.canvas), iso(gx, gy) -> {x,y}, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (always in try/catch).\n3. GROVE: 5 bamboo wind chimes hang from the NW tree line (define the 5 tile coords in a comment at the top of the file; spread them along tiles gx 3..8, gy 3..6 so they sit in the NW corner of the island and away from the central buildings). Each chime: a small bamboo crossbar, 3-5 dangling pixel bars of varying length (fillRect blocks, no images), and a tiny clapper dot. Each chime has its own phase offset and threshold.\n4. BREEZE: a breeze value oscillates slowly - breeze = 0.5 + 0.5 * Math.sin(now / 3500) - and each chime's bars swing with it: swing angle up to 8 degrees scaled by breeze, with a per-chime phase offset so they do not move in lockstep. Draw swing using canvas rotation around the crossbar point.\n5. RING: when a chime's swing amplitude crosses its per-chime threshold, it rings - at most once per chime per 6 seconds. A ring paints a one-frame pale ripple circle expanding from the clapper, increments GuildWindChimes.rings, and calls cue('coin') inside try/catch. If the visitor (window.GuildVisitor) stands within 1.5 tiles of the chime when it rings, also float a tiny musical-note glyph above the chime for 1.5 seconds (drawn with fillText, gold tone).\n6. NIGHT MODE: when V.daylight is below 0.35, add 6 fireflies between the chimes - soft 2x2 dots with a pulsing alpha (sin of now/900 + per-firefly phase), drifting on small sinusoid loops around their home points. No fireflies during day.\n7. Discipline: never write to V or other modules' state; zero exceptions if V or iso are absent (typeof guards); no persistence (no localStorage); no new accent colors - gold, parchment, and night-blue tones only; ~300-450 lines is the right size, complete and self-contained.\n8. OUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, NO language tag) containing the complete target file. Never place literal triple-backtick characters inside the code. One line of prose max outside the fence.",
+      "updated_at": "2026-10-16T08:21:51Z"
+    }
+  ]
+}
