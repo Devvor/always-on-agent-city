@@ -172,6 +172,23 @@ function fitText(text, maxW) {
 }
 // expose state to ES-module plugins (modules can only see window.*, not top-level const V)
 window.V = V;
+// GUILD ZONES - the town plan registry (source of truth: LAYOUT.md).
+// Modules MUST read their district anchor from here instead of hardcoding
+// coordinates; new districts need 6+ tiles separation from every anchor.
+window.GuildZones = {
+  HEARTH:        { gx: 0,    gy: 0,     note: 'buildings x4, campfire, cat, spar - no new props within 3 tiles' },
+  QUEST_ANNEX:   { gx: -4,   gy: 10 },
+  ARCHIVES:      { gx: -7,   gy: 7,     note: 'on the path hearth->museum' },
+  MARKET:        { gx: 6.5,  gy: 14,    note: 'price board (5,15.5), arcade sign (11,14)' },
+  MUSEUM:        { gx: -10.5, gy: 11,   note: 'exhibit pedestals -13..-8, 10..12' },
+  GARDEN:        { gx: 15,   gy: 3,      note: 'crop plots, east edge' },
+  CRYSTAL_GROVE: { gx: -12.5, gy: -7,   note: '-15..-10, -10..-4 NW' },
+  AVIARY:        { gx: -6,   gy: -12,    note: 'roosts -10..-3, -15..-10 NE-of-NW' },
+  SHRINE:        { gx: 0,    gy: -12 },
+  PLAZA:         { gx: 12,   gy: -5,     note: 'heroes statues 10..14, -7..-3' },
+  PONDSIDE:      { gx: 14,   gy: 15,     note: 'SE corner, self-anchors to map bounds' },
+  NORTH_RIM:     { gx: 0,    gy: -14 }
+};
 function canvasPoint(e) {
   const canvas = V.canvas;
   const rect = canvas.getBoundingClientRect();

@@ -1,15 +1,15 @@
 // =====================================================================
 // WIND CHIME GROVE :: window.GuildWindChimes
 // ---------------------------------------------------------------------
-// Five small bamboo wind chimes hanging from the NW tree line of the
-// island. Chime tile coordinates (gx, gy), spread along gx 3..8 and
-// gy 3..6 so the grove fills the NW corner, away from the central
-// buildings:
-//   1. { gx: 3.0, gy: 3.0 }
-//   2. { gx: 4.3, gy: 3.7 }
-//   3. { gx: 5.6, gy: 4.2 }
-//   4. { gx: 6.9, gy: 5.1 }
-//   5. { gx: 8.0, gy: 5.9 }
+// Five small bamboo wind chimes hanging in the CRYSTAL GROVE district
+// (LAYOUT.md: -15..-10, -10..-4, NW corner) beside the crystal clusters.
+// Chime tile coordinates (gx, gy), spread along the grove's east edge,
+// away from the central buildings:
+//   1. { gx: -7.0, gy: -4.5 }
+//   2. { gx: -8.5, gy: -6.0 }
+//   3. { gx: -10.0, gy: -7.5 }
+//   4. { gx: -11.5, gy: -6.5 }
+//   5. { gx: -13.0, gy: -5.0 }
 // Conventions copied from tasks_out/worker_visitor.js: self-installing
 // ES module, no imports, no top-level DOM access, state object on a
 // window global exposing update(now) / draw(ctx) hooks plus __probe().
@@ -31,22 +31,22 @@ const BAR_TONES = ['#dccfa2', '#cbb98a', '#bda173', '#e0d3ae', '#b09a6a'];
 // Per-chime seeds: tile coords, swing phase + period, normalized ring
 // threshold (0..1) and dangling bar lengths in pixels (3-5 bars each).
 const CHIME_SEEDS = [
-  { gx: 3.0, gy: 3.0, phase: 0.0, period: 2100, threshold: 0.46, bars: [14, 9, 17, 11] },
-  { gx: 4.3, gy: 3.7, phase: 1.35, period: 2450, threshold: 0.54, bars: [10, 16, 8, 19, 12] },
-  { gx: 5.6, gy: 4.2, phase: 2.6, period: 1850, threshold: 0.62, bars: [15, 10, 13] },
-  { gx: 6.9, gy: 5.1, phase: 3.8, period: 2650, threshold: 0.50, bars: [9, 18, 12, 21] },
-  { gx: 8.0, gy: 5.9, phase: 5.1, period: 2250, threshold: 0.58, bars: [13, 8, 16, 10, 19] }
+  { gx: -7.0, gy: -4.5, phase: 0.0, period: 2100, threshold: 0.46, bars: [14, 9, 17, 11] },
+  { gx: -8.5, gy: -6.0, phase: 1.35, period: 2450, threshold: 0.54, bars: [10, 16, 8, 19, 12] },
+  { gx: -10.0, gy: -7.5, phase: 2.6, period: 1850, threshold: 0.62, bars: [15, 10, 13] },
+  { gx: -11.5, gy: -6.5, phase: 3.8, period: 2650, threshold: 0.50, bars: [9, 18, 12, 21] },
+  { gx: -13.0, gy: -5.0, phase: 5.1, period: 2250, threshold: 0.58, bars: [13, 8, 16, 10, 19] }
 ];
 
 // Night firefly home points dotted between the chimes (tile coords);
 // each drifts on a small sinusoid loop around its home point.
 const FIREFLY_SEEDS = [
-  { hx: 3.6, hy: 3.3, rx: 0.32, ry: 0.22, p1: 1500, p2: 1900, phase: 0.4 },
-  { hx: 4.9, hy: 3.9, rx: 0.26, ry: 0.30, p1: 1700, p2: 1400, phase: 1.9 },
-  { hx: 5.9, hy: 4.4, rx: 0.30, ry: 0.26, p1: 1300, p2: 2100, phase: 3.1 },
-  { hx: 6.8, hy: 5.0, rx: 0.24, ry: 0.28, p1: 1600, p2: 1250, phase: 4.4 },
-  { hx: 7.6, hy: 5.5, rx: 0.34, ry: 0.24, p1: 1450, p2: 1750, phase: 5.6 },
-  { hx: 4.3, hy: 4.9, rx: 0.28, ry: 0.20, p1: 1850, p2: 1350, phase: 2.6 }
+  { hx: -12.0, hy: -7.0, rx: 0.32, ry: 0.22, p1: 1500, p2: 1900, phase: 0.4 },
+  { hx: -10.7, hy: -6.4, rx: 0.26, ry: 0.30, p1: 1700, p2: 1400, phase: 1.9 },
+  { hx: -9.7, hy: -5.9, rx: 0.30, ry: 0.26, p1: 1300, p2: 2100, phase: 3.1 },
+  { hx: -8.8, hy: -5.3, rx: 0.24, ry: 0.28, p1: 1600, p2: 1250, phase: 4.4 },
+  { hx: -8.0, hy: -4.8, rx: 0.34, ry: 0.24, p1: 1450, p2: 1750, phase: 5.6 },
+  { hx: -11.3, hy: -5.4, rx: 0.28, ry: 0.20, p1: 1850, p2: 1350, phase: 2.6 }
 ];
 
 // ---- environment helpers (typeof-guarded, read only) -----------------

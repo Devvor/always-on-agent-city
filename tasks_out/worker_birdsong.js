@@ -1,6 +1,6 @@
 const ROOSTS = [
-  { gx: 2, gy: -2 },
-  { gx: 3, gy: -1 }
+  { gx: -5, gy: -11 },
+  { gx: -7, gy: -13 }
 ];
 const PENTATONIC = ['song_do', 'song_re', 'song_mi', 'song_sol', 'song_la'];
 const COOLDOWN_MS = 4000;

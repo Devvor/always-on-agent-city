@@ -22,8 +22,8 @@ function getState() { const w = root(); return w && w.GuildMarketRow; }
 
 function baseStalls() {
   return [
-    { id: 0, baseGx: 0.4, baseGy: 5.0, gx: 0.4, gy: 5.0, kind: 'jar' },
-    { id: 1, baseGx: 1.6, baseGy: 5.2, gx: 1.6, gy: 5.2, kind: 'bread' }
+    { id: 0, baseGx: 5.6, baseGy: 15.2, gx: 5.6, gy: 15.2, kind: 'jar' },   // LAYOUT.md MARKET ROW district
+    { id: 1, baseGx: 6.8, baseGy: 15.4, gx: 6.8, gy: 15.4, kind: 'bread' }
   ];
 }
 

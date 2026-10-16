@@ -32,8 +32,8 @@ function createState() {
     chimes: [],
     lastChimeHour: INIT_HOUR_KEY,
     faceTime: 0,
-    gx: 3,
-    gy: 3
+    gx: (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.NORTH_RIM) ? window.GuildZones.NORTH_RIM.gx + 2 : 2,
+    gy: (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.NORTH_RIM) ? window.GuildZones.NORTH_RIM.gy : -14
   };
 }
 

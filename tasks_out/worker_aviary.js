@@ -1,5 +1,6 @@
-const NEST_POSITIONS = [{gx:-3, gy:-5}, {gx:-2, gy:-6}, {gx:-4, gy:-5}];
-const PERCH = {gx:-1, gy:-4};
+const AVIARY_ZONE = (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.AVIARY) || { gx: -6, gy: -12 };  // LAYOUT.md AVIARY ROOSTS district
+const NEST_POSITIONS = [{gx: AVIARY_ZONE.gx - 1, gy: AVIARY_ZONE.gy}, {gx: AVIARY_ZONE.gx, gy: AVIARY_ZONE.gy - 1}, {gx: AVIARY_ZONE.gx - 2, gy: AVIARY_ZONE.gy}];
+const PERCH = {gx: AVIARY_ZONE.gx + 1, gy: AVIARY_ZONE.gy + 1};
 
 let nests = [];
 let pigeon = null;
@@ -13,7 +14,7 @@ function createState() {
       bird: { state: 'sleeping', triggered: false, stirUntil: 0 }
     };
   });
-  pigeon = { state: 'away', gx: -4, gy: -7, peckCount: 0, peckPhase: 0 };
+  pigeon = { state: 'away', gx: AVIARY_ZONE.gx - 2, gy: AVIARY_ZONE.gy - 2, peckCount: 0, peckPhase: 0 };
   return {
     nests: nests,
     pigeon: pigeon,
@@ -52,15 +53,15 @@ function getState() {
 }
 
 function createPigeon() {
-  return { state: 'away', gx: -4, gy: -7, peckCount: 0, peckPhase: 0 };
+  return { state: 'away', gx: AVIARY_ZONE.gx - 2, gy: AVIARY_ZONE.gy - 2, peckCount: 0, peckPhase: 0 };
 }
 
 function updatePigeon(pg, now) {
   if (!pg) return;
   const cycle = ((now % 40000) + 40000) % 40000;
   const t = cycle / 1000;
-  const start = {gx: -4, gy: -7};
-  const land = {gx: -1, gy: -3.7};
+  const start = {gx: AVIARY_ZONE.gx - 2, gy: AVIARY_ZONE.gy - 2};
+  const land = {gx: AVIARY_ZONE.gx + 1, gy: AVIARY_ZONE.gy + 1.3};
   if (t < 30) {
     pg.state = 'away';
     pg.gx = start.gx;

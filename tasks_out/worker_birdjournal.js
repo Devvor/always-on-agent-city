@@ -1,9 +1,9 @@
 // ISLAND BIRDWATCHING JOURNAL — self-installing ES module (no imports, no top-level DOM access)
 // ZONES (tile coords, visitor GuildVisitor.gx/gy):
-//   BIRDS:      within 2 tiles of (-2,-2)   (NE aviary)
-//   BUTTERFLIES: within 2 tiles of (2,-2)  (E garden meadow)
-//   PIGEONS:    within 2 tiles of (0,0)    (courtyard)
-//   OWL:        within 2 tiles of (-2,-2) AND V.daylight < 0.35 (NE roost, night)
+//   BIRDS:      within 2 tiles of (-6,-12)   (aviary roosts district)
+//   BUTTERFLIES: within 2 tiles of (14,2)  (garden, east edge)
+//   PIGEONS:    within 2 tiles of (-5,-10.7) (aviary perch)
+//   OWL:        within 2 tiles of (-6,-12) AND V.daylight < 0.35 (roost, night)
 //   CAT:        within 1.5 tiles of (1,1)  (sleeping guild cat)
 // A stamp requires standing in the zone with conditions met for 2 continuous seconds.
 
@@ -23,10 +23,10 @@ function cue(name) {
 }
 
 const FAUNA = [
-  { id: 'birds', label: 'BIRDS', note: 'Chatter in the aviary pines; they know the guild bell by heart.', cx: -2, cy: -2, r: 2 },
-  { id: 'butterflies', label: 'BUTTERFLIES', note: 'Meadow wings drift east of the forge, tasting the thyme.', cx: 2, cy: -2, r: 2 },
-  { id: 'pigeons', label: 'PIGEONS', note: 'Courtyard pigeons bow for crumbs and gossip in equal measure.', cx: 0, cy: 0, r: 2 },
-  { id: 'owl', label: 'OWL', note: 'Only after dusk does the roost owl open one golden eye.', cx: -2, cy: -2, r: 2, night: true },
+  { id: 'birds', label: 'BIRDS', note: 'Chatter in the aviary pines; they know the guild bell by heart.', cx: -6, cy: -12, r: 2 },
+  { id: 'butterflies', label: 'BUTTERFLIES', note: 'Meadow wings drift east of the forge, tasting the thyme.', cx: 14, cy: 2, r: 2.5 },
+  { id: 'pigeons', label: 'PIGEONS', note: 'Courtyard pigeons bow for crumbs and gossip in equal measure.', cx: -5, cy: -10.7, r: 2 },
+  { id: 'owl', label: 'OWL', note: 'Only after dusk does the roost owl open one golden eye.', cx: -6, cy: -12, r: 2, night: true },
   { id: 'cat', label: 'CAT', note: 'The guild cat dreams in sunbeams and permits quiet company.', cx: 1, cy: 1, r: 1.5 }
 ];
 
