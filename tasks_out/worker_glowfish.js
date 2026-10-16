@@ -1,3 +1,25 @@
+// =====================================================================
+// GLOWFISH :: window.GuildGlowfish
+// ---------------------------------------------------------------------
+// Night-time glowing fish that drift in slow orbits around the pond and
+// scatter with a ripple cue when the visitor lingers close after dark.
+// Relocated to the PONDSIDE district (LAYOUT.md town plan) — the
+// southeast fishing corner. The district anchor is read from
+// window.GuildZones.PONDSIDE when available, falling back to the literal
+// { gx: 14, gy: 15 }; the pond stands two tiles off the anchor so it
+// stays within ~3 tiles of the district centre while keeping 2+ tiles
+// clear of the lighthouse, fishhut and other props already there.
+// Conventions copied from tasks_out/worker_visitor.js: self-installing
+// ES module, no imports, no top-level DOM access (typeof guards), state
+// on window.GuildGlowfish exposing update(now) / draw(ctx) / __probe().
+// Bails silently if V or iso are missing. Palette: cool cyan tones.
+// =====================================================================
+
+// PONDSIDE district anchor (LAYOUT.md / window.GuildZones). The pond is
+// offset two tiles from the anchor to avoid clumping with the lighthouse.
+const Z = (typeof window !== 'undefined' && window.GuildZones && window.GuildZones.PONDSIDE) || { gx: 14, gy: 15 };
+const POND_ANCHOR = { gx: Z.gx + 2, gy: Z.gy + 2 };
+
 const BUILDINGS = [];
 
 function createState() {
@@ -43,7 +65,7 @@ function cueFn(name) {
 
 let lastTime = null;
 
-function pondTile() { return { gx: 3, gy: 1 }; }
+function pondTile() { return { gx: POND_ANCHOR.gx, gy: POND_ANCHOR.gy }; }
 
 function visitorNearPond(Vv) {
   const w = root();

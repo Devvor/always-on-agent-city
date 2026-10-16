@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T10:37:45Z",
+    "checked_at": "2026-10-16T10:59:45Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -421,15 +421,16 @@
     {
       "id": "D30",
       "title": "Migration wave 2: worker_glowfish.js -> PONDSIDE district (edit task, keep behavior identical)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_glowfish.js",
       "include_files": [
         "tasks_out/worker_glowfish.js",
         "tasks_out/worker_visitor.js"
       ],
       "verify_cmd": "cp tasks_out/worker_glowfish.js /opt/data/cache/scratch/D30_check.mjs && node --check /opt/data/cache/scratch/D30_check.mjs && grep -q 'window.GuildGlowfish' tasks_out/worker_glowfish.js && grep -qi 'PONDSIDE' tasks_out/worker_glowfish.js && echo VERIFY-OK",
-      "spec": "EDIT TASK: improve the EXISTING file tasks_out/worker_glowfish.js in place. MIGRATION: this module's props are still stranded near the hearth; move ALL of its hardcoded gx/gy anchors to the PONDSIDE district (read window.GuildZones.PONDSIDE, literal fallback {gx: 14, gy: 15}). Every prop must stand within about 3 tiles of the district anchor, offset 2+ tiles from any prop already there. This is a relocation ONLY: keep every behavior, animation, export and window global exactly identical. Add or update the header comment naming the PONDSIDE district (LAYOUT.md town plan). Pattern reference: tasks_out/worker_visitor.js; contract: window V/iso/fitText/GuildVisitor/cue/allTasks. Do not touch any other file. Output: only the full updated file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside."
+      "spec": "EDIT TASK: improve the EXISTING file tasks_out/worker_glowfish.js in place. MIGRATION: this module's props are still stranded near the hearth; move ALL of its hardcoded gx/gy anchors to the PONDSIDE district (read window.GuildZones.PONDSIDE, literal fallback {gx: 14, gy: 15}). Every prop must stand within about 3 tiles of the district anchor, offset 2+ tiles from any prop already there. This is a relocation ONLY: keep every behavior, animation, export and window global exactly identical. Add or update the header comment naming the PONDSIDE district (LAYOUT.md town plan). Pattern reference: tasks_out/worker_visitor.js; contract: window V/iso/fitText/GuildVisitor/cue/allTasks. Do not touch any other file. Output: only the full updated file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside.",
+      "updated_at": "2026-10-16T11:00:29Z"
     },
     {
       "id": "D31",
