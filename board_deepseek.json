@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T03:35:44Z",
+    "checked_at": "2026-10-16T03:58:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -205,15 +205,16 @@
     {
       "id": "D15",
       "title": "N-edge ice-mirror pool (foreman invention) - a small frozen mirror pool on the N edge that faintly reflects passing birds and the moon at night; living world x spectacle",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_icemirror.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
-      "verify_cmd": "cp tasks_out/tasks_out/worker_icemirror.js /opt/data/cache/scratch/D15_check.mjs && node --check /opt/data/cache/scratch/D15_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_icemirror.js && head -1 tasks_out/tasks_out/worker_icemirror.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D15: N-EDGE ICE-MIRROR POOL (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly x -4..-1, y -7..-5), offset 2+ tiles from stargazing post, cairns and frost ferns. A small oval ice pool that acts as a faint mirror: at night it reflects the moon as a soft smear, and whenever a bird module's fauna passes overhead (probe window.Guild* bird/aviary keys defensively), a tiny reflected silhouette crosses the pool surface. Subtle ripple on interact (E near the edge). Palette: whites/blues already in base, NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+      "verify_cmd": "cp tasks_out/worker_icemirror.js /opt/data/cache/scratch/D15_check.mjs && node --check /opt/data/cache/scratch/D15_check.mjs && grep -qi 'window.Guild' tasks_out/worker_icemirror.js && head -1 tasks_out/worker_icemirror.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D15: N-EDGE ICE-MIRROR POOL (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly x -4..-1, y -7..-5), offset 2+ tiles from stargazing post, cairns and frost ferns. A small oval ice pool that acts as a faint mirror: at night it reflects the moon as a soft smear, and whenever a bird module's fauna passes overhead (probe window.Guild* bird/aviary keys defensively), a tiny reflected silhouette crosses the pool surface. Subtle ripple on interact (E near the edge). Palette: whites/blues already in base, NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+      "updated_at": "2026-10-16T04:02:03Z"
     },
     {
       "id": "D16",
