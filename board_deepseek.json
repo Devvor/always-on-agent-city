@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T05:31:44Z",
+    "checked_at": "2026-10-16T05:55:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -265,8 +265,8 @@
     {
       "id": "D19",
       "title": "T169 S-rim tide-glass lanterns - stranded glass float lanterns along the S rim that glow gold at night and bob with the tide (spectacle, S-rim directive)",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_tideglass.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -275,7 +275,8 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_tideglass.js /opt/data/cache/scratch/worker_tideglass_check.mjs && node --check /opt/data/cache/scratch/worker_tideglass_check.mjs && grep -qi 'window.Guild' tasks_out/worker_tideglass.js && head -1 tasks_out/worker_tideglass.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nZONE RULE: this prop must claim its named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are absent.\n\nOUTPUT: only the new file, wrapped in one standard fenced code block (three backticks, no language tag). One line of prose max outside the fence.\n\nBEHAVIOR - window.GuildTideglass = { lanterns: [] } with update/draw/__probe (probe returns { lanterns: lanterns.length }):\n1. LANTERNS: 4 tide-glass float lanterns stranded along the S rim sand (tiles around gx -1..5 on the south edge rows gy 6.5-7.5, clamped within the grown floor, each 1.5+ tiles apart and 2+ tiles from the drift-market barge, lighthouse (4.5,7.5) and waterfall zone). Each: a small seafoam-green glass sphere (existing palette: soft green/teal from the pond colors) in a knotted rope net (thin #6b4a2f lines), resting on a sand mound.\n2. BOB: each lantern bobs gently (sin, own phase, ~3px vertical + 1px tilt) as if with the tide.\n3. NIGHT GLOW: when V.daylight < 0.3 each lantern emits a soft warm gold halo (radial glow, #d4af37, alpha pulsing slowly, flicker with tiny randomness); by day it is just glass with a small white glint.\n4. RAIN: halos dim and the bob quickens. Zero exceptions.",
       "seeded_by": "foreman",
-      "seeded_at": "2026-10-16"
+      "seeded_at": "2026-10-16",
+      "updated_at": "2026-10-16T05:58:21Z"
     }
   ]
 }
