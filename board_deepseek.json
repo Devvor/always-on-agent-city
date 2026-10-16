@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T00:31:45Z",
+    "checked_at": "2026-10-16T02:21:44Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -145,6 +145,85 @@
       "verify_cmd": "cp tasks_out/worker_wishedrift.js /opt/data/cache/scratch/WISHDRIFT_check.mjs && node --check /opt/data/cache/scratch/WISHDRIFT_check.mjs && grep -qi 'window.Guild' tasks_out/worker_wishedrift.js && head -1 tasks_out/worker_wishedrift.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
       "spec": "D10: WISH SCALE DRIFT (craft-heavy polish, economy x playability).\nZONE: S-rim pond at the wish scales (worker_wishbooth.js / worker_wishes.js territory, S rim) - offset 2+ tiles from any existing prop there. Build a small two-pan balance scale prop that reacts to REAL wish data: tally wish types the visitor has actually made (read the wish globals from the wish/lantern modules, e.g. window.GuildWishes or similar - inspect tasks_out/worker_wishes.js and worker_wishbooth.js first; fall back to counting window.allTasks wish-flavored entries if no live tally exists). Once per in-game day the needle drifts one small step toward the heavier wish type, with a tiny creak cue (window.cue, try/catch) and the pans visibly shifting. Keep drift bounded (max ~15 degrees either way) so it reads as mood, not judgment. Gold accent only; no new colors. PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global named GuildWishDrift with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. Never edit worker_office.js or worker_office.html. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag); one line of prose max outside the block.",
       "updated_at": "2026-10-16T00:37:11Z"
+    },
+    {
+      "id": "D11",
+      "title": "Petting-zoo ledger (charter queue T160) - a small ledger plaque in the E garden listing every pettable creature (cat, fox, ...) with a live pet-count read from the pet globals; makes the island's living creatures part of its own record",
+      "status": "done",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_petledger.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_petledger.js /opt/data/cache/scratch/D11_check.mjs && node --check /opt/data/cache/scratch/D11_check.mjs && grep -qi 'window.Guild' tasks_out/worker_petledger.js && head -1 tasks_out/worker_petledger.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D11: GUILD PETTING ZOO LEDGER (craft-heavy polish, self-doc x playability).\nZONE: E garden (roughly x 4..6, y 0..3) - offset 2+ tiles from any existing prop (butterfly meadow, wish seeds). Build a small wooden ledger plaque on a post that lists each pettable creature (read the live pet/creature globals from worker modules like the cat/fox modules via window - probe window.Guild* keys defensively with try/catch) and a pet-count beside each name that increments live when the visitor pets. Sign text uses window.fitText and clamps inside island bounds (see canon sign-clip findings). Plaque glow at night uses the existing gold accent ONLY.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+      "updated_at": "2026-10-16T02:25:55Z"
+    },
+    {
+      "id": "D12",
+      "title": "Rivalry notice board (charter queue T164) - a small board in the SE heroes' plaza posting one playful line per game-day pairing two workers, from real board history, written in each worker's voice",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_rivalryboard.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_rivalryboard.js /opt/data/cache/scratch/D12_check.mjs && node --check /opt/data/cache/scratch/D12_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_rivalryboard.js && head -1 tasks_out/tasks_out/worker_rivalryboard.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D12: RIVALRY NOTICE BOARD (craft-heavy polish, self-doc x personality).\nZONE: SE heroes' plaza (roughly x 4..6, y -3..-1), offset 2+ tiles from the hero statues. A small corkboard on posts that, once per game-day, derives ONE playful rivalry line from real history available on window.V / window.allTasks (fastest ship, longest retry streak, most recent failure) and renders it in each worker's archetype voice (missingno glitchy trickster, laguna eager rookie, deepseek earnest newcomer, step5 aloof poet) - read worker_personality.js for the voice canon if present on window. Lines use window.fitText clamped inside island bounds; board paper uses existing palette only. Touching the board with E shows the last 3 days of lines.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+    },
+    {
+      "id": "D13",
+      "title": "N-edge frost ferns (charter queue T165) - delicate frost-fern patterns blooming on N-edge rocks during SNOW weather, melting at dawn; zero new colors",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_frostferns.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_frostferns.js /opt/data/cache/scratch/D13_check.mjs && node --check /opt/data/cache/scratch/D13_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_frostferns.js && head -1 tasks_out/tasks_out/worker_frostferns.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D13: N-EDGE FROST FERNS (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly y -8..-6, x -3..3), offset 2+ tiles from the stargazing post (0,-8) and cairn trail. During SNOW weather (read the day-night/weather state the same way worker_puddles.js does), delicate frost-fern fronds bloom outward on N-edge rocks over ~20s (whitish, existing palette ONLY - no new accent colors), and melt away progressively after dawn. Fronds are small procedural line/curve sprites, 4-6 rocks max, gentle shimmer. NO new colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+    },
+    {
+      "id": "D14",
+      "title": "S-rim message-in-a-bottle (charter queue T166) - bottles wash ashore at dawn containing one real line of board.json history; visitor collects, reads, tosses one back for a coin",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_bottlepost.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_bottlepost.js /opt/data/cache/scratch/D14_check.mjs && node --check /opt/data/cache/scratch/D14_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_bottlepost.js && head -1 tasks_out/tasks_out/worker_bottlepost.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D14: MESSAGE-IN-A-BOTTLE (craft-heavy polish, playability x economy x self-doc).\nZONE: S rim shore (roughly x 2..6, south edge), offset 2+ tiles from the lighthouse, fishing hut, driftwood nook and tide pools. At each dawn, 1-2 bottles wash ashore with a gentle bob, each containing ONE real line drawn from window.V / window.allTasks history (a done quest title, a funny failed attempt). Visitor walks near + E to collect: a small parchment overlay shows the line (window.fitText), then the visitor can toss the bottle back to sea for one coin (same coin visuals as the treasury/coin pile). Bottles despawn at next dawn. Existing palette only.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+    },
+    {
+      "id": "D15",
+      "title": "N-edge ice-mirror pool (foreman invention) - a small frozen mirror pool on the N edge that faintly reflects passing birds and the moon at night; living world x spectacle",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_icemirror.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_icemirror.js /opt/data/cache/scratch/D15_check.mjs && node --check /opt/data/cache/scratch/D15_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_icemirror.js && head -1 tasks_out/tasks_out/worker_icemirror.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D15: N-EDGE ICE-MIRROR POOL (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly x -4..-1, y -7..-5), offset 2+ tiles from stargazing post, cairns and frost ferns. A small oval ice pool that acts as a faint mirror: at night it reflects the moon as a soft smear, and whenever a bird module's fauna passes overhead (probe window.Guild* bird/aviary keys defensively), a tiny reflected silhouette crosses the pool surface. Subtle ripple on interact (E near the edge). Palette: whites/blues already in base, NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+    },
+    {
+      "id": "D16",
+      "title": "S-rim drift-market barge (foreman invention) - a small barge occasionally poles up to the S rim carrying 1-2 rotating goods the visitor can buy with earned coins; economy x playability",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_driftbarge.js",
+      "include_files": [
+        "tasks_out/worker_visitor.js",
+        "tasks_out/worker_office.js"
+      ],
+      "verify_cmd": "cp tasks_out/tasks_out/worker_driftbarge.js /opt/data/cache/scratch/D16_check.mjs && node --check /opt/data/cache/scratch/D16_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_driftbarge.js && head -1 tasks_out/tasks_out/worker_driftbarge.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D16: S-RIM DRIFT-MARKET BARGE (craft-heavy polish, economy x playability).\nZONE: S-rim water (south edge, x -2..2), offset 2+ tiles from the lantern ferry route and dock points. Every few game-hours a small flat barge poles up to the S rim shore carrying 1-2 rotating goods (snack, seed pouch, paper lantern - sprites from existing palette), moors for ~60s with a vendor NPC nameplate (window.fitText), then poles away. Visitor near + E opens a tiny 2-item buy sheet priced in the guild coin; purchases cue a coin sound + item bob in the visitor's hand. NO new accent colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
     }
   ]
 }
