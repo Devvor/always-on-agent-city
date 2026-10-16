@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/deepseek-v4.1-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T02:46:45Z",
+    "checked_at": "2026-10-16T03:12:48Z",
     "note": "deepseek worker #5; free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick5.py"
   },
   "tasks": [
@@ -177,15 +177,16 @@
     {
       "id": "D13",
       "title": "N-edge frost ferns (charter queue T165) - delicate frost-fern patterns blooming on N-edge rocks during SNOW weather, melting at dawn; zero new colors",
-      "status": "pending",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "target_file": "tasks_out/worker_frostferns.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
         "tasks_out/worker_office.js"
       ],
-      "verify_cmd": "cp tasks_out/tasks_out/worker_frostferns.js /opt/data/cache/scratch/D13_check.mjs && node --check /opt/data/cache/scratch/D13_check.mjs && grep -qi 'window.Guild' tasks_out/tasks_out/worker_frostferns.js && head -1 tasks_out/tasks_out/worker_frostferns.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
-      "spec": "D13: N-EDGE FROST FERNS (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly y -8..-6, x -3..3), offset 2+ tiles from the stargazing post (0,-8) and cairn trail. During SNOW weather (read the day-night/weather state the same way worker_puddles.js does), delicate frost-fern fronds bloom outward on N-edge rocks over ~20s (whitish, existing palette ONLY - no new accent colors), and melt away progressively after dawn. Fronds are small procedural line/curve sprites, 4-6 rocks max, gentle shimmer. NO new colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only)."
+      "verify_cmd": "cp tasks_out/worker_frostferns.js /opt/data/cache/scratch/D13_check.mjs && node --check /opt/data/cache/scratch/D13_check.mjs && grep -qi 'window.Guild' tasks_out/worker_frostferns.js && head -1 tasks_out/worker_frostferns.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
+      "spec": "D13: N-EDGE FROST FERNS (craft-heavy polish, living world x spectacle).\nZONE: N edge (roughly y -8..-6, x -3..3), offset 2+ tiles from the stargazing post (0,-8) and cairn trail. During SNOW weather (read the day-night/weather state the same way worker_puddles.js does), delicate frost-fern fronds bloom outward on N-edge rocks over ~20s (whitish, existing palette ONLY - no new accent colors), and melt away progressively after dawn. Fronds are small procedural line/curve sprites, 4-6 rocks max, gentle shimmer. NO new colors.  PATTERN: study tasks_out/worker_visitor.js - a self-contained ES module. CONTRACT: publish your feature on a window global (Guild...) with an update(now) method and draw(ctx) if it renders, using iso(gx,gy), window.fitText, window.cue(name) in try/catch, and reading window.V / window.allTasks where useful. OUTPUT: reply with only the new file wrapped in one standard fenced code block (three backticks, no language tag), one line of prose max outside the block. Never edit worker_office.js or worker_office.html. No new accent colors (gold/green/red/blue/white only).",
+      "updated_at": "2026-10-16T03:15:29Z"
     },
     {
       "id": "D14",
