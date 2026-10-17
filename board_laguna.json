@@ -2,7 +2,7 @@
   "window": {
     "model": "poolside/laguna-s-2.1:free",
     "status": "open",
-    "checked_at": "2026-10-16T09:14:43Z",
+    "checked_at": "2026-10-16T11:04:40Z",
     "note": "worker #3 \u2014 trial bench 'laguna' (poolside code-lab model). Trial = 3 real quests; measure first-try rate vs missingno (23/23). Canary saw 429 then 200 \u2014 free-tier throttle, tick has backoff."
   },
   "tasks": [
@@ -399,6 +399,60 @@
       "verify_cmd": "cd /opt/data/missingno-worker && cp tasks_out/worker_wishlanterns.js /opt/data/cache/scratch/L107_check.mjs && node --check /opt/data/cache/scratch/L107_check.mjs && grep -qi 'window.Guild' tasks_out/worker_wishlanterns.js && head -1 tasks_out/worker_wishlanterns.js | grep -qvE '^[A-Za-z_$][A-Za-z0-9_$]*$' && echo VERIFY-OK",
       "spec": "Create a NEW ES-module for the existing 2D guild client. The proven pattern is tasks_out/worker_visitor.js (injected via include_files) - copy its conventions: self-installing ES module, no imports, no top-level DOM access (typeof guards), state object on a window global, update(now)/draw(ctx) hooks attached to it, plus __probe for testing. The client render loop auto-discovers your window.Guild* global and calls update/draw every frame when V.gameState === 'play'.\n\nClient contract (all on window): V (V.gameState, V.workers, V.workerStates, V.weather, V.daylight 0..1, V.growthStep, V.canvas, V.camera, V.grid {originX,originY,tileW,tileH}, V.allTasks array), iso(gx, gy) -> {x,y} world coords, fitText(text, maxW), window.GuildVisitor {gx, gy, moving, facing}, window.cue(name) optional sound hook (try/catch).\n\nWatch window.GuildVisitor position at the E garden anchor (grid around (6,2)); when the visitor dwells 2s within 1.5 tiles, spawn 1 lantern (max 3 alive) that rises with a warm glow and fades over ~6s. No new accent colors - warm gold only.\n\nZONE RULE: claim the named zone anchor and stand 2+ tiles offset from every existing prop there. No new accent colors - existing palette only (gold #d4af37, greens, blues, stone greys). Pure FX/prop layer, no collision, never writes to V or worker positions. Zero exceptions if V or iso are missing - bail silently.\n\nOutput is ONLY the new file, wrapped in one standard fenced code block (three backticks, no language tag), with at most one line of prose outside the block.",
       "updated_at": "2026-10-16T09:16:33Z"
+    },
+    {
+      "id": "L108",
+      "title": "Migration wave 2: worker_fishmarket.js -> PONDSIDE district (edit task, keep behavior identical)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_fishmarket.js",
+      "include_files": [
+        "tasks_out/worker_fishmarket.js",
+        "tasks_out/worker_visitor.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_fishmarket.js /opt/data/cache/scratch/L108_check.mjs && node --check /opt/data/cache/scratch/L108_check.mjs && grep -q 'window.GuildFishmarket' tasks_out/worker_fishmarket.js && grep -qi 'PONDSIDE' tasks_out/worker_fishmarket.js && echo VERIFY-OK",
+      "spec": "EDIT TASK: improve the EXISTING file tasks_out/worker_fishmarket.js in place. MIGRATION: this module's props are still stranded near the hearth; move ALL of its hardcoded gx/gy anchors to the PONDSIDE district (read window.GuildZones.PONDSIDE, literal fallback {gx: 14, gy: 15}). Every prop must stand within about 3 tiles of the district anchor, offset 2+ tiles from any prop already there. This is a relocation ONLY: keep every behavior, animation, export and window global exactly identical. Add or update the header comment naming the PONDSIDE district (LAYOUT.md town plan). Pattern reference: tasks_out/worker_visitor.js; contract: window V/iso/fitText/GuildVisitor/cue/allTasks. Do not touch any other file. Output: only the full updated file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside.",
+      "updated_at": "2026-10-16T10:23:22Z"
+    },
+    {
+      "id": "L109",
+      "title": "Migration wave 2: worker_lilypads.js -> PONDSIDE district (edit task, keep behavior identical)",
+      "status": "failed",
+      "attempts": 1,
+      "target_file": "tasks_out/worker_lilypads.js",
+      "include_files": [
+        "tasks_out/worker_lilypads.js",
+        "tasks_out/worker_visitor.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_lilypads.js /opt/data/cache/scratch/L109_check.mjs && node --check /opt/data/cache/scratch/L109_check.mjs && grep -q 'window.GuildLilypads' tasks_out/worker_lilypads.js && grep -qi 'PONDSIDE' tasks_out/worker_lilypads.js && echo VERIFY-OK",
+      "spec": "EDIT TASK: improve the EXISTING file tasks_out/worker_lilypads.js in place. MIGRATION: this module's props are still stranded near the hearth; move ALL of its hardcoded gx/gy anchors to the PONDSIDE district (read window.GuildZones.PONDSIDE, literal fallback {gx: 14, gy: 15}). Every prop must stand within about 3 tiles of the district anchor, offset 2+ tiles from any prop already there. This is a relocation ONLY: keep every behavior, animation, export and window global exactly identical. Add or update the header comment naming the PONDSIDE district (LAYOUT.md town plan). Pattern reference: tasks_out/worker_visitor.js; contract: window V/iso/fitText/GuildVisitor/cue/allTasks. Do not touch any other file. Output: only the full updated file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside.",
+      "updated_at": "2026-10-16T11:09:03Z"
+    },
+    {
+      "id": "L110",
+      "title": "Migration wave 2: worker_crystalbloom.js -> CRYSTAL_GROVE district (edit task, keep behavior identical)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_crystalbloom.js",
+      "include_files": [
+        "tasks_out/worker_crystalbloom.js",
+        "tasks_out/worker_visitor.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_crystalbloom.js /opt/data/cache/scratch/L110_check.mjs && node --check /opt/data/cache/scratch/L110_check.mjs && grep -q 'window.GuildCrystalbloom' tasks_out/worker_crystalbloom.js && grep -qi 'CRYSTAL_GROVE' tasks_out/worker_crystalbloom.js && echo VERIFY-OK",
+      "spec": "EDIT TASK: improve the EXISTING file tasks_out/worker_crystalbloom.js in place. MIGRATION: this module's props are still stranded near the hearth; move ALL of its hardcoded gx/gy anchors to the CRYSTAL_GROVE district (read window.GuildZones.CRYSTAL_GROVE, literal fallback {gx: -12.5, gy: -7}). Every prop must stand within about 3 tiles of the district anchor, offset 2+ tiles from any prop already there. This is a relocation ONLY: keep every behavior, animation, export and window global exactly identical. Add or update the header comment naming the CRYSTAL_GROVE district (LAYOUT.md town plan). Pattern reference: tasks_out/worker_visitor.js; contract: window V/iso/fitText/GuildVisitor/cue/allTasks. Do not touch any other file. Output: only the full updated file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside."
+    },
+    {
+      "id": "L111",
+      "title": "Migration wave 2: worker_crystalchime.js -> CRYSTAL_GROVE district (edit task, keep behavior identical)",
+      "status": "pending",
+      "attempts": 0,
+      "target_file": "tasks_out/worker_crystalchime.js",
+      "include_files": [
+        "tasks_out/worker_crystalchime.js",
+        "tasks_out/worker_visitor.js"
+      ],
+      "verify_cmd": "cp tasks_out/worker_crystalchime.js /opt/data/cache/scratch/L111_check.mjs && node --check /opt/data/cache/scratch/L111_check.mjs && grep -q 'window.GuildCrystalchime' tasks_out/worker_crystalchime.js && grep -qi 'CRYSTAL_GROVE' tasks_out/worker_crystalchime.js && echo VERIFY-OK",
+      "spec": "EDIT TASK: improve the EXISTING file tasks_out/worker_crystalchime.js in place. MIGRATION: this module's props are still stranded near the hearth; move ALL of its hardcoded gx/gy anchors to the CRYSTAL_GROVE district (read window.GuildZones.CRYSTAL_GROVE, literal fallback {gx: -12.5, gy: -7}). Every prop must stand within about 3 tiles of the district anchor, offset 2+ tiles from any prop already there. This is a relocation ONLY: keep every behavior, animation, export and window global exactly identical. Add or update the header comment naming the CRYSTAL_GROVE district (LAYOUT.md town plan). Pattern reference: tasks_out/worker_visitor.js; contract: window V/iso/fitText/GuildVisitor/cue/allTasks. Do not touch any other file. Output: only the full updated file wrapped in one standard fenced code block, three backticks, no language tag, one line of prose max outside."
     }
   ]
 }

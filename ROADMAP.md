@@ -73,13 +73,16 @@ foreman (seeding) -> workers (build) -> gates (verify) -> orchestrator (wiring +
 
 ## Queue (next to seed - foreman keeps this deep, >=6 pending across boards)
 
-1. T178 VISITOR TIP RITUAL (proposed) - economy x playability: the visitor can drop a coin on any worker; a coin ripple + the worker's happiness visibly lifts, and a thanks line appears - every coin traces to a real shipped quest.
+1. T178 VISITOR TIP RITUAL (proposed; G3 attempt blocked - glm window closed Oct 16 ~10:16Z mid-run) - economy x playability: the visitor can drop a coin on any worker; a coin ripple + the worker's happiness visibly lifts, and a thanks line appears - every coin traces to a real shipped quest.
 2. T179 NIGHT WATCH OWL (proposed) - living world: a small owl roost in the NE aviary that hoots (cue hook, try/catch) on the hour and swivels its head as the visitor passes - gives the empty NE lobe a heartbeat.
+3. T180 EDGE WATERFALL PLINTH (proposed, foreman) - spectacle x districts: a stone plinth + plaque at the NORTH_RIM waterfall that auto-lists the guild's three longest-done quests from window.allTasks - the rim stays sparse, one prop, gold engraving only.
+4. T181 HEARTH WANDERER (proposed, foreman) - living world: one guild cat that slow-patrols between district anchors (PONDSIDE -> MARKET -> PLAZA), naps 2 min per stop, and purrs (cue, try/catch) when petted - pulls the visitor's eye outward along the roads instead of the hearth.
 
 (seeded 2026-10-16 run 35: T176 -> D26 deepseek, T177 -> D28 deepseek)
 (director arc T172 Q1-Q3 + T171 seeded 2026-10-16 run 34; T170 claimed/done by nemotron run 33)
 
 ## Seeded
+- 2026-10-16 run 36 (foreman ~10:2Z): MIGRATION WAVE 2 seeded. laguna (breaker cleared by L105-L107 run): L108 fishmarket->PONDSIDE, L109 lilypads->PONDSIDE, L110 crystalbloom->CRYSTAL_GROVE, L111 crystalchime->CRYSTAL_GROVE. deepseek: D29 fishhut->PONDSIDE, D30 glowfish->PONDSIDE, D31 hatch->PONDSIDE, D32 driftbarge->PONDSIDE, D33 nightmarket->MARKET, D34 busker->MARKET, D35 owlcourier->AVIARY. glm NOT seeded: window flipped closed ~10:16Z mid-run (T178/T179 stay queued). missingno NOT seeded: breaker (T155-T159). longcat NOT seeded: breaker (W1-W3). step5 closed. QA findings all resolved (no open). Spot-audit clean: L107 worker_wishlanterns.js node --check OK + 6 Guild refs; D28 worker_workbench.js OK, commit d4d46b9 matches title (411 lines, self-doc playability). All boards re-parsed: valid target_file + full schema on every task. Server 8798 answering 200.
 - 2026-10-16 run 35: D26 graveyard, D27 SW market stall satellite, D28 foreman workbench (deepseek); L105 fishing bobber, L106 campfire banter, L107 E garden wish lanterns (laguna). board.json NOT seeded (circuit breaker: T155-T159 consecutive fails).
 
 ## Seeded (foreman, 2026-10-16, run 34)

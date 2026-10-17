@@ -792,3 +792,145 @@ Node.js v26.7.0
 2026-10-15 11:05:37 T128 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-15 11:05:37 T128 DONE on attempt 1
+2026-10-15 11:26:36 T129 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 11:26:36 T129 DONE on attempt 1
+2026-10-15 11:47:23 T130 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 11:47:23 T130 DONE on attempt 1
+2026-10-15 12:08:39 T131 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 12:08:39 T131 DONE on attempt 1
+2026-10-15 12:30:19 T132 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 12:30:19 T132 DONE on attempt 1
+2026-10-15 12:51:35 T133 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 12:51:35 T133 DONE on attempt 1
+2026-10-15 13:12:34 T134 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 13:12:34 T134 DONE on attempt 1
+2026-10-15 13:33:27 T135 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 13:33:27 T135 DONE on attempt 1
+2026-10-15 13:54:34 T119 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 13:54:34 T119 DONE on attempt 1
+2026-10-15 14:15:35 T136 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 14:15:35 T136 DONE on attempt 1
+2026-10-15 14:36:34 T137 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 14:36:34 T137 DONE on attempt 1
+2026-10-15 14:57:22 T97 attempt 1 verify rc 1 out tail: 
+2026-10-15 14:58:12 T97 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/T97_check.mjs:223
+  export {};
+  ^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-15 14:58:57 T97 attempt 3 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 14:58:57 T97 DONE on attempt 3
+2026-10-15 15:20:15 T104 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 15:20:15 T104 DONE on attempt 1
+2026-10-15 15:41:49 T138 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 15:41:49 T138 DONE on attempt 1
+2026-10-15 16:03:16 T141 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 16:03:16 T141 DONE on attempt 1
+2026-10-15 16:24:19 T142 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 16:24:19 T142 DONE on attempt 1
+2026-10-15 16:46:13 T143 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 16:46:13 T143 DONE on attempt 1
+2026-10-15 17:07:13 T144 attempt 1 verify rc 1 out tail: 
+2026-10-15 17:07:49 T144 attempt 2 verify rc 1 out tail: /opt/data/cache/scratch/T144_check.mjs:99
+function gold colors fallback handled inline follows office palette;
+              ^^^^^^
+
+SyntaxError: Unexpected identifier 'colors'
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-15 17:08:32 T144 attempt 3 verify rc 1 out tail: 
+2026-10-15 17:08:32 T144 FAILED no output
+2026-10-15 17:29:11 T145 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 17:29:11 T145 DONE on attempt 1
+2026-10-15 17:50:16 T146 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 17:50:16 T146 DONE on attempt 1
+2026-10-15 18:11:08 T149 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 18:11:08 T149 DONE on attempt 1
+2026-10-15 18:32:00 T150 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 18:32:00 T150 DONE on attempt 1
+2026-10-15 18:53:15 T151 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 18:53:15 T151 DONE on attempt 1
+2026-10-15 19:14:08 T152 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 19:14:08 T152 DONE on attempt 1
+2026-10-15 19:35:11 T153 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 19:35:11 T153 DONE on attempt 1
+2026-10-15 19:56:18 T154 attempt 1 verify rc 1 out tail: /opt/data/cache/scratch/T154_check.mjs:199
+  published __probe = function () { return { index: state.index, lines: state.lines.slice(), streak: state.streak }; };
+            ^^^^^^^
+
+SyntaxError: Unexpected identifier '__probe'
+    at checkSyntax (node:internal/main/check_syntax:72:5)
+
+Node.js v26.7.0
+
+2026-10-15 19:56:49 T154 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-15 19:56:50 T154 DONE on attempt 2
+2026-10-15 20:18:43 T155 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_memorybook.js': No such file or directory
+
+2026-10-15 20:19:57 T155 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_memorybook.js': No such file or directory
+
+2026-10-15 20:20:17 T155 attempt 3 model error: empty content (finish_reason=stop — reasoning budget exhausted, need more max_tokens)
+2026-10-15 20:20:17 T155 attempt 3 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-15 20:20:17 T155 FAILED model call failed: empty content (finish_reason=stop — reasoning budget exhausted, need more max_tokens)
+2026-10-15 20:41:09 T156 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_vaultglint.js': No such file or directory
+
+2026-10-15 20:41:31 T156 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_vaultglint.js': No such file or directory
+
+2026-10-15 20:41:52 T156 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_vaultglint.js': No such file or directory
+
+2026-10-15 20:41:52 T156 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_vaultglint.js': No such file or directory
+
+2026-10-15 21:03:06 T157 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_busker.js': No such file or directory
+
+2026-10-15 21:03:35 T157 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_busker.js': No such file or directory
+
+2026-10-15 21:04:00 T157 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_busker.js': No such file or directory
+
+2026-10-15 21:04:00 T157 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_busker.js': No such file or directory
+
+2026-10-15 21:25:23 T158 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_petfox.js': No such file or directory
+
+2026-10-15 21:25:54 T158 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_petfox.js': No such file or directory
+
+2026-10-15 21:26:20 T158 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_petfox.js': No such file or directory
+
+2026-10-15 21:26:20 T158 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_petfox.js': No such file or directory
+
+2026-10-15 21:47:09 T159 attempt 1 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_lanternbuoys.js': No such file or directory
+
+2026-10-15 21:47:44 T159 attempt 2 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_lanternbuoys.js': No such file or directory
+
+2026-10-15 21:48:24 T159 attempt 3 verify rc 1 out tail: cp: cannot stat 'tasks_out/tasks_out/worker_lanternbuoys.js': No such file or directory
+
+2026-10-15 21:48:24 T159 FAILED cp: cannot stat 'tasks_out/tasks_out/worker_lanternbuoys.js': No such file or directory
+

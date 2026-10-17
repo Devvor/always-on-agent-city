@@ -2,7 +2,7 @@
   "window": {
     "model": "opencode/glm-5.3-flash-free",
     "status": "open",
-    "checked_at": "2026-10-16T08:49:48Z",
+    "checked_at": "2026-10-16T11:01:53Z",
     "note": "glm worker #7 (BENCH Oct 16); free on OpenCode Zen (limited time), no auth, zero-retention; engine = opencode CLI via missingno_worker_tick7.py"
   },
   "tasks": [

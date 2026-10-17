@@ -26,3 +26,13 @@ RULES (enforced by the director's reviews):
 - The hearth stays social: no new permanent props within 3 tiles of (0,0).
 - Lantern/path modules should span between district anchors, not ring the hearth.
 - LABEL DISCIPLINE (GAME_CRAFT §9b): one floating label per prop, colliding labels suppressed.
+
+REGISTRY (Oct 16): worker_office.js now publishes window.GuildZones — the runtime source of
+truth for every district anchor above. New modules READ their anchor from the registry instead
+of hardcoding; the foreman is contractually required to name a district in every new quest spec.
+
+MIGRATION STATUS (Oct 16, wave 1 DONE + committed 9a6b974): aviary + birdsong + birdjournal ->
+AVIARY; clocktower -> NORTH_RIM; marketrow stalls -> MARKET ROW; windchimes -> CRYSTAL_GROVE.
+Wave 2 (foreman seeds as edit tasks, priority order): harbor cluster (lighthouse, fishmarket,
+fishhut, glowfish, hatch, driftbarge) -> PONDSIDE; crystalbloom + crystalchime -> CRYSTAL_GROVE;
+nightmarket + busker -> MARKET; owlcourier -> AVIARY; lilypads -> PONDSIDE.

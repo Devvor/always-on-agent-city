@@ -9,3 +9,5 @@ AssertionError: ['## ', 'board.json', 'tick', 'verify', '/bin/sh.00']
 2026-10-13 04:43:59 S2 attempt 1 verify rc 0 out tail: VERIFY-OK
 
 2026-10-13 04:43:59 S2 DONE on attempt 1
+2026-10-15 16:08:59 EXIT 0 ALERT: step5 free window CLOSED (models list HTTP 522) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 22:26:39 EXIT 0 ALERT: step5 free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.

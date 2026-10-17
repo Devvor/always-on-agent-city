@@ -1,0 +1,7 @@
+2026-10-16 08:21:51 G1 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 08:21:51 G1 DONE on attempt 1
+2026-10-16 08:50:24 G2 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 08:50:24 G2 DONE on attempt 1
+2026-10-16 10:16:39 EXIT 0 ALERT: glm free window CLOSED (canary timed out after 120s) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.

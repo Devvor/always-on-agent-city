@@ -401,3 +401,39 @@ Node.js v26.7.0
 
 2026-10-14 22:06:40 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
 2026-10-15 08:36:41 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 11:24:41 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-15 15:15:41 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-16 07:00:41 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-16 08:28:41 L105 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-16 08:28:41 L105 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-16 08:28:53 L105 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0409, month $0.99 / cap $2.00
+2026-10-16 08:28:54 L105 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 08:28:54 L105 DONE on attempt 2
+2026-10-16 08:53:40 L106 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-16 08:53:40 L106 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-16 08:53:56 L106 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0428, month $1.04 / cap $2.00
+2026-10-16 08:53:56 L106 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 08:53:56 L106 DONE on attempt 2
+2026-10-16 09:16:18 L107 attempt 1 model error: HTTP 503 {'status': 503, 'message': 'The requested model is currently unavailable.'}
+2026-10-16 09:16:18 L107 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-16 09:16:33 L107 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0435, month $1.08 / cap $2.00
+2026-10-16 09:16:33 L107 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 09:16:33 L107 DONE on attempt 2
+2026-10-16 10:22:40 L108 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-16 10:22:40 L108 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-16 10:23:04 L108 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0192, month $1.10 / cap $2.00
+2026-10-16 10:23:05 L108 attempt 2 verify rc 1 out tail: 
+2026-10-16 10:23:22 L108 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0187, month $1.12 / cap $2.00
+2026-10-16 10:23:22 L108 attempt 3 verify rc 1 out tail: 
+2026-10-16 10:23:22 L108 FAILED no output
+2026-10-16 10:43:40 EXIT 0 ALERT: laguna free window CLOSED (canary HTTP 429) — worker idle, no tasks at risk, nothing billed. Say the word to repoint it.
+2026-10-16 11:08:40 L109 attempt 1 model error: HTTP 0 {'error': 'The read operation timed out'}
+2026-10-16 11:08:40 L109 attempt 1 transport failure on free window — escalating retries to z-ai/glm-5.3
+2026-10-16 11:08:51 L109 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0124, month $1.13 / cap $2.00
+2026-10-16 11:08:52 L109 attempt 2 verify rc 1 out tail: 
+2026-10-16 11:09:02 L109 attempt 3 escalated call on z-ai/glm-5.3 cost $0.0126, month $1.14 / cap $2.00
+2026-10-16 11:09:03 L109 attempt 3 verify rc 1 out tail: 
+2026-10-16 11:09:03 L109 FAILED no output

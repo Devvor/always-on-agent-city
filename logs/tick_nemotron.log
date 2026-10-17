@@ -1,0 +1,9 @@
+2026-10-16 05:35:22 N1 attempt 1 engine error: opencode timed out after 480s
+2026-10-16 05:35:22 N1 attempt 1 transport failure on free window - escalating retries to z-ai/glm-5.3
+2026-10-16 05:35:41 N1 attempt 2 escalated call on z-ai/glm-5.3 cost $0.0459, month $0.95 / cap $2.00
+2026-10-16 05:35:41 N1 attempt 2 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 05:35:41 N1 DONE on attempt 2
+2026-10-16 06:24:35 N2 attempt 1 verify rc 0 out tail: VERIFY-OK
+
+2026-10-16 06:24:35 N2 DONE on attempt 1

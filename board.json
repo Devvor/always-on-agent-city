@@ -2,7 +2,7 @@
   "window": {
     "model": "stealth/missingno",
     "status": "open",
-    "checked_at": "2026-10-15T19:55:40Z",
+    "checked_at": "2026-10-16T11:05:40Z",
     "note": "worker tick re-probes every run; price>0 or model-gone => closed"
   },
   "tasks": [
@@ -1907,9 +1907,9 @@
     {
       "id": "T155",
       "title": "FESTIVAL MEMORY BOOK - a scrapbook page in the W museum wing that auto-collects one snapshot entry per completed festival/arc moment (lantern finale, level-ups, naming days) from real event history (self-doc x playability)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "2026-10-15T19:53:46Z",
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-15T20:20:17Z",
       "target_file": "tasks_out/worker_memorybook.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1921,9 +1921,9 @@
     {
       "id": "T156",
       "title": "TREASURY VAULT COUNTER GLINT - the vault coin pile grows a brief glint/spark animation every time real payroll mints land (reads treasury from window.V) (economy x spectacle)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "2026-10-15T19:53:46Z",
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-15T20:41:52Z",
       "target_file": "tasks_out/worker_vaultglint.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1935,9 +1935,9 @@
     {
       "id": "T157",
       "title": "MARKET BUSKER - an NPC musician on the SW market row who plays a day-time tune loop; the visitor can tip coins with E nearby and tips flow to the busker's purse (economy x playability x living world)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "2026-10-15T19:53:46Z",
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-15T21:04:00Z",
       "target_file": "tasks_out/worker_busker.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1949,9 +1949,9 @@
     {
       "id": "T158",
       "title": "GARDEN PET FOX - a small tame fox that wanders the E garden, can be petted with E (hearts + cue), and briefly follows the visitor before returning to its den (playability x living world)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "2026-10-15T19:53:46Z",
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-15T21:26:20Z",
       "target_file": "tasks_out/worker_petfox.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
@@ -1963,9 +1963,9 @@
     {
       "id": "T159",
       "title": "RIM LANTERN BUOYS - floating lantern buoys bobbing on the water along the S rim, doubling as markers for the fishing derby and lighthouse (spectacle; gold glow only)",
-      "status": "pending",
-      "attempts": 0,
-      "updated_at": "2026-10-15T19:53:46Z",
+      "status": "failed",
+      "attempts": 1,
+      "updated_at": "2026-10-15T21:48:24Z",
       "target_file": "tasks_out/worker_lanternbuoys.js",
       "include_files": [
         "tasks_out/worker_visitor.js",
